@@ -1,0 +1,1 @@
+Python\pastel.exe server.py

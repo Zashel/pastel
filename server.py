@@ -22,3 +22,11 @@ if __name__ == "__main__":
                               headers=PAYMENTS_FIELDS),
                   "pagos",
                   "^/pagos/<_id>$")
+    app.set_model(ShelveRelational(os.path.join(PATH, "aplicados"),
+                                   index_fields=APLICATION_FIELDS,
+                                   headers=APLICATION_FIELDS,
+                                   relations=[app.get_model("clientes"),
+                                              app.get_model("pagos")]),
+                  "aplicados",
+                  "^/pagos/aplicados/<tipo>")
+    app.run()

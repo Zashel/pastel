@@ -6,11 +6,26 @@ from definitions import *
 
 import os
 
-PATH = "definitions"
+LOCAL_PATH = os.path.join(os.environ["LOCALAPPDATA"], "pastel")
+#PATH = "definitions"
+PATH = LOCAL_PATH
+
+BASE_URI = "^/pastel/api/v1$"
 
 if __name__ == "__main__":
     app = App()
+    app.set_base_uri(BASE_URI)
     app.set_method("shutdown", "^/shutdown$", GET, app.shutdown)
+    app.set_model(ShelveModel(os.path.join(LOCAL_PATH, "config"),
+                              1,
+                              index_fields=CONFIG_FIELDS),
+                  "config",
+                  "^/config/<container>$")
+    app.set_model(ShelveModel(os.path.join(PATH, "admin"),
+                              1,
+                              index_fields=CONFIG_FIELDS),
+                  "admin",
+                  "^/admin/<container>$")
     app.set_model(ShelveModel(os.path.join(PATH, "clientes"),
                               index_fields=PARI_FIELDS,
                               headers=PARI_FIELDS,
@@ -29,4 +44,4 @@ if __name__ == "__main__":
                                               app.get_model("pagos")]),
                   "aplicados",
                   "^/pagos/aplicados/<tipo>")
-    app.run()
+    app.run("localhost", 9000)

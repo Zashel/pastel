@@ -1,3 +1,14 @@
+USERS_FIELDS = ["id",
+                "fullname",
+                "type"]
+
+USERS_UNIQUE = "id"
+
+USERS_PERMISSIONS = ["type",
+                     "model",
+                     "verb",
+                     "allowed"]
+
 PARI_FIELDS = ["id_cliente",
                "id_cuenta",
                "numdoc",
@@ -29,3 +40,6 @@ APLICATION_FIELDS = ["tipo", # Automático o Manual
                      "via_de_pago"] #Crear Objeto Relacional con esto
 
 METODOS_FIELDS = "nombre"
+
+CONFIG_FIELDS = ["container",
+                 "field"]

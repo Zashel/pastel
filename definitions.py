@@ -1,6 +1,6 @@
 USERS_FIELDS = ["id",
                 "fullname",
-                "type"]
+                "role"]
 
 USERS_UNIQUE = "id"
 

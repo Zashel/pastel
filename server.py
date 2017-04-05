@@ -1,7 +1,7 @@
 #! Python/pastel.exe
 
-from zrest.zrest.server import App, GET
-from zrest.zrest.datamodels.shelvemodels import ShelveModel, ShelveRelational
+from zrest.server import App, GET
+from zrest.datamodels.shelvemodels import ShelveModel, ShelveRelational
 from definitions import *
 
 import os

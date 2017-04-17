@@ -1,3 +1,5 @@
+import os
+
 USERS_FIELDS = ["id",
                 "fullname",
                 "role"]
@@ -43,3 +45,10 @@ METODOS_FIELDS = "nombre"
 
 CONFIG_FIELDS = ["container",
                  "field"]
+
+#Path Definitions
+
+HOST, PORT = "localhost", 727895
+LOCAL_PATH = os.path.join(os.environ["LOCALAPPDATA"], "pastel")
+PATH = LOCAL_PATH
+BASE_URI = "^/pastel/api/v1$"

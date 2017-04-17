@@ -33,7 +33,7 @@ class API:
     @log
     def log_error(cls, function, aditional_dict, file=LOG_ERROR):
         with open(file, "a") as logger:
-            to_log = "{} - API.{}:\n\t{}\n".format(datetime.now.strftime("%d/%m/%Y - %H:%M:%S"),
+            to_log = "{} - API.{}:\n\t{}\n".format(datetime.datetime.now().strftime("%d/%m/%Y - %H:%M:%S"),
                                                  function.__name__,
                                                  pprint.pformat(aditional_dict))
             logger.write(to_log)
@@ -50,6 +50,7 @@ class API:
                 for key in PARI_FIELDS:
                     if key.upper() in headers:
                         final[key] = row[headers.index(key.upper())]
+                final["ciclo_facturado"] = API.get_billing_period(final["fecha_factura"])
                 yield final
 
     @classmethod
@@ -67,5 +68,6 @@ class API:
     @log
     def execute_with_percentile(cls, generator, total):
         for item in generator:
-            yield round(generator/total, 4)
+            yield {"response": item,
+                   "over_total": round(generator/total, 4)}
 

@@ -20,12 +20,12 @@ if __name__ == "__main__":
                               index_fields=CONFIG_FIELDS),
                   "admin",
                   "^/admin/<container>$")
-    app.set_model(ShelveModel(os.path.join(PATH, "pacturas"),
+    app.set_model(ShelveModel(os.path.join(PATH, "facturas"),
                               index_fields=PARI_FIELDS,
                               headers=PARI_FIELDS,
                               unique=PARI_UNIQUE),
                   "facturas",
-                  "^/pacturas/<id_factura>$")
+                  "^/facturas/<id_factura>$")
     app.set_model(ShelveModel(os.path.join(PATH, "pagos"),
                               index_fields=PAYMENTS_FIELDS,
                               headers=PAYMENTS_FIELDS),

@@ -63,3 +63,9 @@ class API:
                 API.log_error(API.upload_pari, {"status": data.status_code,
                                                 "response": data.text})
 
+    @classmethod
+    @log
+    def execute_with_percentile(cls, generator, total):
+        for item in generator:
+            yield round(generator/total, 4)
+

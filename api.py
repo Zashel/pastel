@@ -28,16 +28,6 @@ class API:
 
     @classmethod
     @log
-    def get_total_lines(cls, file, headers=True):
-        assert os.path.exists(file)
-        with open(file, "r") as f:
-            final = sum([1 for x in f])
-        if headers is True:
-            final -= 1
-        return final
-
-    @classmethod
-    @log
     def log_error(cls, function, aditional_dict, file=LOG_ERROR):
         with open(file, "a") as logger:
             to_log = "{} - API.{}:\n\t{}\n".format(datetime.datetime.now().strftime("%d/%m/%Y - %H:%M:%S"),
@@ -49,34 +39,38 @@ class API:
     @log
     def read_pari(self, pari_file):
         assert os.path.exists(pari_file)
+        begin = datetime.datetime.now()
+        total_bytes = os.stat(pari_file).st_size
+        read_bytes = int()
         with open(pari_file, "r") as pari:
             headers = pari.readline().strip("\n").split("|")
-            for row in pari:
-                row = row.strip("\n").split("|")
+            for line in pari:
+                read_bytes += len(bytearray(line, "utf-8"))+1
+                row = line.strip("\n").split("|")
                 final = dict()
                 for key in PARI_FIELDS:
                     if key.upper() in headers:
                         final[key] = row[headers.index(key.upper())]
                 final["ciclo_facturado"] = API.get_billing_period(final["fecha_factura"])
-                yield final
+                time = datetime.datetime.now() - begin
+                percent = read_bytes/total_bytes
+                yield {"percent": round(percent, 4),
+                       "time": time,
+                       "eta": time/percent,
+                       "data": final}
 
     @classmethod
     @log
     def upload_pari(cls, pari_file):
         for row in API.read_pari(pari_file):
-            data = requests.post(API.basepath+"/facturas", json=row)
+            data = requests.post(API.basepath+"/facturas", json=row["data"])
             if data.status_code == 201:
-                yield data.json
+                row["response"] = data.json
+                yield row
             else:
                 API.log_error(API.upload_pari, {"uri": API.basepath+"/facturas",
                                                 "post": row,
                                                 "status": data.status_code,
                                                 "response": data.text})
 
-    @classmethod
-    @log
-    def execute_with_percentile(cls, generator, total):
-        for item in generator:
-            yield {"response": item,
-                   "over_total": round(generator/total, 4)}
 

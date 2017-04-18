@@ -66,7 +66,6 @@ class API:
         pari = ShelveModel(os.path.join(PATH, "facturas"),
                               index_fields=PARI_FIELDS,
                               headers=PARI_FIELDS,
-                              unique=PARI_UNIQUE,
                               to_block = False)
         for row in API.read_pari(pari_file):
             #data = requests.post(API.basepath+"/facturas", json=row["data"])

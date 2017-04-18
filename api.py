@@ -2,7 +2,7 @@ import requests
 import pprint
 from definitions import *
 from zashel.utils import log
-from zrest import ShelveModel
+from zrest.datamodels.shelvemodels import ShelveModel
 import datetime
 
 class API:

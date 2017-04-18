@@ -22,7 +22,8 @@ if __name__ == "__main__":
                   "^/admin/<container>$")
     app.set_model(ShelveModel(os.path.join(PATH, "facturas"),
                               index_fields=PARI_FIELDS,
-                              headers=PARI_FIELDS),
+                              headers=PARI_FIELDS,
+                              unique=PARI_UNIQUE),
                   "facturas",
                   "^/facturas/<id_factura>$")
     app.set_model(ShelveModel(os.path.join(PATH, "pagos"),

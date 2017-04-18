@@ -2,6 +2,7 @@ import requests
 import pprint
 from definitions import *
 from zashel.utils import log
+from zrest import ShelveModel
 import datetime
 
 class API:
@@ -62,15 +63,13 @@ class API:
     @classmethod
     @log
     def upload_pari(cls, pari_file):
+        pari = ShelveModel(os.path.join(PATH, "facturas"),
+                              index_fields=PARI_FIELDS,
+                              headers=PARI_FIELDS,
+                              unique=PARI_UNIQUE,
+                              to_block = False)
         for row in API.read_pari(pari_file):
-            data = requests.post(API.basepath+"/facturas", json=row["data"])
-            if data.status_code == 201:
-                row["response"] = data.json
-                yield row
-            else:
-                API.log_error(API.upload_pari, {"uri": API.basepath+"/facturas",
-                                                "post": row,
-                                                "status": data.status_code,
-                                                "response": data.text})
-
+            #data = requests.post(API.basepath+"/facturas", json=row["data"])
+            pari._new(row)
+            yield row
 

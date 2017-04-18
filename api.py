@@ -67,8 +67,9 @@ class API:
                               index_fields=PARI_FIELDS,
                               headers=PARI_FIELDS,
                               to_block = False)
-        for row in API.read_pari(pari_file):
+        for index, row in enumerate(API.read_pari(pari_file)):
             #data = requests.post(API.basepath+"/facturas", json=row["data"])
             pari.new(row)
-            yield row
+            if row["percent"] % 0.0001 == 0:
+                yield row
 

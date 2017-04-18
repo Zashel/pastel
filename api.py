@@ -63,7 +63,7 @@ class API:
                     time = datetime.datetime.now() - begin
                     yield {"percent": round(percent, 4),
                            "time": time,
-                           "eta": time/percent,
+                           "eta": time/percent-time,
                            "data": final}
                     info = False
                 else:

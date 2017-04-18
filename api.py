@@ -88,8 +88,8 @@ class API:
             for item in PARI_FIELDS:
                 data["index"][item] = dict()
             for index, row in enumerate(API.read_pari(pari_file)):
-                #if (row["data"]["estado_recibo"] == "IMPAGADO" or
-                #        datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
+                if (row["data"]["estado_recibo"] == "IMPAGADO" or
+                        datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
                     #pari.new(row["data"])
                 data["data"][index%10][index] = row["data"]
                 for field in PARI_FIELDS:

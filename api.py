@@ -4,6 +4,13 @@ from definitions import *
 from zashel.utils import log
 from zrest.datamodels.shelvemodels import ShelveModel
 import datetime
+import sys
+import shelve
+if sys.version_info.minor == 3:
+    from contextlib import closing
+    shelve_open = lambda file, flag="c", protocol=None, writeback=False: closing(shelve.open(file, flag))
+else:
+    shelve_open = shelve.open
 
 class API:
     basepath = "http://{}:{}/{}".format(HOST, str(PORT), BASE_URI[1:-1].strip("/"))
@@ -81,22 +88,34 @@ class API:
                     (datetime.datetime.now()-datetime.timedelta(days=92)).strftime("%d%m%Y"),
                      "%d%m%Y").date()
             data = dict()
-            data["data"] = dict()
             for index in range(10):
-                data["data"][index] = dict()
-            data["index"] = dict()
-            for item in PARI_FIELDS:
-                data["index"][item] = dict()
+                data[index] = dict()
             for index, row in enumerate(API.read_pari(pari_file)):
                 if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
-                    data["data"][index%10][index] = row["data"]
-                for field in PARI_FIELDS:
-                    if row["data"][field] not in data["index"][field]:
-                        data["index"][field][row["data"][field]] = set()
-                    data["index"][field][row["data"][field]] |= {index}
+                    data[index%pari.groups][index] = row["data"]
                 if "eta" in row:
                     yield row
+            for group in data:
+                filepath = pari._data_path(group)
+                os.remove(filepath)
+                with shelve_open(filepath) as shelf:
+                    shelf["filepath"] = filepath
+                    for item in data[group]:
+                        shelf[item] = data[group][item]
+            for field in PARI_FIELDS:
+                indexed = dict()
+                for group in data:
+                    for index in data[group]:
+                        if data[group][index][field] not in indexed:
+                            indexed[data[group][index][field]] = set()
+                            indexed[data[group][index][field]] |= {index}
+                filepath = pari._index_path(field)
+                os.remove(filepath)
+                with shelve_open(filepath) as shelf:
+                    shelf["filepath"] = filepath
+                    for item in indexed:
+                        shelf[item] = indexed[item]
         finally:
             pari.close()
 

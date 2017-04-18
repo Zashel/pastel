@@ -63,7 +63,7 @@ class API:
                     time = datetime.datetime.now() - begin
                     yield {"percent": round(percent, 4),
                            "time": time,
-                           "eta": time/percent-time,
+                           "eta": (time/percent)-time,
                            "data": final}
                     info = False
                 else:
@@ -80,11 +80,22 @@ class API:
             limit_date = datetime.datetime.strptime(
                     (datetime.datetime.now()-datetime.timedelta(days=92)).strftime("%d%m%Y"),
                      "%d%m%Y").date()
+            data = dict()
+            data["data"] = dict()
+            for index in range(10):
+                data["data"][index] = dict()
+            data["index"] = dict()
+            for item in PARI_FIELDS:
+                data["index"][item] = dict()
             for index, row in enumerate(API.read_pari(pari_file)):
-                if (row["data"]["estado_recibo"] == "IMPAGADO" or
-                        datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
+                #if (row["data"]["estado_recibo"] == "IMPAGADO" or
+                #        datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
                     #pari.new(row["data"])
-                    pass
+                data["data"][index%10][index] = row["data"]
+                for field in PARI_FIELDS:
+                    if row["data"][field] not in data["index"][field]:
+                        data["index"][field][row["data"][field]] = set()
+                    data["index"][field][row["data"][field]] |= {index}
                 if "eta" in row:
                     yield row
         finally:

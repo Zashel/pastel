@@ -92,9 +92,9 @@ class API:
             for index in range(10):
                 data[index] = dict()
             for index, row in enumerate(API.read_pari(pari_file)):
-                if (row["data"]["estado_recibo"] == "IMPAGADO" or
-                        datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
-                    data[index%pari.groups][index] = row["data"]
+                #if (row["data"]["estado_recibo"] == "IMPAGADO" or
+                #        datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
+                data[index%pari.groups][index] = row["data"]
                 if "eta" in row:
                     yield row
             for group in data:

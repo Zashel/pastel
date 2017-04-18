@@ -43,7 +43,7 @@ class API:
         begin = datetime.datetime.now()
         total_bytes = os.stat(pari_file).st_size
         read_bytes = int()
-        last = 0.0025
+        last = 0.0002
         info = False
         with open(pari_file, "r") as pari:
             headers = pari.readline().strip("\n").split("|")
@@ -65,6 +65,7 @@ class API:
                            "time": time,
                            "eta": time/percent,
                            "data": final}
+                    info = False
                 else:
                     yield {"data": final}
 

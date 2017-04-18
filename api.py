@@ -95,7 +95,7 @@ class API:
             for index, row in enumerate(API.read_pari(pari_file)):
                 if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
-                    data[index%pari.groups][str(index)] = row["data"]
+                    data[index%pari.groups][str(index)] = [row["data"][field] for field in PARI_FIELDS]
                 if "eta" in row:
                     yield row
             for group in data:
@@ -108,9 +108,9 @@ class API:
                 indexed = dict()
                 for group in data:
                     for index in data[group]:
-                        if data[group][index][field] not in indexed:
-                            indexed[data[group][index][field]] = set()
-                            indexed[data[group][index][field]] |= {index}
+                        if data[group][index][PARI_FIELDS.index(field)] not in indexed:
+                            indexed[data[group][index][PARI_FIELDS.index(field)]] = set()
+                            indexed[data[group][index][PARI_FIELDS.index(field)]] |= {index}
                 filepath = pari._index_path(field)
                 [os.remove(filepath) for filepath in glob.glob("{}.*".format(filepath))]
                 with shelve_open(filepath) as shelf:

@@ -43,7 +43,7 @@ class API:
         begin = datetime.datetime.now()
         total_bytes = os.stat(pari_file).st_size
         read_bytes = int()
-        last = 0.0002
+        last = 0.0001
         info = False
         with open(pari_file, "r") as pari:
             headers = pari.readline().strip("\n").split("|")
@@ -51,7 +51,7 @@ class API:
                 read_bytes += len(bytearray(line, "utf-8"))+1
                 percent = read_bytes/total_bytes
                 if percent >= last:
-                    last += 0.0025
+                    last += 0.0001
                     info = True
                 row = line.strip("\n").split("|")
                 final = dict()

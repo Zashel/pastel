@@ -6,6 +6,7 @@ from zrest.datamodels.shelvemodels import ShelveModel
 import datetime
 import sys
 import shelve
+import glob
 if sys.version_info.minor == 3:
     from contextlib import closing
     shelve_open = lambda file, flag="c", protocol=None, writeback=False: closing(shelve.open(file, flag))
@@ -98,7 +99,7 @@ class API:
                     yield row
             for group in data:
                 filepath = pari._data_path(group)
-                os.remove(filepath)
+                [os.remove(filepath) for filepath in glob.glob("{}.*".format(filepath))]
                 with shelve_open(filepath) as shelf:
                     shelf["filepath"] = filepath
                     for item in data[group]:
@@ -111,7 +112,7 @@ class API:
                             indexed[data[group][index][field]] = set()
                             indexed[data[group][index][field]] |= {index}
                 filepath = pari._index_path(field)
-                os.remove(filepath)
+                [os.remove(filepath) for filepath in glob.glob("{}.*".format(filepath))]
                 with shelve_open(filepath) as shelf:
                     shelf["filepath"] = filepath
                     for item in indexed:

@@ -102,8 +102,7 @@ class API:
                 [os.remove(filepath) for filepath in glob.glob("{}.*".format(filepath))]
                 with shelve_open(filepath) as shelf:
                     shelf["filepath"] = filepath
-                    for item in data[group]:
-                        shelf[str(item)] = data[group][item]
+                    shelf.update(data[group])
             for field in PARI_FIELDS:
                 indexed = dict()
                 for group in data:
@@ -115,8 +114,7 @@ class API:
                 [os.remove(filepath) for filepath in glob.glob("{}.*".format(filepath))]
                 with shelve_open(filepath) as shelf:
                     shelf["filepath"] = filepath
-                    for item in indexed:
-                        shelf[str(item)] = indexed[item]
+                    shelf.update(indexed)
         finally:
             pari.close()
 

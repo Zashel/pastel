@@ -52,7 +52,7 @@ CONFIG_FIELDS = ["container",
 
 #Path Definitions
 
-HOST, PORT = "localhost", 727895
+HOST, PORT = "localhost", 89504
 LOCAL_PATH = os.path.join(os.environ["LOCALAPPDATA"], "pastel")
 PATH = LOCAL_PATH
 BASE_URI = "^/pastel/api/v1$"

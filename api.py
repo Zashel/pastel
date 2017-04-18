@@ -83,7 +83,8 @@ class API:
             for index, row in enumerate(API.read_pari(pari_file)):
                 if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
-                    pari.new(row["data"])
+                    #pari.new(row["data"])
+                    pass
                 if "eta" in row:
                     yield row
         finally:

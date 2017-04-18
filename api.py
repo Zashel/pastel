@@ -16,7 +16,14 @@ class API:
             invoice_date = invoice_date.date()
         assert isinstance(invoice_date, datetime.date)
         prev_day = datetime.date.fromordinal((invoice_date - datetime.date(1, 1, 1)).days)
-        prev_month = datetime.date.fromordinal((invoice_date - datetime.date(1, 2, 1)).days)
+        prev_month_day = prev_day.day
+        prev_month_month = prev_day.month - 1
+        if prev_month_month == 0:
+            prev_month_month = 12
+            prev_month_year = prev_day.year - 1
+        else:
+            prev_month_year = prev_day.year
+        prev_month = datetime.date(prev_month_year, prev_month_month, prev_month_day)
         return "{}-{}".format(prev_month.strftime("%d/%m/%y"), prev_day.strftime("%d/%m/%y"))
 
     @classmethod
@@ -58,10 +65,12 @@ class API:
     def upload_pari(cls, pari_file):
         for row in API.read_pari(pari_file):
             data = requests.post(API.basepath+"/facturas", json=row)
-            if data.status_code == 200:
+            if data.status_code == 201:
                 yield data.json
             else:
-                API.log_error(API.upload_pari, {"status": data.status_code,
+                API.log_error(API.upload_pari, {"uri": API.basepath+"/facturas",
+                                                "post": row,
+                                                "status": data.status_code,
                                                 "response": data.text})
 
     @classmethod

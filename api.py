@@ -77,9 +77,13 @@ class API:
                                   index_fields=PARI_FIELDS,
                                   headers=PARI_FIELDS,
                                   to_block = False)
+            limit_date = datetime.datetime.strptime(
+                    (datetime.datetime.now()-datetime.timedelta(months=3)).strftime("%d%m%Y"),
+                     "%d%m%Y").date()
             for index, row in enumerate(API.read_pari(pari_file)):
-                #data = requests.post(API.basepath+"/facturas", json=row["data"])
-                pari.new(row["data"])
+                if (row["data"]["estado_recibo"] == "IMPAGADO" or
+                        datetime.datetime.strptime(row["data"], "%d/%m/%y").date() >= limit_date):
+                    pari.new(row["data"])
                 if "eta" in row:
                     yield row
         finally:

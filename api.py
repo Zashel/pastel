@@ -92,12 +92,17 @@ class API:
             data = dict()
             for index in range(pari.groups):
                 data[index] = dict()
+            total = int()
             for index, row in enumerate(API.read_pari(pari_file)):
                 if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
-                    data[index%pari.groups][str(index)] = [row["data"][field] for field in PARI_FIELDS]
+                    data[total%pari.groups][str(total)] = [row["data"][field] for field in PARI_FIELDS]
+                    total += 1
                 if "eta" in row:
                     yield row
+            with shelve_open(pari._meta_path) as shelf:
+                shelf["total"] = total
+                shelf["next"] = total
             for group in data:
                 filepath = pari._data_path(group)
                 [os.remove(filepath) for filepath in glob.glob("{}.*".format(filepath))]

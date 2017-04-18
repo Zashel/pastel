@@ -103,7 +103,7 @@ class API:
                 with shelve_open(filepath) as shelf:
                     shelf["filepath"] = filepath
                     for item in data[group]:
-                        shelf[item] = data[group][item]
+                        shelf[str(item)] = data[group][item]
             for field in PARI_FIELDS:
                 indexed = dict()
                 for group in data:
@@ -116,7 +116,7 @@ class API:
                 with shelve_open(filepath) as shelf:
                     shelf["filepath"] = filepath
                     for item in indexed:
-                        shelf[item] = indexed[item]
+                        shelf[str(item)] = indexed[item]
         finally:
             pari.close()
 

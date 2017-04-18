@@ -70,6 +70,6 @@ class API:
                               to_block = False)
         for row in API.read_pari(pari_file):
             #data = requests.post(API.basepath+"/facturas", json=row["data"])
-            pari._new(row)
+            pari.new(row)
             yield row
 

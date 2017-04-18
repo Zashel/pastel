@@ -63,13 +63,16 @@ class API:
     @classmethod
     @log
     def upload_pari(cls, pari_file):
-        pari = ShelveModel(os.path.join(PATH, "facturas"),
-                              index_fields=PARI_FIELDS,
-                              headers=PARI_FIELDS,
-                              to_block = False)
-        for index, row in enumerate(API.read_pari(pari_file)):
-            #data = requests.post(API.basepath+"/facturas", json=row["data"])
-            pari.new(row)
-            if row["percent"] % 0.0001 == 0:
-                yield row
+        try:
+            pari = ShelveModel(os.path.join(PATH, "facturas"),
+                                  index_fields=PARI_FIELDS,
+                                  headers=PARI_FIELDS,
+                                  to_block = False)
+            for index, row in enumerate(API.read_pari(pari_file)):
+                #data = requests.post(API.basepath+"/facturas", json=row["data"])
+                pari.new(row)
+                if row["percent"] % 0.0001 == 0:
+                    yield row
+        finally:
+            pari.close()
 

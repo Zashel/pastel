@@ -82,9 +82,10 @@ class API:
     def upload_pari(cls, pari_file):
         try:
             pari = ShelveModel(os.path.join(PATH, "facturas"),
-                                  index_fields=PARI_FIELDS,
-                                  headers=PARI_FIELDS,
-                                  to_block = False)
+                               30,
+                               index_fields=PARI_FIELDS,
+                               headers=PARI_FIELDS,
+                               to_block = False)
             limit_date = datetime.datetime.strptime(
                     (datetime.datetime.now()-datetime.timedelta(days=92)).strftime("%d%m%Y"),
                      "%d%m%Y").date()

@@ -78,7 +78,7 @@ class API:
                                   headers=PARI_FIELDS,
                                   to_block = False)
             limit_date = datetime.datetime.strptime(
-                    (datetime.datetime.now()-datetime.timedelta(months=3)).strftime("%d%m%Y"),
+                    (datetime.datetime.now()-datetime.timedelta(days=92)).strftime("%d%m%Y"),
                      "%d%m%Y").date()
             for index, row in enumerate(API.read_pari(pari_file)):
                 if (row["data"]["estado_recibo"] == "IMPAGADO" or

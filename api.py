@@ -43,22 +43,30 @@ class API:
         begin = datetime.datetime.now()
         total_bytes = os.stat(pari_file).st_size
         read_bytes = int()
+        last = 0.0025
+        info = False
         with open(pari_file, "r") as pari:
             headers = pari.readline().strip("\n").split("|")
             for line in pari:
                 read_bytes += len(bytearray(line, "utf-8"))+1
+                percent = read_bytes/total_bytes
+                if percent >= last:
+                    last += 0.0025
+                    info = True
                 row = line.strip("\n").split("|")
                 final = dict()
                 for key in PARI_FIELDS:
                     if key.upper() in headers:
                         final[key] = row[headers.index(key.upper())]
-                final["ciclo_facturado"] = API.get_billing_period(final["fecha_factura"])
-                time = datetime.datetime.now() - begin
-                percent = read_bytes/total_bytes
-                yield {"percent": round(percent, 4),
-                       "time": time,
-                       "eta": time/percent,
-                       "data": final}
+                #final["ciclo_facturado"] = API.get_billing_period(final["fecha_factura"])
+                if info is True:
+                    time = datetime.datetime.now() - begin
+                    yield {"percent": round(percent, 4),
+                           "time": time,
+                           "eta": time/percent,
+                           "data": final}
+                else:
+                    yield {"data": final}
 
     @classmethod
     @log
@@ -70,8 +78,8 @@ class API:
                                   to_block = False)
             for index, row in enumerate(API.read_pari(pari_file)):
                 #data = requests.post(API.basepath+"/facturas", json=row["data"])
-                pari.new(row)
-                if index % 1000 == 0:
+                pari.new(row["data"])
+                if "eta" in row:
                     yield row
         finally:
             pari.close()

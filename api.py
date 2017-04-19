@@ -170,8 +170,8 @@ class API:
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
                     data[int(index)%pari.groups][str(index)] = [row["data"][field] for field in PARI_FIELDS2]
                     total += 1
-                    if index > next:
-                        next = index+1
+                    if int(index) > next:
+                        next = int(index)+1
                 if "eta" in row:
                     yield row
             with shelve_open(pari._meta_path) as shelf:

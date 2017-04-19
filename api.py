@@ -149,7 +149,9 @@ class API:
                                30,
                                index_fields=PARI_FIELDS,
                                headers=PARI_FIELDS,
-                               to_block = False)
+                               to_block = False,
+                               unique=PARI_UNIQUE,
+                               unique_is_id=True),
             limit_date = datetime.datetime.strptime(
                     (datetime.datetime.now()-datetime.timedelta(days=92)).strftime("%d%m%Y"),
                      "%d%m%Y").date()

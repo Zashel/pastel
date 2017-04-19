@@ -104,16 +104,16 @@ class API:
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
                 if id_factura not in API.id_factura:
                     API.id_factura[id_factura] = [None for item in API.id_factura["_heads"]]
-                    data["id_factura"] = API.id_factura[id_factura]
+                data["id_factura"] = API.id_factura[id_factura]
                 if id_cuenta not in API.id_cuenta:
                     API.id_cuenta[id_cuenta] = [None for item in API.id_cuenta["_heads"]]
-                    data["id_cuenta"] = API.id_cuenta[id_cuenta]
+                data["id_cuenta"] = API.id_cuenta[id_cuenta]
                 if id_cliente not in API.id_cliente:
                     API.id_cliente[id_cliente] = [None for item in API.id_cliente["_heads"]]
-                    data["id_cliente"] = API.id_cliente[id_cliente]
+                data["id_cliente"] = API.id_cliente[id_cliente]
                 if segmento not in API.segmento:
                     API.segmento[segmento] = [None for item in API.segmento["_heads"]]
-                    data["segmento"] = API.segmento[segmento]
+                data["segmento"] = API.segmento[segmento]
                 for item, dictionary in ((id_factura, API.id_factura),
                                          (id_cliente, API.id_cliente),
                                          (id_cuenta, API.id_cuenta),

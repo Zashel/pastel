@@ -24,7 +24,7 @@ class API:
                             "facturas"]}
     id_cliente = {"_heads": ["numdoc",
                              "id_cuenta"]}
-    segmento = {"_heads": ["id_cuenta"]}
+    segmentos = list()
 
     @classmethod
     @log
@@ -95,10 +95,9 @@ class API:
             (datetime.datetime.now() - datetime.timedelta(days=92)).strftime("%d%m%Y"),
             "%d%m%Y").date()
         for row in API.read_pari(pari_file):
-            id_factura = row["data"]["id_factura"]
-            id_cuenta = row["data"]["id_cuenta"]
-            id_cliente = row["data"]["id_cliente"]
-            segmento = row["data"]["segmento"]
+            id_factura = int(row["data"]["id_factura"])
+            id_cuenta = int(row["data"]["id_cuenta"])
+            id_cliente = int(row["data"]["id_cliente"])
             data = dict()
             if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
@@ -111,28 +110,23 @@ class API:
                 if id_cliente not in API.id_cliente:
                     API.id_cliente[id_cliente] = [None for item in API.id_cliente["_heads"]]
                 data["id_cliente"] = API.id_cliente[id_cliente]
-                if segmento not in API.segmento:
-                    API.segmento[segmento] = [None for item in API.segmento["_heads"]]
-                data["segmento"] = API.segmento[segmento]
                 for item, dictionary in ((id_factura, API.id_factura),
                                          (id_cliente, API.id_cliente),
-                                         (id_cuenta, API.id_cuenta),
-                                         (segmento, API.segmento)):
+                                         (id_cuenta, API.id_cuenta)):
                     heads = dictionary["_heads"]
                     for index, head in enumerate(heads):
                         if head in ("id_factura",
                                     "id_cliente",
-                                    "id_cuenta",
-                                    "segmento"):
-                            try:
-                                dictionary[item][index] = data[head]
-                            except KeyError:
-                                print(data)
-                                raise
+                                    "id_cuenta"):
+                            dictionary[item][index] = data[head]
                         elif head == "facturas":
                             if dictionary[item][index] is None:
                                 dictionary[item][index] = list()
                             dictionary[item][index].append(data["id_factura"])
+                        elif head == "segmento":
+                            if data[head] not in API.segmentos:
+                                API.segmentos.append(data[head])
+                            dictionary[item][index] = API.segmentos.index(data[head])
                         else:
                             dictionary[item][index] = row["data"][head]
             if "eta" in row:

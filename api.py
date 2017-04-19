@@ -162,7 +162,6 @@ class API:
             del[PARI_FIELDS2[PARI_FIELDS.index("id_factura")]]
             for row in API.read_pari(pari_file):
                 index = row["data"]["id_factura"]
-                del (row["data"]["id_factura"])
                 if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
                     data[index%pari.groups][str(total)] = [row["data"][field] for field in PARI_FIELDS2]

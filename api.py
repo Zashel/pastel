@@ -26,6 +26,7 @@ class API:
     id_cliente = {"_heads": ["numdoc",
                              "id_cuenta"]}
     segmentos = list()
+    estados = list()
 
     @classmethod
     @log
@@ -130,7 +131,17 @@ class API:
                         elif head == "segmento":
                             if row["data"][head] not in API.segmentos:
                                 API.segmentos.append(row["data"][head])
-                            dictionary[item][index] = API.segmentos.index(row["data"][head])
+                            segmento = API.segmentos.index(row["data"][head])
+                            dictionary[item][index] = segmento.to_bytes(ceil(segmento.bit_length() / 8), "big")
+                        elif head == "estado_recibo":
+                            if row["data"][head] not in API.estados:
+                                API.estados.append(row["data"][head])
+                            estado = API.estados.index(row["data"][head])
+                            dictionary[item][index] = estado.to_bytes(ceil(estado.bit_length() / 8), "big")
+                        elif head == "importe_adeudado":
+                            importe = row["data"][head].replace(",", "")
+                            importe = importe.to_bytes(ceil(importe.bit_length() / 8), "big")
+                            dictionary[item][index] = importe
                         else:
                             dictionary[item][index] = row["data"][head]
             if "eta" in row:

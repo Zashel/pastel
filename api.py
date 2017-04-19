@@ -98,11 +98,8 @@ class API:
             "%d%m%Y").date()
         for row in API.read_pari(pari_file):
             id_factura = int(row["data"]["id_factura"])
-            id_factura = id_factura.to_bytes(ceil(id_factura.bit_length()/8), "big")
             id_cuenta = int(row["data"]["id_cuenta"])
-            id_cuenta = id_cuenta.to_bytes(ceil(id_cuenta.bit_length() / 8), "big")
             id_cliente = int(row["data"]["id_cliente"])
-            id_cliente = id_cliente.to_bytes(ceil(id_cliente.bit_length() / 8), "big")
             data = dict()
             if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
@@ -166,7 +163,7 @@ class API:
                 del (row["data"]["id_factura"])
                 if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
-                    data[index%pari.groups][str(total)] = [row["data"][field] for field in PARI_FIELDS]
+                    data[index%pari.groups][str(total)] = [row["data"][field] for field in PARI_FIELDS if field != "id_factura"]
                     total += 1
                     if index > next:
                         next = index+1

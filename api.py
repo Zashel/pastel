@@ -22,7 +22,7 @@ class API:
     id_cuenta = {"_heads": ["id_cliente",
                             "segmento",
                             "facturas"]}
-    id_cliente = {"_heads": ["num_doc",
+    id_cliente = {"_heads": ["numdoc",
                              "id_cuenta"]}
     segmento = {"_heads": ["id_cuenta"]}
 

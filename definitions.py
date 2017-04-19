@@ -20,6 +20,7 @@ PARI_FIELDS = ["id_cliente",
                "numdoc",
                "fecha_factura",
                "id_factura",
+               "segmento",
                "importe_adeudado",
                "estado_recibo"]
 

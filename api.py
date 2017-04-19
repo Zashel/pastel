@@ -93,16 +93,21 @@ class API:
             for index in range(pari.groups):
                 data[index] = dict()
             total = int()
-            for index, row in enumerate(API.read_pari(pari_file)):
+            next = int()
+            for row in enumerate(API.read_pari(pari_file)):
+                index = row["data"]["id_factura"]
+                del (row["data"]["id_factura"])
                 if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
-                    data[total%pari.groups][str(total)] = [row["data"][field] for field in PARI_FIELDS]
+                    data[index%pari.groups][str(total)] = [row["data"][field] for field in PARI_FIELDS]
                     total += 1
+                    if index > next:
+                        next = index+1
                 if "eta" in row:
                     yield row
             with shelve_open(pari._meta_path) as shelf:
                 shelf["total"] = total
-                shelf["next"] = total
+                shelf["next"] = next
             for group in data:
                 filepath = pari._data_path(group)
                 [os.remove(filepath) for filepath in glob.glob("{}.*".format(filepath))]
@@ -110,17 +115,18 @@ class API:
                     shelf["filepath"] = filepath
                     shelf.update(data[group])
             for field in PARI_FIELDS:
-                indexed = dict()
-                for group in data:
-                    for index in data[group]:
-                        if data[group][index][PARI_FIELDS.index(field)] not in indexed:
-                            indexed[data[group][index][PARI_FIELDS.index(field)]] = set()
+                if field != "id_factura":
+                    indexed = dict()
+                    for group in data:
+                        for index in data[group]:
+                            if data[group][index][PARI_FIELDS.index(field)] not in indexed:
+                                indexed[data[group][index][PARI_FIELDS.index(field)]] = set()
                             indexed[data[group][index][PARI_FIELDS.index(field)]] |= {index}
-                filepath = pari._index_path(field)
-                [os.remove(filepath) for filepath in glob.glob("{}.*".format(filepath))]
-                with shelve_open(filepath) as shelf:
-                    shelf["filepath"] = filepath
-                    shelf.update(indexed)
+                    filepath = pari._index_path(field)
+                    [os.remove(filepath) for filepath in glob.glob("{}.*".format(filepath))]
+                    with shelve_open(filepath) as shelf:
+                        shelf["filepath"] = filepath
+                        shelf.update(indexed)
         finally:
             pari.close()
 

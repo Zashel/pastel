@@ -24,7 +24,8 @@ class API:
         if isinstance(invoice_date, datetime.datetime):
             invoice_date = invoice_date.date()
         assert isinstance(invoice_date, datetime.date)
-        prev_day = datetime.date.fromordinal((invoice_date - datetime.date(1, 1, 1)).days)
+        #prev_day = datetime.date.fromordinal((invoice_date - datetime.date(1, 1, 1)).days)
+        prev_day = invoice_date
         prev_month_day = prev_day.day
         prev_month_month = prev_day.month - 1
         if prev_month_month == 0:

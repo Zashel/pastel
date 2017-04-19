@@ -164,7 +164,7 @@ class API:
                 try:
                     index = row["data"]["id_factura"]
                 except KeyError:
-                    print row["data"]
+                    print(row["data"])
                     raise
                 if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):

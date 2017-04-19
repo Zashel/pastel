@@ -168,7 +168,7 @@ class API:
                     raise
                 if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
-                    data[index%pari.groups][str(total)] = [row["data"][field] for field in PARI_FIELDS2]
+                    data[int(index)%pari.groups][str(index)] = [row["data"][field] for field in PARI_FIELDS2]
                     total += 1
                     if index > next:
                         next = index+1

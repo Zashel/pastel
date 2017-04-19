@@ -15,6 +15,16 @@ else:
 
 class API:
     basepath = "http://{}:{}/{}".format(HOST, str(PORT), BASE_URI[1:-1].strip("/"))
+    id_factura = {"_heads": ["fecha_factura",
+                            "importe_adeudado",
+                            "estado_recibo",
+                            "id_cuenta"]}
+    id_cuenta = {"_heads": ["id_cliente",
+                            "segmento",
+                            "facturas"]}
+    id_cliente = {"_heads": ["num_doc",
+                             "id_cuenta"]}
+    segmento = {"_heads": ["id_cuenta"]}
 
     @classmethod
     @log
@@ -77,6 +87,49 @@ class API:
                     info = False
                 else:
                     yield {"data": final}
+
+    @classmethod
+    @log
+    def set_pari(cls, pari_file):
+        limit_date = datetime.datetime.strptime(
+            (datetime.datetime.now() - datetime.timedelta(days=92)).strftime("%d%m%Y"),
+            "%d%m%Y").date()
+        for row in enumerate(API.read_pari(pari_file)):
+            id_factura = row["data"]["id_factura"]
+            id_cuenta = row["data"]["id_cuenta"]
+            id_cliente = row["data"]["id_cliente"]
+            segmento = row["data"]["segmento"]
+            data = dict()
+            if (row["data"]["estado_recibo"] == "IMPAGADO" or
+                        datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
+                if id_factura not in API.id_factura:
+                    API.id_factura[id_factura] = list()
+                    data["id_factura"] = API.id_factura[id_factura]
+                if id_cuenta not in API.id_cuenta:
+                    API.id_cuenta[id_cuenta] = list()
+                    data["id_cuenta"] = API.id_cuenta[id_cuenta]
+                if id_cliente not in API.id_cliente:
+                    API.id_cliente[id_cliente] = list()
+                    data["id_cliente"] = API.id_cliente[id_cliente]
+                if segmento not in API.segmento:
+                    API.segmento[segmento] = list()
+                    data["segmento"] = API.segmento[segmento]
+                for item, dictionary in ((id_factura, API.id_factura),
+                                         (id_cliente, API.id_cliente),
+                                         (id_cuenta, API.id_cuenta),
+                                         (segmento, API.segmento)):
+                    heads = dictionary["_heads"]
+                    for head in heads:
+                        if head in ("id_factura",
+                                    "id_cliente",
+                                    "id_cuenta",
+                                    "segmento"):
+                            dictionary[item].append(data[head])
+                        else:
+                            dictionary[item].append(row["data"][head])
+            if "eta" in row:
+                yield row
+
 
     @classmethod
     @log

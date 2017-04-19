@@ -124,9 +124,9 @@ class API:
                                 dictionary[item][index] = list()
                             dictionary[item][index].append(data["id_factura"])
                         elif head == "segmento":
-                            if data[head] not in API.segmentos:
-                                API.segmentos.append(data[head])
-                            dictionary[item][index] = API.segmentos.index(data[head])
+                            if row["data"][head] not in API.segmentos:
+                                API.segmentos.append(row["data"][head])
+                            dictionary[item][index] = API.segmentos.index(row["data"][head])
                         else:
                             dictionary[item][index] = row["data"][head]
             if "eta" in row:

@@ -77,6 +77,9 @@ class API:
                 for key in PARI_FIELDS:
                     if key.upper() in headers:
                         final[key] = row[headers.index(key.upper())]
+                    else:
+                        print(headers)
+                        print(key)
                 #final["ciclo_facturado"] = API.get_billing_period(final["fecha_factura"])
                 if info is True:
                     time = datetime.datetime.now() - begin

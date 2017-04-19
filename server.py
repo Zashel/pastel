@@ -24,7 +24,8 @@ if __name__ == "__main__":
                               30,
                               index_fields=PARI_FIELDS,
                               headers=PARI_FIELDS,
-                              unique=PARI_UNIQUE),
+                              unique=PARI_UNIQUE,
+                              unique_is_id = True),
                   "facturas",
                   "^/facturas/<id_factura>$")
     app.set_model(ShelveModel(os.path.join(PATH, "pagos"),

@@ -103,30 +103,34 @@ class API:
             if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
                 if id_factura not in API.id_factura:
-                    API.id_factura[id_factura] = list()
+                    API.id_factura[id_factura] = [None for item in API.id_factura["_heads"]]
                     data["id_factura"] = API.id_factura[id_factura]
                 if id_cuenta not in API.id_cuenta:
-                    API.id_cuenta[id_cuenta] = list()
+                    API.id_cuenta[id_cuenta] = [None for item in API.id_cuenta["_heads"]]
                     data["id_cuenta"] = API.id_cuenta[id_cuenta]
                 if id_cliente not in API.id_cliente:
-                    API.id_cliente[id_cliente] = list()
+                    API.id_cliente[id_cliente] = [None for item in API.id_cliente["_heads"]]
                     data["id_cliente"] = API.id_cliente[id_cliente]
                 if segmento not in API.segmento:
-                    API.segmento[segmento] = list()
+                    API.segmento[segmento] = [None for item in API.segmento["_heads"]]
                     data["segmento"] = API.segmento[segmento]
                 for item, dictionary in ((id_factura, API.id_factura),
                                          (id_cliente, API.id_cliente),
                                          (id_cuenta, API.id_cuenta),
                                          (segmento, API.segmento)):
                     heads = dictionary["_heads"]
-                    for head in heads:
+                    for index, head in enumerate(heads):
                         if head in ("id_factura",
                                     "id_cliente",
                                     "id_cuenta",
                                     "segmento"):
-                            dictionary[item].append(data[head])
+                            dictionary[item][index] = data[head]
+                        elif head == "facturas":
+                            if dictionary[item][index] is None:
+                                dictionary[item][index] = list()
+                            dictionary[item][index].append(data["id_factura"])
                         else:
-                            dictionary[item].append(row["data"][head])
+                            dictionary[item][index] = row["data"][head]
             if "eta" in row:
                 yield row
 

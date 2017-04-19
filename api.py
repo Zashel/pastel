@@ -158,8 +158,8 @@ class API:
                 data[index] = dict()
             total = int()
             next = int()
-            PARI_FIELDS2 = PARI_FIELDS
-            del[PARI_FIELDS2[PARI_FIELDS.index("id_factura")]]
+            PARI_FIELDS2 = PARI_FIELDS.copy()
+            del[PARI_FIELDS2[PARI_FIELDS2.index("id_factura")]]
             for row in API.read_pari(pari_file):
                 try:
                     index = row["data"]["id_factura"]

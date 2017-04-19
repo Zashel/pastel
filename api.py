@@ -94,7 +94,7 @@ class API:
         limit_date = datetime.datetime.strptime(
             (datetime.datetime.now() - datetime.timedelta(days=92)).strftime("%d%m%Y"),
             "%d%m%Y").date()
-        for row in enumerate(API.read_pari(pari_file)):
+        for row in API.read_pari(pari_file):
             id_factura = row["data"]["id_factura"]
             id_cuenta = row["data"]["id_cuenta"]
             id_cliente = row["data"]["id_cliente"]
@@ -148,7 +148,7 @@ class API:
                 data[index] = dict()
             total = int()
             next = int()
-            for row in enumerate(API.read_pari(pari_file)):
+            for row in API.read_pari(pari_file):
                 index = row["data"]["id_factura"]
                 del (row["data"]["id_factura"])
                 if (row["data"]["estado_recibo"] == "IMPAGADO" or

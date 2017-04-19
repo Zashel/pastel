@@ -138,10 +138,6 @@ class API:
                                 API.estados.append(row["data"][head])
                             estado = API.estados.index(row["data"][head])
                             dictionary[item][index] = estado.to_bytes(ceil(estado.bit_length() / 8), "big")
-                        elif head == "importe_adeudado":
-                            importe = int(row["data"][head].replace(",", ""))
-                            importe = importe.to_bytes(ceil(importe.bit_length() / 8), "big")
-                            dictionary[item][index] = importe
                         else:
                             dictionary[item][index] = row["data"][head]
             if "eta" in row:

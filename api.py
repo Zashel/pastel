@@ -105,6 +105,9 @@ class API:
                                  "id_cuenta"]}
         API_segmentos = list()
         API_estados = list()
+        API_ids_factura = list()
+        API_ids_cliente = list()
+        API_ids_cuenta = list()
         limit_date = datetime.datetime.strptime(
             (datetime.datetime.now() - datetime.timedelta(days=92)).strftime("%d%m%Y"),
             "%d%m%Y").date()
@@ -137,11 +140,20 @@ class API:
                         if head in ("id_factura",
                                     "id_cliente",
                                     "id_cuenta"):
-                            dictionary[item][index] = {head: data[head]}
+                            if dictionary[item][index] is None:
+                                dictionary[item][index] = dict()
+                            api_item = {"id_factura": API_ids_factura,
+                                        "id_cliente": API_ids_cliente,
+                                        "id_cuenta": API_ids_cuenta}[head]
+                            if row["data"][head] not in api_item:
+                                api_item.append(row["data"][head])
+                            item_d = api_item.index(row["data"][head])
+                            item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
+                            dictionary[item][index].update({item_index: data[head]})
                         elif head == "facturas":
                             if dictionary[item][index] is None:
-                                dictionary[item][index] = list()
-                            dictionary[item][index].append(data["id_factura"])
+                                dictionary[item][index] = dict()
+                            dictionary[item][index].update(data["id_factura"])
                         elif head == "segmento":
                             if row["data"][head] not in API_segmentos:
                                 API_segmentos.append(row["data"][head])

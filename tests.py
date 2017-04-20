@@ -18,7 +18,6 @@ class Test_API(unittest.TestCase):
         self.app.set_model(Pari(os.path.join(PATH, "facturas")),
                            "facturas",
                             "^/facturas/<id_factura>$")
-        self.app.
 
     def test_1_pari_model(self):
         print(self.app.action(GET, "/facturas"))

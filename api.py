@@ -106,7 +106,9 @@ class API:
         #API_numdoc = {"_heads": ["numdoc",
         #                         "id_cliente"]}
         API_segmentos = list()
+        index_segmentos = dict()
         API_estados = list()
+        index_estados = dict()
         #API_ids_factura = list()
         #API_ids_cliente = list()
         #API_ids_cuenta = list()
@@ -118,9 +120,6 @@ class API:
             id_factura = int(row["data"]["id_factura"])
             id_cuenta = int(row["data"]["id_cuenta"])
             id_cliente = int(row["data"]["id_cliente"])
-            #indexes = {"id_cliente": None,
-            #           "id_cuenta": None,
-            #           "id_factura": None}
             numdoc = row["data"]["numdoc"]
             final = {"id_cliente": API_id_cliente,
                      "id_cuenta": API_id_cuenta,
@@ -183,15 +182,22 @@ class API:
                         elif head == "segmento":
                             if row["data"][head] not in API_segmentos:
                                 API_segmentos.append(row["data"][head])
+                            if row["data"][head] not in index_segmentos:
+                                index_segmentos[row["data"][head]] = set() #id_cliente
+                            index_segmentos[row["data"][head]] |= {id_cliente}
                             segmento = API_segmentos.index(row["data"][head])
-                            #api[item][index] = segmento.to_bytes(ceil(segmento.bit_length() / 8), "big")
-                            api[item][index] = row["data"][head]
+                            api[item][index] = segmento.to_bytes(ceil(segmento.bit_length() / 8), "big")
+
+                            #api[item][index] = row["data"][head]
                         elif head == "estado_recibo":
                             if row["data"][head] not in API_estados:
                                 API_estados.append(row["data"][head])
+                            if row["data"][head] not in index_estados:
+                                index_estados[row["data"][head]] = set() #id_factura
+                                index_estados[row["data"][head]] |= {id_factura}
                             estado = API_estados.index(row["data"][head])
-                            #api[item][index] = estado.to_bytes(ceil(estado.bit_length() / 8), "big")
-                            api[item][index] = row["data"][head]
+                            api[item][index] = estado.to_bytes(ceil(estado.bit_length() / 8), "big")
+                            #api[item][index] = row["data"][head]
                         elif head == "fecha_factura":
                             fecha = datetime.datetime.strptime(row["data"][head], "%d/%m/%y")
                             fecha = int(fecha.strftime("%d%m%y"))

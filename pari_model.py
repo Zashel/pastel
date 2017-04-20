@@ -4,7 +4,7 @@ import shelve
 import os
 from definitions import *
 import datetime
-from zashel.utils.logger import log
+from zashel.utils import log
 
 
 class Pari(RestfulBaseInterface):

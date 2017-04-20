@@ -18,10 +18,11 @@ class Test_API(unittest.TestCase):
         self.app.set_model(Pari(os.path.join(PATH, "facturas")),
                            "facturas",
                             "^/facturas/<id_factura>$")
+        self.app.
 
     def test_1_pari_model(self):
-        print(self.app.action(GET, "/pastel/api/v1/facturas"))
-        print(self.app.action(POST, "/pastel/api/v1/facturas",
+        print(self.app.action(GET, "/facturas"))
+        print(self.app.action(POST, "/facturas",
                               data={"file": r"c:\users\IURIRIV\Documents\pastel\BI_131_FICHERO_PARI_DIARIO_20170412.csv"}))
 
 

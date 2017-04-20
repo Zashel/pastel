@@ -157,7 +157,9 @@ class API:
                                         "numdoc": API_numdocs}[head]
                             #if row["data"][head] not in api_item:
                             #    api_item.append(row["data"][head])
-                            item_d = api_item.index(row["data"][head])
+                            item_d = api_item.index({"id_factura": id_factura,
+                                                     "id_cliente": id_cliente,
+                                                     "id_cuenta": id_cuenta}[head])
                             item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
                             #if head == "id_cliente":
                             #    API_numdocs.append(row["data"]["numdoc"])

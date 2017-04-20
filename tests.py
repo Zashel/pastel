@@ -9,7 +9,7 @@ class Test_API(unittest.TestCase):
 
     def test_0_get_billing_period(self):
         self.assertEqual("01/12/16-01/01/17", API.get_billing_period("01/01/17"))
-        self.assertEqual("08/02/17-08/02/17", API.get_billing_period("8/03/17"))
+        self.assertEqual("08/02/17-08/03/17", API.get_billing_period("8/03/17"))
         self.assertEqual("15/12/16-15/01/17", API.get_billing_period("15/01/17"))
         self.assertEqual("22/12/16-22/01/17", API.get_billing_period("22/01/17"))
 

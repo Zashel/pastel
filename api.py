@@ -16,17 +16,6 @@ else:
 
 class API:
     basepath = "http://{}:{}/{}".format(HOST, str(PORT), BASE_URI[1:-1].strip("/"))
-    id_factura = {"_heads": ["fecha_factura",
-                            "importe_adeudado",
-                            "estado_recibo",
-                            "id_cuenta"]}
-    id_cuenta = {"_heads": ["id_cliente",
-                            "segmento",
-                            "facturas"]}
-    id_cliente = {"_heads": ["numdoc",
-                             "id_cuenta"]}
-    segmentos = list()
-    estados = list()
 
     @classmethod
     @log
@@ -93,6 +82,17 @@ class API:
     @classmethod
     @log
     def set_pari(cls, pari_file):
+        id_factura = {"_heads": ["fecha_factura",
+                                 "importe_adeudado",
+                                 "estado_recibo",
+                                 "id_cuenta"]}
+        id_cuenta = {"_heads": ["id_cliente",
+                                "segmento",
+                                "facturas"]}
+        id_cliente = {"_heads": ["numdoc",
+                                 "id_cuenta"]}
+        segmentos = list()
+        estados = list()
         limit_date = datetime.datetime.strptime(
             (datetime.datetime.now() - datetime.timedelta(days=92)).strftime("%d%m%Y"),
             "%d%m%Y").date()
@@ -100,25 +100,25 @@ class API:
             id_factura = int(row["data"]["id_factura"])
             id_cuenta = int(row["data"]["id_cuenta"])
             id_cliente = int(row["data"]["id_cliente"])
-            final = {"id_cliente": API.id_cliente,
-                     "id_cuenta": API.id_cuenta,
-                     "id_factura": API.id_factura,
-                     "estados": API.estados}
+            final = {"id_cliente": id_cliente,
+                     "id_cuenta": id_cuenta,
+                     "id_factura": id_factura,
+                     "estados": estados}
             data = dict()
             if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
-                if id_factura not in API.id_factura:
-                    API.id_factura[id_factura] = [None for item in API.id_factura["_heads"]]
-                data["id_factura"] = API.id_factura[id_factura]
-                if id_cuenta not in API.id_cuenta:
-                    API.id_cuenta[id_cuenta] = [None for item in API.id_cuenta["_heads"]]
-                data["id_cuenta"] = API.id_cuenta[id_cuenta]
-                if id_cliente not in API.id_cliente:
-                    API.id_cliente[id_cliente] = [None for item in API.id_cliente["_heads"]]
-                data["id_cliente"] = API.id_cliente[id_cliente]
-                for item, dictionary in ((id_factura, API.id_factura),
-                                         (id_cliente, API.id_cliente),
-                                         (id_cuenta, API.id_cuenta)):
+                if id_factura not in id_factura:
+                    id_factura[id_factura] = [None for item in API.id_factura["_heads"]]
+                data["id_factura"] = id_factura[id_factura]
+                if id_cuenta not in id_cuenta:
+                    id_cuenta[id_cuenta] = [None for item in id_cuenta["_heads"]]
+                data["id_cuenta"] = id_cuenta[id_cuenta]
+                if id_cliente not in id_cliente:
+                    id_cliente[id_cliente] = [None for item in id_cliente["_heads"]]
+                data["id_cliente"] = id_cliente[id_cliente]
+                for item, dictionary in ((id_factura, id_factura),
+                                         (id_cliente, id_cliente),
+                                         (id_cuenta, id_cuenta)):
                     heads = dictionary["_heads"]
                     for index, head in enumerate(heads):
                         if head in ("id_factura",
@@ -130,14 +130,14 @@ class API:
                                 dictionary[item][index] = list()
                             dictionary[item][index].append(data["id_factura"])
                         elif head == "segmento":
-                            if row["data"][head] not in API.segmentos:
-                                API.segmentos.append(row["data"][head])
-                            segmento = API.segmentos.index(row["data"][head])
+                            if row["data"][head] not in segmentos:
+                                segmentos.append(row["data"][head])
+                            segmento = segmentos.index(row["data"][head])
                             dictionary[item][index] = segmento.to_bytes(ceil(segmento.bit_length() / 8), "big")
                         elif head == "estado_recibo":
-                            if row["data"][head] not in API.estados:
-                                API.estados.append(row["data"][head])
-                            estado = API.estados.index(row["data"][head])
+                            if row["data"][head] not in estados:
+                                estados.append(row["data"][head])
+                            estado = estados.index(row["data"][head])
                             dictionary[item][index] = estado.to_bytes(ceil(estado.bit_length() / 8), "big")
                         else:
                             dictionary[item][index] = row["data"][head]

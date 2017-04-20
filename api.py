@@ -170,7 +170,7 @@ class API:
                                 #dictionary[item][index] = dict()
                                 dictionary[item][index] = list()
                             #dictionary[item][index].update({row["data"]["id_factura"]: data["id_factura"]})
-                            item_d = API_ids_factura.index(row["data"]["id_factura"])
+                            item_d = API_ids_factura.index(id_factura)
                             item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
                             dictionary[item][index].append(item_index)
                         elif head == "segmento":

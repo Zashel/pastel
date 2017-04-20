@@ -134,11 +134,7 @@ class API:
                         ids.append(item)
                         if name == "id_cliente":
                             API_numdocs.append(item)
-                    try:
-                        item_d = ids.index(row["data"][name])
-                    except ValueError:
-                        print(ids)
-                        raise
+                    item_d = ids.index(item)
                     item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
                     if item_index not in api:
                         api[item_index] = [None for item in api["_heads"]]

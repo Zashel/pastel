@@ -149,7 +149,7 @@ class API:
                                               (id_cliente, API_id_cliente, API_ids_cliente),
                                               (id_cuenta, API_id_cuenta, API_ids_cuenta)):
                     item = ids.index(item)
-                    item = item.to_bytes(ceil(item_d.bit_length() / 8), "big")
+                    item = item.to_bytes(ceil(item.bit_length() / 8), "big")
                     heads = dictionary["_heads"]
                     for index, head in enumerate(heads):
                         if head in ("id_factura",

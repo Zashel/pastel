@@ -141,6 +141,7 @@ class API:
                         print(name)
                         print(item_d)
                         print(item_d.bit_length())
+                        raise
                     if item_index not in api:
                         api[item_index] = [None for item in api["_heads"]]
                     data[name] = api[item_index]

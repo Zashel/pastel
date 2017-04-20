@@ -135,7 +135,7 @@ class API:
                                              ("id_cliente", id_cliente, API_id_cliente, API_ids_cliente)):
                     try:
                         item_d = ids.index(item)
-                    except IndexError:
+                    except ValueError:
                         ids.append(item)
                         if name == "id_cliente":
                             API_numdocs.append(item)

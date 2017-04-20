@@ -17,6 +17,8 @@ __all__ = ["UUID",
            "BASE_URI",
            "LOG_ERROR",
            "LOG_ERROR_PARI"]
+
+
 #Identifier of session
 UUID = uuid.uuid4()
 

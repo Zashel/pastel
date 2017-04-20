@@ -126,7 +126,9 @@ class API:
                      "id_factura": API_id_factura,
                      "numdoc": API_numdocs,
                      "estados": API_estados,
-                     "segmentos": API_segmentos}
+                     "segmentos": API_segmentos,
+                     "index":{"estados": index_estados,
+                              "segmentos": index_segmentos}}
             data = dict()
             if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):

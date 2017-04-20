@@ -133,11 +133,13 @@ class API:
                 for name, item, api, ids in (("id_factura", id_factura, API_id_factura, API_ids_factura),
                                              ("id_cuenta", id_cuenta, API_id_cuenta, API_ids_cuenta),
                                              ("id_cliente", id_cliente, API_id_cliente, API_ids_cliente)):
-                    if item not in ids:
+                    try:
+                        item_d = ids.index(item)
+                    except IndexError:
                         ids.append(item)
                         if name == "id_cliente":
                             API_numdocs.append(item)
-                    item_d = ids.index(item)
+                        item_d = len(ids)-1
                     item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
                     indexes[name] = item_index
                     if item_index not in api:

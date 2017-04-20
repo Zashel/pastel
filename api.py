@@ -100,6 +100,10 @@ class API:
             id_factura = int(row["data"]["id_factura"])
             id_cuenta = int(row["data"]["id_cuenta"])
             id_cliente = int(row["data"]["id_cliente"])
+            final = {"id_cliente": API.id_cliente,
+                     "id_cuenta": API.id_cuenta,
+                     "id_factura": API.id_factura,
+                     "estados": API.estados}
             data = dict()
             if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
@@ -139,6 +143,8 @@ class API:
                             dictionary[item][index] = row["data"][head]
             if "eta" in row:
                 yield row
+            with shelve_open("pari") as shelf:
+                shelf.update(final)
 
 
     @classmethod

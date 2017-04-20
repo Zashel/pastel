@@ -130,7 +130,7 @@ class API:
                      "segmentos": API_segmentos,
                      "index":{"estados": index_estados,
                               "segmentos": index_segmentos}}
-            if (row["data"]["estado_recibo"] == "IMPAGADO" or
+            if (row["data"]["estado_recibo"] in ("IMPAGADO", "PAGO PARCIAL") or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
                 for name, item, api in (("id_factura", id_factura, API_id_factura),
                                         ("id_cuenta", id_cuenta, API_id_cuenta),

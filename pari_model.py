@@ -174,7 +174,7 @@ class Pari(RestfulBaseInterface):
     def new(self, data, **kwargs):
         if self.loaded_file is None and "file" in data and os.path.exists(data["file"]):
             for item in self.set_pari(data["file"]):
-                print("\r{0:{w}}".format(str(item["eta"], w=79, fill=" "), end=""))
+                print("\r{0:{w}}".format(str(item["eta"]), w=79, fill=" "), end="")
             print()
             data = list(self.shelf["id_factura"].keys())
             data.sort()

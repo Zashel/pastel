@@ -130,55 +130,26 @@ class API:
                      "segmentos": API_segmentos,
                      "index":{"estados": index_estados,
                               "segmentos": index_segmentos}}
-            data = dict()
             if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
                 for name, item, api in (("id_factura", id_factura, API_id_factura),
                                         ("id_cuenta", id_cuenta, API_id_cuenta),
                                         ("id_cliente", id_cliente, API_id_cliente)):
-                    #try:
-                    #    item_d = ids.index(item)
-                    #except ValueError:
-                    #    ids.append(item)
-                    #    if name == "id_cliente":
-                    #        API_numdocs.append(item)
-                    #    item_d = len(ids)-1
-                    #item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
-                    #indexes[name] = item_index
                     heads = api["_heads"]
                     if item not in api:
                         api[item] = [None for item in heads]
-                    #data[name] = api[item_index]
-                    #item = item_index
                     for index, head in enumerate(heads):
                         if head in ("id_factura",
                                     "id_cliente",
                                     "id_cuenta"):
-                            #if dictionary[item][index] is None:
-                            #    dictionary[item][index] = dict()
-                            #api_item = {"id_factura": API_ids_factura,
-                            #            "id_cliente": API_ids_cliente,
-                            #            "id_cuenta": API_ids_cuenta,
-                            #            "numdoc": API_numdocs}[head]
-                            #if row["data"][head] not in api_item:
-                            #    api_item.append(row["data"][head])
-                            #item_d = api_item.index({"id_factura": id_factura,
-                            #                         "id_cliente": id_cliente,
-                            #                         "id_cuenta": id_cuenta}[head])
-                            #item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
                             if head == "id_cliente":
                                 API_numdocs.update({numdoc: id_cliente})
-                            #dictionary[item][index].update({item_index: data[head]})
                             api[item][index] = {"id_factura": id_factura,
                                                 "id_cliente": id_cliente,
                                                 "id_cuenta": id_cuenta}[head]
                         elif head == "facturas":
                             if api[item][index] is None:
-                                #dictionary[item][index] = dict()
                                 api[item][index] = list()
-                            #dictionary[item][index].update({row["data"]["id_factura"]: data["id_factura"]})
-                            #item_d = API_ids_factura.index(id_factura)
-                            #item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
                                 api[item][index].append(id_factura)
                         elif head == "importe_adeudado":
                             api[item][index] = int(row["data"][head].replace(",", ""))
@@ -190,8 +161,6 @@ class API:
                             index_segmentos[row["data"][head]] |= {id_cliente}
                             segmento = API_segmentos.index(row["data"][head])
                             api[item][index] = segmento.to_bytes(ceil(segmento.bit_length() / 8), "big")
-
-                            #api[item][index] = row["data"][head]
                         elif head == "estado_recibo":
                             if row["data"][head] not in API_estados:
                                 API_estados.append(row["data"][head])
@@ -200,13 +169,10 @@ class API:
                                 index_estados[row["data"][head]] |= {id_factura}
                             estado = API_estados.index(row["data"][head])
                             api[item][index] = estado.to_bytes(ceil(estado.bit_length() / 8), "big")
-                            #api[item][index] = row["data"][head]
                         elif head == "fecha_factura":
                             fecha = datetime.datetime.strptime(row["data"][head], "%d/%m/%y")
                             fecha = int(fecha.strftime("%d%m%y"))
                             fecha = fecha.to_bytes(ceil(fecha.bit_length() / 8), "big")
-                            #item_d = API_ids_factura.index(id_factura)
-                            #item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
                             api[id_factura][index] = fecha
                             if row["data"][head] not in index_facturas:
                                 index_facturas[fecha] = set() #id_factura

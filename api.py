@@ -167,7 +167,9 @@ class API:
                             if head == "id_cliente":
                                 API_numdocs.update({numdoc: id_cliente})
                             #dictionary[item][index].update({item_index: data[head]})
-                            api[item][index] = indexes[head]
+                            api[item][index] = {"id_factura": id_factura,
+                                                "id_cliente": id_cliente,
+                                                "id_cuenta": id_cuenta}[head]
                         elif head == "facturas":
                             if api[item][index] is None:
                                 #dictionary[item][index] = dict()

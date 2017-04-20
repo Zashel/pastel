@@ -143,12 +143,8 @@ class API:
                     if item_index not in api:
                         api[item_index] = [None for item in api["_heads"]]
                     data[name] = api[item_index]
-                for item, dictionary, ids in ((id_factura, API_id_factura, API_ids_factura),
-                                              (id_cliente, API_id_cliente, API_ids_cliente),
-                                              (id_cuenta, API_id_cuenta, API_ids_cuenta)):
-                    item = ids.index(item)
-                    item = item.to_bytes(ceil(item.bit_length() / 8), "big")
-                    heads = dictionary["_heads"]
+                    item = item_index
+                    heads = api["_heads"]
                     for index, head in enumerate(heads):
                         if head in ("id_factura",
                                     "id_cliente",
@@ -168,34 +164,34 @@ class API:
                             #if head == "id_cliente":
                             #    API_numdocs.append(row["data"]["numdoc"])
                             #dictionary[item][index].update({item_index: data[head]})
-                            dictionary[item][index] = indexes[head]
+                            api[item][index] = indexes[head]
                         elif head == "facturas":
-                            if dictionary[item][index] is None:
+                            if api[item][index] is None:
                                 #dictionary[item][index] = dict()
-                                dictionary[item][index] = list()
+                                api[item][index] = list()
                             #dictionary[item][index].update({row["data"]["id_factura"]: data["id_factura"]})
                             #item_d = API_ids_factura.index(id_factura)
                             #item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
-                            dictionary[item][index].append(indexes["id_factura"])
+                                api[item][index].append(indexes["id_factura"])
                         elif head == "segmento":
                             if row["data"][head] not in API_segmentos:
                                 API_segmentos.append(row["data"][head])
                             segmento = API_segmentos.index(row["data"][head])
-                            dictionary[item][index] = segmento.to_bytes(ceil(segmento.bit_length() / 8), "big")
+                            api[item][index] = segmento.to_bytes(ceil(segmento.bit_length() / 8), "big")
                         elif head == "estado_recibo":
                             if row["data"][head] not in API_estados:
                                 API_estados.append(row["data"][head])
                             estado = API_estados.index(row["data"][head])
-                            dictionary[item][index] = estado.to_bytes(ceil(estado.bit_length() / 8), "big")
+                            api[item][index] = estado.to_bytes(ceil(estado.bit_length() / 8), "big")
                         elif head == "fecha_factura":
                             fecha = datetime.datetime.strptime(row["data"][head], "%d/%m/%y")
                             fecha = int(fecha.strftime("%d%m%y"))
                             fecha = fecha.to_bytes(ceil(fecha.bit_length() / 8), "big")
                             #item_d = API_ids_factura.index(id_factura)
                             #item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
-                            dictionary[indexes["id_factura"]][index] = fecha
+                            api[indexes["id_factura"]][index] = fecha
                         else:
-                            dictionary[item][index] = row["data"][head]
+                            api[item][index] = row["data"][head]
             if "eta" in row:
                 yield row
         with shelve_open("pari") as shelf:

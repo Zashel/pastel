@@ -110,6 +110,7 @@ class API:
         API_ids_factura = list()
         API_ids_cliente = list()
         API_ids_cuenta = list()
+        API_numdocs = list()
         limit_date = datetime.datetime.strptime(
             (datetime.datetime.now() - datetime.timedelta(days=92)).strftime("%d%m%Y"),
             "%d%m%Y").date()
@@ -117,6 +118,7 @@ class API:
             id_factura = int(row["data"]["id_factura"])
             id_cuenta = int(row["data"]["id_cuenta"])
             id_cliente = int(row["data"]["id_cliente"])
+            numdoc = row["data"]["numdoc"]
             final = {"id_cliente": API_id_cliente,
                      "id_cuenta": API_id_cuenta,
                      "id_factura": API_id_factura,
@@ -135,9 +137,13 @@ class API:
                 if id_cliente not in API_id_cliente:
                     API_id_cliente[id_cliente] = [None for item in API_id_cliente["_heads"]]
                 data["id_cliente"] = API_id_cliente[id_cliente]
+                if numdoc not in API_numdoc:
+                    API_numdoc[numdoc] = [None for item in API_numdoc["_heads"]]
+                data["numdoc"] = API_numdoc[numdoc]
                 for item, dictionary in ((id_factura, API_id_factura),
                                          (id_cliente, API_id_cliente),
-                                         (id_cuenta, API_id_cuenta)):
+                                         (id_cuenta, API_id_cuenta),
+                                         (numdoc, API_numdoc)):
                     heads = dictionary["_heads"]
                     for index, head in enumerate(heads):
                         if head in ("id_factura",
@@ -149,7 +155,7 @@ class API:
                             api_item = {"id_factura": API_ids_factura,
                                         "id_cliente": API_ids_cliente,
                                         "id_cuenta": API_ids_cuenta,
-                                        "numdoc": API_numdoc}[head]
+                                        "numdoc": API_numdocs}[head]
                             if row["data"][head] not in api_item:
                                 api_item.append(row["data"][head])
                             item_d = api_item.index(row["data"][head])

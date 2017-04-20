@@ -125,7 +125,7 @@ class API:
             final = {"id_cliente": API_id_cliente,
                      "id_cuenta": API_id_cuenta,
                      "id_factura": API_id_factura,
-                     #"numdoc": API_numdoc,
+                     "numdoc": API_numdoc,
                      "estados": API_estados,
                      "segmentos": API_segmentos}
             data = dict()

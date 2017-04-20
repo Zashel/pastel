@@ -148,8 +148,8 @@ class API:
                         if head in ("id_factura",
                                     "id_cliente",
                                     "id_cuenta"):
-                            if dictionary[item][index] is None:
-                                dictionary[item][index] = dict()
+                            #if dictionary[item][index] is None:
+                            #    dictionary[item][index] = dict()
                             api_item = {"id_factura": API_ids_factura,
                                         "id_cliente": API_ids_cliente,
                                         "id_cuenta": API_ids_cuenta,
@@ -160,11 +160,16 @@ class API:
                                 API_numdocs.append(row["data"]["numdoc"])
                             item_d = api_item.index(row["data"][head])
                             item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
-                            dictionary[item][index].update({item_index: data[head]})
+                            #dictionary[item][index].update({item_index: data[head]})
+                            dictionary[item][index] = item_index
                         elif head == "facturas":
                             if dictionary[item][index] is None:
-                                dictionary[item][index] = dict()
-                            dictionary[item][index].update({row["data"]["id_factura"]: data["id_factura"]})
+                                #dictionary[item][index] = dict()
+                                dictionary[item][index] = list()
+                            #dictionary[item][index].update({row["data"]["id_factura"]: data["id_factura"]})
+                            item_d = API_ids_factura.index(row["data"]["id_factura"])
+                            item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
+                            dictionary[item][index].append(item_index
                         elif head == "segmento":
                             if row["data"][head] not in API_segmentos:
                                 API_segmentos.append(row["data"][head])

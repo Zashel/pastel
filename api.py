@@ -184,12 +184,14 @@ class API:
                             if row["data"][head] not in API_segmentos:
                                 API_segmentos.append(row["data"][head])
                             segmento = API_segmentos.index(row["data"][head])
-                            api[item][index] = segmento.to_bytes(ceil(segmento.bit_length() / 8), "big")
+                            #api[item][index] = segmento.to_bytes(ceil(segmento.bit_length() / 8), "big")
+                            api[item][index] = row["data"][head]
                         elif head == "estado_recibo":
                             if row["data"][head] not in API_estados:
                                 API_estados.append(row["data"][head])
                             estado = API_estados.index(row["data"][head])
-                            api[item][index] = estado.to_bytes(ceil(estado.bit_length() / 8), "big")
+                            #api[item][index] = estado.to_bytes(ceil(estado.bit_length() / 8), "big")
+                            api[item][index] = row["data"][head]
                         elif head == "fecha_factura":
                             fecha = datetime.datetime.strptime(row["data"][head], "%d/%m/%y")
                             fecha = int(fecha.strftime("%d%m%y"))

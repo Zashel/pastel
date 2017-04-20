@@ -169,7 +169,7 @@ class API:
                             #dictionary[item][index].update({row["data"]["id_factura"]: data["id_factura"]})
                             item_d = API_ids_factura.index(row["data"]["id_factura"])
                             item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
-                            dictionary[item][index].append(item_index
+                            dictionary[item][index].append(item_index)
                         elif head == "segmento":
                             if row["data"][head] not in API_segmentos:
                                 API_segmentos.append(row["data"][head])

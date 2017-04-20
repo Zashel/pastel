@@ -132,8 +132,8 @@ class API:
             if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
                 for name, item, api in (("id_factura", id_factura, API_id_factura),
-                                             ("id_cuenta", id_cuenta, API_id_cuenta),
-                                             ("id_cliente", id_cliente, API_id_cliente)):
+                                        ("id_cuenta", id_cuenta, API_id_cuenta),
+                                        ("id_cliente", id_cliente, API_id_cliente)):
                     #try:
                     #    item_d = ids.index(item)
                     #except ValueError:
@@ -143,11 +143,11 @@ class API:
                     #    item_d = len(ids)-1
                     #item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
                     #indexes[name] = item_index
-                    #if item_index not in api:
-                    #    api[item_index] = [None for item in api["_heads"]]
+                    heads = api["_heads"]
+                    if item not in api:
+                        api[item] = [None for item in heads]
                     #data[name] = api[item_index]
                     #item = item_index
-                    heads = api["_heads"]
                     for index, head in enumerate(heads):
                         if head in ("id_factura",
                                     "id_cliente",

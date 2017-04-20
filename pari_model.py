@@ -5,6 +5,7 @@ import os
 from definitions import *
 import datetime
 from zashel.utils import log
+from math import ceil
 
 
 class Pari(RestfulBaseInterface):
@@ -98,7 +99,7 @@ class Pari(RestfulBaseInterface):
             (datetime.datetime.now() - datetime.timedelta(days=92)).strftime("%d%m%Y"),
             "%d%m%Y").date()
         total = int()
-        for row in API.read_pari(pari_file):
+        for row in self.read_pari(pari_file):
             id_factura = int(row["data"]["id_factura"])
             id_cuenta = int(row["data"]["id_cuenta"])
             id_cliente = int(row["data"]["id_cliente"])
@@ -173,7 +174,7 @@ class Pari(RestfulBaseInterface):
     def new(self, data, **kwargs):
         if self.loaded_file is None and "file" in data and os.path.exists(data["file"]):
             self.set_pari(data["file"])
-            data = list(self.shelf["id_facturas"])
+            data = list(self.shelf["id_factura"].keys())
             data.sort()
             data = [{"id_factura": factura} for factura in data[:self.items_per_page]]
             return {"filepath": data["file"],

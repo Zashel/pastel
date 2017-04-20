@@ -8,6 +8,7 @@ import datetime
 import sys
 import shelve
 import glob
+import gc
 if sys.version_info.minor == 3:
     from contextlib import closing
     shelve_open = lambda file, flag="c", protocol=None, writeback=False: closing(shelve.open(file, flag))
@@ -151,13 +152,23 @@ class API:
                                 API_estados.append(row["data"][head])
                             estado = API_estados.index(row["data"][head])
                             dictionary[item][index] = estado.to_bytes(ceil(estado.bit_length() / 8), "big")
+                        elif head == "fecha_factura":
+                            fecha = datetime.datetime.strptime(row["data"][head], "%d/%m/%y")
+                            fecha = int(fecha.strftime("%d%m%y"))
+                            fecha = fecha.to_bytes(ceil(fecha.bit_length() / 8), "big")
+                            dictionary[item][index] = fecha
                         else:
                             dictionary[item][index] = row["data"][head]
             if "eta" in row:
                 yield row
         with shelve_open("pari") as shelf:
             shelf.update(final)
-
+        del(API_id_factura)
+        del(API_id_cuenta)
+        del(API_id_cliente)
+        del(API_segmentos)
+        del(API_estados)
+        gc.collect()
 
     @classmethod
     @log

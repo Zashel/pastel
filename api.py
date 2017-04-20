@@ -143,8 +143,8 @@ class API:
                             dictionary[item][index] = row["data"][head]
             if "eta" in row:
                 yield row
-            with shelve_open("pari") as shelf:
-                shelf.update(final)
+        with shelve_open("pari") as shelf:
+            shelf.update(final)
 
 
     @classmethod

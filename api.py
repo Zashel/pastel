@@ -103,6 +103,8 @@ class API:
                                 "facturas"]}
         API_id_cliente = {"_heads": ["numdoc",
                                  "id_cuenta"]}
+        API_numdoc = {"_heads": ["numdoc",
+                                 "id_cliente"]}
         API_segmentos = list()
         API_estados = list()
         API_ids_factura = list()
@@ -118,6 +120,7 @@ class API:
             final = {"id_cliente": API_id_cliente,
                      "id_cuenta": API_id_cuenta,
                      "id_factura": API_id_factura,
+                     "numdoc": API_numdoc,
                      "estados": API_estados,
                      "segmentos": API_segmentos}
             data = dict()
@@ -139,12 +142,14 @@ class API:
                     for index, head in enumerate(heads):
                         if head in ("id_factura",
                                     "id_cliente",
-                                    "id_cuenta"):
+                                    "id_cuenta",
+                                    "numdoc"):
                             if dictionary[item][index] is None:
                                 dictionary[item][index] = dict()
                             api_item = {"id_factura": API_ids_factura,
                                         "id_cliente": API_ids_cliente,
-                                        "id_cuenta": API_ids_cuenta}[head]
+                                        "id_cuenta": API_ids_cuenta,
+                                        "numdoc": API_numdoc}[head]
                             if row["data"][head] not in api_item:
                                 api_item.append(row["data"][head])
                             item_d = api_item.index(row["data"][head])
@@ -153,7 +158,7 @@ class API:
                         elif head == "facturas":
                             if dictionary[item][index] is None:
                                 dictionary[item][index] = dict()
-                            dictionary[item][index].update({dictionary[item]["id_factura"]: data["id_factura"]})
+                            dictionary[item][index].update({row["data"]["id_factura"]: data["id_factura"]})
                         elif head == "segmento":
                             if row["data"][head] not in API_segmentos:
                                 API_segmentos.append(row["data"][head])

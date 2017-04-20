@@ -78,12 +78,15 @@ class Pari(RestfulBaseInterface):
         API_id_factura = {"_heads": ["fecha_factura",
                                  "importe_adeudado",
                                  "estado_recibo",
-                                 "id_cuenta"]}
+                                 "id_cuenta"],
+                          "data": dict()}
         API_id_cuenta = {"_heads": ["segmento",
                                     "facturas",
-                                    "id_cliente"]}
+                                    "id_cliente"],
+                          "data": dict()}
         API_id_cliente = {"_heads": ["numdoc",
-                                     "id_cuenta"]}
+                                     "id_cuenta"],
+                          "data": dict()}
         #API_numdoc = {"_heads": ["numdoc",
         #                         "id_cliente"]}
         API_segmentos = list()
@@ -119,22 +122,22 @@ class Pari(RestfulBaseInterface):
                                         ("id_cliente", id_cliente, API_id_cliente)):
                     heads = api["_heads"]
                     if item not in api:
-                        api[item] = [None for item in heads]
+                        api["data"][item] = [None for item in heads]
                     for index, head in enumerate(heads):
                         if head in ("id_factura",
                                     "id_cliente",
                                     "id_cuenta"):
                             if head == "id_cliente":
                                 API_numdocs.update({numdoc: id_cliente})
-                            api[item][index] = {"id_factura": id_factura,
+                                api["data"][item][index] = {"id_factura": id_factura,
                                                 "id_cliente": id_cliente,
                                                 "id_cuenta": id_cuenta}[head]
                         elif head == "facturas":
-                            if api[item][index] is None:
-                                api[item][index] = list()
-                                api[item][index].append(id_factura)
+                            if api["data"][item][index] is None:
+                                api["data"][item][index] = list()
+                                api["data"][item][index].append(id_factura)
                         elif head == "importe_adeudado":
-                            api[item][index] = int(row["data"][head].replace(",", ""))
+                            api["data"][item][index] = int(row["data"][head].replace(",", ""))
                         elif head == "segmento":
                             if row["data"][head] not in API_segmentos:
                                 API_segmentos.append(row["data"][head])
@@ -142,7 +145,7 @@ class Pari(RestfulBaseInterface):
                                 index_segmentos[row["data"][head]] = set() #id_cliente
                             index_segmentos[row["data"][head]] |= {id_cliente}
                             segmento = API_segmentos.index(row["data"][head])
-                            api[item][index] = segmento.to_bytes(ceil(segmento.bit_length() / 8), "big")
+                            api["data"][item][index] = segmento.to_bytes(ceil(segmento.bit_length() / 8), "big")
                         elif head == "estado_recibo":
                             if row["data"][head] not in API_estados:
                                 API_estados.append(row["data"][head])
@@ -150,7 +153,7 @@ class Pari(RestfulBaseInterface):
                                 index_estados[row["data"][head]] = set() #id_factura
                                 index_estados[row["data"][head]] |= {id_factura}
                             estado = API_estados.index(row["data"][head])
-                            api[item][index] = estado.to_bytes(ceil(estado.bit_length() / 8), "big")
+                            api["data"][item][index] = estado.to_bytes(ceil(estado.bit_length() / 8), "big")
                         elif head == "fecha_factura":
                             fecha = datetime.datetime.strptime(row["data"][head], "%d/%m/%y")
                             fecha = int(fecha.strftime("%d%m%y"))
@@ -160,7 +163,7 @@ class Pari(RestfulBaseInterface):
                                 index_facturas[fecha] = set() #id_factura
                                 index_facturas[fecha] |= {id_factura}
                         else:
-                            api[item][index] = row["data"][head]
+                            api["data"][item][index] = row["data"][head]
                 total += 1
             if "eta" in row:
                 yield row
@@ -176,7 +179,7 @@ class Pari(RestfulBaseInterface):
             for item in self.set_pari(data["file"]):
                 print("\r{0:{w}}".format(str(item["eta"]), w=79, fill=" "), end="")
             print()
-            data = list(self.shelf["id_factura"].keys())
+            data = list(self.shelf["id_factura"]["data"].keys())
             data.sort()
             data = [{"id_factura": factura} for factura in data[:self.items_per_page]]
             return {"filepath": data["file"],

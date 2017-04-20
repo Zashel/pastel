@@ -177,10 +177,11 @@ class Pari(RestfulBaseInterface):
             data.sort()
             data = [{"id_factura": factura} for factura in data[:self.items_per_page]]
             return {"filepath": data["file"],
-                    "pari": {"data": data,
-                            "total": self.shelf["total"],
-                            "page": 1,
-                            "items_per_page": self.items_per_page},
+                    "data": {"pari": {"data": data,
+                                      "total": self.shelf["total"],
+                                      "page": 1,
+                                      "items_per_page": self.items_per_page}
+                             },
                     "total": 1,
                     "page": 1,
                     "items_per_page": self.items_per_page}
@@ -188,10 +189,11 @@ class Pari(RestfulBaseInterface):
     def fetch(self, filter, **kwargs):
         if not self.loaded_file:
             return {"filepath": "",
-                    "pari": {"data": [],
-                             "total": 0,
-                             "page": 1,
-                             "items_per_page": self.items_per_page},
+                    "data": {"pari": {"data": [],
+                                      "total": 0,
+                                      "page": 1,
+                                      "items_per_page": self.items_per_page}
+                             },
                     "total": 1,
                     "page": 1,
                     "items_per_page": self.items_per_page }

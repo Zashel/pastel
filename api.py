@@ -153,7 +153,7 @@ class API:
                         elif head == "facturas":
                             if dictionary[item][index] is None:
                                 dictionary[item][index] = dict()
-                            dictionary[item][index].update(data["id_factura"])
+                            dictionary[item][index].update({dictionary[item]["id_factura"]: data["id_factura"]})
                         elif head == "segmento":
                             if row["data"][head] not in API_segmentos:
                                 API_segmentos.append(row["data"][head])

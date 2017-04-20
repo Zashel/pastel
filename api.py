@@ -185,7 +185,9 @@ class API:
                             fecha = datetime.datetime.strptime(row["data"][head], "%d/%m/%y")
                             fecha = int(fecha.strftime("%d%m%y"))
                             fecha = fecha.to_bytes(ceil(fecha.bit_length() / 8), "big")
-                            dictionary[API_ids_factura.index(item)][index] = fecha
+                            item_d = API_ids_factura.index(row["data"]["id_factura"])
+                            item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
+                            dictionary[item_index][index] = fecha
                         else:
                             dictionary[item][index] = row["data"][head]
             if "eta" in row:

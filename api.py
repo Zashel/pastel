@@ -109,6 +109,7 @@ class API:
         index_segmentos = dict()
         API_estados = list()
         index_estados = dict()
+        index_facturas = dict()
         #API_ids_factura = list()
         #API_ids_cliente = list()
         #API_ids_cuenta = list()
@@ -207,6 +208,9 @@ class API:
                             #item_d = API_ids_factura.index(id_factura)
                             #item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
                             api[id_factura][index] = fecha
+                            if row["data"][head] not in index_facturas:
+                                index_facturas[fecha] = set() #id_factura
+                                index_facturas[fecha] |= {id_factura}
                         else:
                             api[item][index] = row["data"][head]
             if "eta" in row:

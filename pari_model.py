@@ -169,7 +169,7 @@ class Pari(RestfulBaseInterface):
         self.shelf["total"] = total
         self._loaded_file = name
 
-    def post(self, data, **kwargs):
+    def new(self, data, **kwargs):
         if not self.loaded_file and "file" in data and os.path.exists(data["file"]):
             self.set_pari(data["file"])
             data = list(self.shelf["id_facturas"])

@@ -139,10 +139,11 @@ class API:
                     if item_index not in api:
                         api[item_index] = [None for item in api["_heads"]]
                     data[name] = api[item_index]
-                for item, dictionary in ((id_factura, API_id_factura),
-                                         (id_cliente, API_id_cliente),
-                                         (id_cuenta, API_id_cuenta)):
-                                         #(numdoc, API_numdoc)):
+                for item, dictionary, ids in ((id_factura, API_id_factura, API_ids_factura),
+                                              (id_cliente, API_id_cliente, API_ids_cliente),
+                                              (id_cuenta, API_id_cuenta, API_ids_cuenta)):
+                    item = ids.index(item)
+                    item = item.to_bytes(ceil(item_d.bit_length() / 8), "big")
                     heads = dictionary["_heads"]
                     for index, head in enumerate(heads):
                         if head in ("id_factura",
@@ -184,7 +185,7 @@ class API:
                             fecha = datetime.datetime.strptime(row["data"][head], "%d/%m/%y")
                             fecha = int(fecha.strftime("%d%m%y"))
                             fecha = fecha.to_bytes(ceil(fecha.bit_length() / 8), "big")
-                            dictionary[item][index] = fecha
+                            dictionary[API_ids_factura.index(item)][index] = fecha
                         else:
                             dictionary[item][index] = row["data"][head]
             if "eta" in row:

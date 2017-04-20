@@ -98,13 +98,12 @@ class API:
                                  "importe_adeudado",
                                  "estado_recibo",
                                  "id_cuenta"]}
-        API_id_cuenta = {"_heads": ["id_cliente",
-                                "segmento",
-                                "facturas"]}
-        API_id_cliente = {"_heads": ["numdoc",
-                                 "id_cuenta"]}
-        API_numdoc = {"_heads": ["numdoc",
-                                 "id_cliente"]}
+        API_id_cuenta = {"_heads": ["segmento",
+                                    "facturas",
+                                    "id_cliente"]}
+        API_id_cliente = {"_heads": ["id_cuenta"]}
+        #API_numdoc = {"_heads": ["numdoc",
+        #                         "id_cliente"]}
         API_segmentos = list()
         API_estados = list()
         API_ids_factura = list()
@@ -118,11 +117,11 @@ class API:
             id_factura = int(row["data"]["id_factura"])
             id_cuenta = int(row["data"]["id_cuenta"])
             id_cliente = int(row["data"]["id_cliente"])
-            numdoc = row["data"]["numdoc"]
+            #numdoc = row["data"]["numdoc"]
             final = {"id_cliente": API_id_cliente,
                      "id_cuenta": API_id_cuenta,
                      "id_factura": API_id_factura,
-                     "numdoc": API_numdoc,
+                     #"numdoc": API_numdoc,
                      "estados": API_estados,
                      "segmentos": API_segmentos}
             data = dict()
@@ -137,19 +136,18 @@ class API:
                 if id_cliente not in API_id_cliente:
                     API_id_cliente[id_cliente] = [None for item in API_id_cliente["_heads"]]
                 data["id_cliente"] = API_id_cliente[id_cliente]
-                if numdoc not in API_numdoc:
-                    API_numdoc[numdoc] = [None for item in API_numdoc["_heads"]]
-                data["numdoc"] = API_numdoc[numdoc]
+                #if numdoc not in API_numdoc:
+                #    API_numdoc[numdoc] = [None for item in API_numdoc["_heads"]]
+                #data["numdoc"] = API_numdoc[numdoc]
                 for item, dictionary in ((id_factura, API_id_factura),
                                          (id_cliente, API_id_cliente),
-                                         (id_cuenta, API_id_cuenta),
-                                         (numdoc, API_numdoc)):
+                                         (id_cuenta, API_id_cuenta)):
+                                         #(numdoc, API_numdoc)):
                     heads = dictionary["_heads"]
                     for index, head in enumerate(heads):
                         if head in ("id_factura",
                                     "id_cliente",
-                                    "id_cuenta",
-                                    "numdoc"):
+                                    "id_cuenta"):
                             if dictionary[item][index] is None:
                                 dictionary[item][index] = dict()
                             api_item = {"id_factura": API_ids_factura,
@@ -158,6 +156,8 @@ class API:
                                         "numdoc": API_numdocs}[head]
                             if row["data"][head] not in api_item:
                                 api_item.append(row["data"][head])
+                            if head == "id_cliente":
+                                API_numdocs.append(row["data"]["numdoc"])
                             item_d = api_item.index(row["data"][head])
                             item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
                             dictionary[item][index].update({item_index: data[head]})

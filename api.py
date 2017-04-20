@@ -179,6 +179,8 @@ class API:
                             #item_d = API_ids_factura.index(id_factura)
                             #item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
                                 api[item][index].append(id_factura)
+                        elif head == "importe_adeudado":
+                            api[item][index] = int(row["data"][head].replace(",", ""))
                         elif head == "segmento":
                             if row["data"][head] not in API_segmentos:
                                 API_segmentos.append(row["data"][head])

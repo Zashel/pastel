@@ -179,10 +179,11 @@ class Pari(RestfulBaseInterface):
             for item in self.set_pari(data["file"]):
                 print("\r{0:{w}}".format(str(item["eta"]), w=79, fill=" "), end="")
             print()
+            filepath = data["file"]
             data = list(self.shelf["id_factura"]["data"].keys())
             data.sort()
             data = [{"id_factura": factura} for factura in data[:self.items_per_page]]
-            return {"filepath": data["file"],
+            return {"filepath": filepath, # Ejem... muy listo
                     "data": {"pari": {"data": data,
                                       "total": self.shelf["total"],
                                       "page": 1,

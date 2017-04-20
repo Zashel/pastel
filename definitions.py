@@ -1,6 +1,22 @@
 import os
 import uuid
 
+__all__ = ["UUID",
+           "USERS_FIELDS",
+           "USERS_UNIQUE",
+           "USERS_PERMISSIONS",
+           "PARI_FIELDS",
+           "PARI_UNIQUE",
+           "PAYMENTS_FIELDS",
+           "APLICATION_FIELDS",
+           "METODOS_FIELDS",
+           "CONFIG_FIELDS",
+           "HOST", "PORT",
+           "LOCAL_PATH",
+           "PATH",
+           "BASE_URI",
+           "LOG_ERROR",
+           "LOG_ERROR_PARI"]
 #Identifier of session
 UUID = uuid.uuid4()
 

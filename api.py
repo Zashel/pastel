@@ -101,15 +101,16 @@ class API:
         API_id_cuenta = {"_heads": ["segmento",
                                     "facturas",
                                     "id_cliente"]}
-        API_id_cliente = {"_heads": ["id_cuenta"]}
+        API_id_cliente = {"_heads": ["numdoc",
+                                     "id_cuenta"]}
         #API_numdoc = {"_heads": ["numdoc",
         #                         "id_cliente"]}
         API_segmentos = list()
         API_estados = list()
-        API_ids_factura = list()
-        API_ids_cliente = list()
-        API_ids_cuenta = list()
-        API_numdocs = list()
+        #API_ids_factura = list()
+        #API_ids_cliente = list()
+        #API_ids_cuenta = list()
+        API_numdocs = {"_heads": ["id_cuenta"]}
         limit_date = datetime.datetime.strptime(
             (datetime.datetime.now() - datetime.timedelta(days=92)).strftime("%d%m%Y"),
             "%d%m%Y").date()
@@ -117,10 +118,10 @@ class API:
             id_factura = int(row["data"]["id_factura"])
             id_cuenta = int(row["data"]["id_cuenta"])
             id_cliente = int(row["data"]["id_cliente"])
-            indexes = {"id_cliente": None,
-                       "id_cuenta": None,
-                       "id_factura": None}
-            #numdoc = row["data"]["numdoc"]
+            #indexes = {"id_cliente": None,
+            #           "id_cuenta": None,
+            #           "id_factura": None}
+            numdoc = row["data"]["numdoc"]
             final = {"id_cliente": API_id_cliente,
                      "id_cuenta": API_id_cuenta,
                      "id_factura": API_id_factura,
@@ -130,9 +131,9 @@ class API:
             data = dict()
             if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
-                for name, item, api, ids in (("id_factura", id_factura, API_id_factura, API_ids_factura),
-                                             ("id_cuenta", id_cuenta, API_id_cuenta, API_ids_cuenta),
-                                             ("id_cliente", id_cliente, API_id_cliente, API_ids_cliente)):
+                for name, item, api in (("id_factura", id_factura, API_id_factura),
+                                             ("id_cuenta", id_cuenta, API_id_cuenta),
+                                             ("id_cliente", id_cliente, API_id_cliente)):
                     #try:
                     #    item_d = ids.index(item)
                     #except ValueError:
@@ -163,8 +164,8 @@ class API:
                             #                         "id_cliente": id_cliente,
                             #                         "id_cuenta": id_cuenta}[head])
                             #item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
-                            #if head == "id_cliente":
-                            #    API_numdocs.append(row["data"]["numdoc"])
+                            if head == "id_cliente":
+                                API_numdocs.update({numdoc: id_cliente})
                             #dictionary[item][index].update({item_index: data[head]})
                             api[item][index] = indexes[head]
                         elif head == "facturas":
@@ -191,7 +192,7 @@ class API:
                             fecha = fecha.to_bytes(ceil(fecha.bit_length() / 8), "big")
                             #item_d = API_ids_factura.index(id_factura)
                             #item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
-                            api[indexes["id_factura"]][index] = fecha
+                            api[id_factura][index] = fecha
                         else:
                             api[item][index] = row["data"][head]
             if "eta" in row:

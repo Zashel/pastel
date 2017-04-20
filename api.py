@@ -133,19 +133,19 @@ class API:
                 for name, item, api, ids in (("id_factura", id_factura, API_id_factura, API_ids_factura),
                                              ("id_cuenta", id_cuenta, API_id_cuenta, API_ids_cuenta),
                                              ("id_cliente", id_cliente, API_id_cliente, API_ids_cliente)):
-                    try:
-                        item_d = ids.index(item)
-                    except ValueError:
-                        ids.append(item)
-                        if name == "id_cliente":
-                            API_numdocs.append(item)
-                        item_d = len(ids)-1
-                    item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
-                    indexes[name] = item_index
-                    if item_index not in api:
-                        api[item_index] = [None for item in api["_heads"]]
-                    data[name] = api[item_index]
-                    item = item_index
+                    #try:
+                    #    item_d = ids.index(item)
+                    #except ValueError:
+                    #    ids.append(item)
+                    #    if name == "id_cliente":
+                    #        API_numdocs.append(item)
+                    #    item_d = len(ids)-1
+                    #item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
+                    #indexes[name] = item_index
+                    #if item_index not in api:
+                    #    api[item_index] = [None for item in api["_heads"]]
+                    #data[name] = api[item_index]
+                    #item = item_index
                     heads = api["_heads"]
                     for index, head in enumerate(heads):
                         if head in ("id_factura",

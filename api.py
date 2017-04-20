@@ -135,7 +135,12 @@ class API:
                         if name == "id_cliente":
                             API_numdocs.append(item)
                     item_d = ids.index(item)
-                    item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
+                    try:
+                        item_index = item_d.to_bytes(ceil(item_d.bit_length() / 8), "big")
+                    except OverflowError:
+                        print(name)
+                        print(item_d)
+                        print(item_d.bit_length())
                     if item_index not in api:
                         api[item_index] = [None for item in api["_heads"]]
                     data[name] = api[item_index]

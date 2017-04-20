@@ -137,7 +137,7 @@ class API:
                         if head in ("id_factura",
                                     "id_cliente",
                                     "id_cuenta"):
-                            dictionary[item][index] = data[head]
+                            dictionary[item][index] = {head: data[head]}
                         elif head == "facturas":
                             if dictionary[item][index] is None:
                                 dictionary[item][index] = list()
@@ -163,12 +163,6 @@ class API:
                 yield row
         with shelve_open("pari") as shelf:
             shelf.update(final)
-        del(API_id_factura)
-        del(API_id_cuenta)
-        del(API_id_cliente)
-        del(API_segmentos)
-        del(API_estados)
-        gc.collect()
 
     @classmethod
     @log

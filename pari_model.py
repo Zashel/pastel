@@ -313,16 +313,13 @@ class Pari(RestfulBaseInterface):
                     for id_factura in self.ids_facturas[ini:end]:
                         data = template.copy()
                         data["id_factura"] = id_factura
+                        print(id_factura)
                         while any(data[key] is None for key in template):
                             for subfilter in main_indexes:
                                 if subfilter in data and data[subfilter] is not None:
-                                    try:
-                                        data.update(dict(zip(shelf[subfilter]["_heads"],
+                                    data.update(dict(zip(shelf[subfilter]["_heads"],
                                                              shelf[subfilter]["data"][data[subfilter]])))
-                                    except KeyError:
-                                        print(subfilter)
-                                        print(data)
-                                        raise
+                            print(data)
                         self.list_data.append(self.friend_fetch(data.copy()))
             del(shelf)
             gc.collect()

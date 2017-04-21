@@ -145,7 +145,7 @@ class Pari(RestfulBaseInterface):
                                     "id_cliente",
                                     "id_cuenta"):
                             if head == "id_cliente":
-                                API_numdocs["data"].update({numdoc: id_cliente})
+                                API_numdocs["data"].update({numdoc: [id_cliente]})
                             api["data"][item][index] = {"id_factura": id_factura,
                                                         "id_cliente": id_cliente,
                                                         "id_cuenta": id_cuenta}[head]

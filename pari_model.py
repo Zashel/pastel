@@ -34,10 +34,6 @@ class Pari(RestfulBaseInterface):
         self.ids_facturas = None
         self.total_query = int()
         self.filter = None
-        try:
-            self.indexes = self.shelf["index"]
-        except KeyError:
-            self.indexes = dict()
 
     @log
     def set_shelve(self, flag="r"): # To implement metadata
@@ -195,7 +191,6 @@ class Pari(RestfulBaseInterface):
         self._loaded_file = name
         self.shelf.close()
         self.set_shelve()
-        self.indexes = final["index"]
 
     @log
     def replace(self, filter, data, **kwargs):
@@ -341,6 +336,6 @@ class Pari(RestfulBaseInterface):
         data["fecha_factura"] = str(int.from_bytes(data["fecha_factura"], "big"))
         while len(data["fecha_factura"]) < 8:
             data["fecha_factura"] = "0" + data["fecha_factura"]
-        data["segmento"] = self.indexes["segmentos"][int.from_bytes(data["segmento"], "big")]
-        data["estado_recibo"] = self.indexes["estados"][int.from_bytes(data["estado_recibo"], "big")]
+        data["segmento"] = self.shelf["segmentos"][int.from_bytes(data["segmento"], "big")]
+        data["estado_recibo"] = self.shelf["estados"][int.from_bytes(data["estado_recibo"], "big")]
         return data

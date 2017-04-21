@@ -1,5 +1,6 @@
 import os
 import uuid
+from zashel.utils import search_win_drive
 
 __all__ = ["UUID",
            "USERS_FIELDS",
@@ -75,8 +76,8 @@ CONFIG_FIELDS = ["container",
 
 HOST, PORT = "localhost", 44752
 LOCAL_PATH = os.path.join(os.environ["LOCALAPPDATA"], "pastel")
-REMOTE_PATH = r"\\pnaspom2\campanas$\a-c\cobros\financiacion"
-PATH = os.path.join(REMOTE_PATH, "PASTEL")
+REMOTE_PATH = r"//pnaspom2/campanas$/a-c/cobros/financiacion"
+PATH = search_win_drive("PASTEL")
 DATABASE_PATH = os.path.join(PATH, "DB")
 BASE_URI = "^/pastel/api/v1$"
 LOG_ERROR = os.path.join(LOCAL_PATH, "log_error_{}".format(UUID))

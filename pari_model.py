@@ -110,8 +110,9 @@ class Pari(RestfulBaseInterface):
         index_segmentos = dict()
         API_estados = list()
         index_estados = dict()
-        #index_facturas = dict()
-        API_numdocs = {"_heads": ["id_cuenta"]}
+        index_facturas = dict()
+        API_numdocs = {"_heads": ["id_cuenta"],
+                       "data": dict()}
         limit_date = datetime.datetime.strptime(
             (datetime.datetime.now() - datetime.timedelta(days=92)).strftime("%d%m%Y"),
             "%d%m%Y").date()
@@ -129,7 +130,8 @@ class Pari(RestfulBaseInterface):
                      "estados": API_estados,
                      "segmentos": API_segmentos,
                      "index":{"estados": index_estados,
-                              "segmentos": index_segmentos}}
+                              "segmentos": index_segmentos,
+                              "fecha_factura": index_facturas}}
             if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
                 for name, item, api in (("id_factura", id_factura, API_id_factura),
@@ -143,7 +145,7 @@ class Pari(RestfulBaseInterface):
                                     "id_cliente",
                                     "id_cuenta"):
                             if head == "id_cliente":
-                                API_numdocs.update({numdoc: id_cliente})
+                                API_numdocs["data"].update({numdoc: id_cliente})
                             api["data"][item][index] = {"id_factura": id_factura,
                                                         "id_cliente": id_cliente,
                                                         "id_cuenta": id_cuenta}[head]
@@ -174,9 +176,9 @@ class Pari(RestfulBaseInterface):
                             fecha = int(fecha.strftime("%d%m%y"))
                             fecha = fecha.to_bytes(ceil(fecha.bit_length() / 8), "big")
                             api["data"][id_factura][index] = fecha
-                            #if row["data"][head] not in index_facturas:
-                            #    index_facturas[fecha] = set() #id_factura
-                            #    index_facturas[fecha] |= {id_factura}
+                            if fecha not in index_facturas:
+                                index_facturas[fecha] = set() #id_factura
+                            index_facturas[fecha] |= {id_factura}
                         else:
                             api["data"][item][index] = row["data"][head]
                 self.all |= {id_factura}

@@ -3,7 +3,7 @@ from api import API
 from pari_model import Pari
 import os
 from definitions import *
-from zrest.server import App, GET, POST
+from zrest.server import App, GET, PUT, POST, DELETE
 import json
 
 class Test_API(unittest.TestCase):
@@ -24,6 +24,9 @@ class Test_API(unittest.TestCase):
         print(self.app.action(GET, "/facturas"))
         print(self.app.action(POST, "/facturas",
                               data=json.dumps({"file": r"c:\users\IURIRIV\Documents\pastel\BI_131_FICHERO_PARI_DIARIO_20170412.csv"})))
+        print(self.app.action(PUT, "/facturas",
+                              data=json.dumps({"file": r"c:\users\IURIRIV\Documents\pastel\BI_131_FICHERO_PARI_DIARIO_20170412.csv"})))
+        print(self.app.action(DELETE, "/facturas"))
 
 
 if __name__ == "__main__":

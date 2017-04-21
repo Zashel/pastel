@@ -65,4 +65,7 @@ class API:
         files =  glob.glob("{}*.csv".format(os.path.join(N43_PATH, "BI_131_FICHERO_PARI_DIARIO")))
         files.reverse()
         if len(files) > 0:
-            return files[0]
+            return requests.put("http://{}:{}{}/facturas".format(HOST,
+                                                                 str(PORT),
+                                                                 BASE_URI[1:-1]),
+                                json = {"file": files[0]})

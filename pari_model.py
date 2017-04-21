@@ -331,11 +331,16 @@ class Pari(RestfulBaseInterface):
                     "page": self.page,
                     "items_per_page": self.items_per_page}
 
-    @log
     def friend_fetch(self, data):
+        try:
+            del(data["facturas"])
+        except KeyError:
+            pass
         data["fecha_factura"] = str(int.from_bytes(data["fecha_factura"], "big"))
-        while len(data["fecha_factura"]) < 8:
+        while len(data["fecha_factura"]) < 6:
             data["fecha_factura"] = "0" + data["fecha_factura"]
+        fecha = data["fecha_factura"]
+        data["fecha_factura"] = datetime.datetime.stpftime(fecha, "%d%m%y").strftime("%d/%m/%y")
         data["segmento"] = self.shelf["segmentos"][int.from_bytes(data["segmento"], "big")]
         data["estado_recibo"] = self.shelf["estados"][int.from_bytes(data["estado_recibo"], "big")]
         return data

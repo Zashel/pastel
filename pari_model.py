@@ -248,6 +248,7 @@ class Pari(RestfulBaseInterface):
                             "estado_recibo": None
                             }
                 self.total_query = int()
+                gc.collect()
                 if any(index in filter for index in main_indexes):
                     self.ids_facturas = None
                     for index, id in enumerate(main_indexes):
@@ -261,7 +262,7 @@ class Pari(RestfulBaseInterface):
                             else:
                                 while any(data[key] is None for key in template):
                                     for subfilter in main_indexes:
-                                        if subfilter in data:
+                                        if subfilter in data and data[subfilter] is not None:
                                             data.update(dict(zip(self.shelf[subfilter]["_heads"],
                                                                  self.shelf[subfilter]["data"][data[subfilter]])))
                                 if all([filter[field] == data[field] for field in data if field in filter]):
@@ -308,7 +309,7 @@ class Pari(RestfulBaseInterface):
                         data["id_factura"] = id_factura
                         while any(data[key] is None for key in template):
                             for subfilter in main_indexes:
-                                if subfilter in data:
+                                if subfilter in data and data[subfilter] is not None:
                                     try:
                                         data.update(dict(zip(self.shelf[subfilter]["_heads"],
                                                              self.shelf[subfilter]["data"][data[subfilter]])))

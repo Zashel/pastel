@@ -34,6 +34,10 @@ class Pari(RestfulBaseInterface):
         self.ids_facturas = None
         self.total_query = int()
         self.filter = None
+        try:
+            self.indexes = self.shelf["index"]
+        except KeyError:
+            self.indexes = dict()
 
     @log
     def set_shelve(self, flag="r"): # To implement metadata
@@ -106,7 +110,7 @@ class Pari(RestfulBaseInterface):
         index_segmentos = dict()
         API_estados = list()
         index_estados = dict()
-        index_facturas = dict()
+        #index_facturas = dict()
         API_numdocs = {"_heads": ["id_cuenta"]}
         limit_date = datetime.datetime.strptime(
             (datetime.datetime.now() - datetime.timedelta(days=92)).strftime("%d%m%Y"),
@@ -170,9 +174,9 @@ class Pari(RestfulBaseInterface):
                             fecha = int(fecha.strftime("%d%m%y"))
                             fecha = fecha.to_bytes(ceil(fecha.bit_length() / 8), "big")
                             api["data"][id_factura][index] = fecha
-                            if row["data"][head] not in index_facturas:
-                                index_facturas[fecha] = set() #id_factura
-                                index_facturas[fecha] |= {id_factura}
+                            #if row["data"][head] not in index_facturas:
+                            #    index_facturas[fecha] = set() #id_factura
+                            #    index_facturas[fecha] |= {id_factura}
                         else:
                             api["data"][item][index] = row["data"][head]
                 self.all |= {id_factura}
@@ -189,6 +193,7 @@ class Pari(RestfulBaseInterface):
         self._loaded_file = name
         self.shelf.close()
         self.set_shelve()
+        self.indexes = final["index"]
 
     @log
     def replace(self, filter, data, **kwargs):

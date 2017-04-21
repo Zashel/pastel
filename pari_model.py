@@ -6,6 +6,7 @@ from definitions import *
 import datetime
 from zashel.utils import log
 from math import ceil
+import glob
 
 
 class Pari(RestfulBaseInterface):
@@ -174,6 +175,28 @@ class Pari(RestfulBaseInterface):
         self._loaded_file = name
 
     @log
+    def replace(self, filter, data, **kwargs):
+        if self.loaded_file is not None and "file" in data and os.path.exists(data["file"]):
+            self.drop(filter, **kwargs)
+            self.new(data, **kwargs)
+        #TODO: Reenviar algo si no hay nada
+
+    @log
+    def drop(self, filter, **kwargs):
+        if self.loaded_file is not None:
+            self._loaded_file = None
+            for file in glob.glob("{}.*".format(self.filepath)):
+                os.remove(file)
+            return {"filepath": self.filepath,
+                    "data": {"pari": {"data": [],
+                                      "total": self.shelf["total"],
+                                      "page": 1,
+                                      "items_per_page": self.items_per_page}
+                             },
+                    "total": 1,
+                    "page": 1,
+                    "items_per_page": self.items_per_page}
+    @log
     def new(self, data, **kwargs):
         if self.loaded_file is None and "file" in data and os.path.exists(data["file"]):
             for item in self.set_pari(data["file"]):
@@ -183,7 +206,7 @@ class Pari(RestfulBaseInterface):
             data = list(self.shelf["id_factura"]["data"].keys())
             data.sort()
             data = [{"id_factura": factura} for factura in data[:self.items_per_page]]
-            return {"filepath": filepath, # Ejem... muy listo
+            return {"filepath": filepath,
                     "data": {"pari": {"data": data,
                                       "total": self.shelf["total"],
                                       "page": 1,
@@ -192,6 +215,7 @@ class Pari(RestfulBaseInterface):
                     "total": 1,
                     "page": 1,
                     "items_per_page": self.items_per_page}
+        # TODO: Reenviar algo si no hay nada
 
     def fetch(self, filter, **kwargs):
         if not self.loaded_file:

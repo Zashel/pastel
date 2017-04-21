@@ -269,7 +269,7 @@ class Pari(RestfulBaseInterface):
                                 while any(data[key] is None for key in template):
                                     for subfilter in main_indexes:
                                         if subfilter in data:
-                                            data.update(self.shelf[subfilter][data])
+                                            data.update(self.shelf[subfilter][data[subfilter]])
                                 if all([filter[field] == data[field] for field in data if field in filter]):
                                     if "facturas" in data and "id_factura" not in filter:
                                         lista = list()
@@ -312,10 +312,11 @@ class Pari(RestfulBaseInterface):
                         end = None
                     for id_factura in self.ids_facturas[ini:end]:
                         data = template.copy()
+                        data["id_factura"] = id_factura
                         while any(data[key] is None for key in template):
                             for subfilter in main_indexes:
                                 if subfilter in data:
-                                    data.update(self.shelf[subfilter][data])
+                                    data.update(self.shelf[subfilter][data[subfilter]])
                         self.list_data.append(data.copy())
             return {"data": self.list_data[ini:end],
                     "total": self.total_query,

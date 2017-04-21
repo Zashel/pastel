@@ -192,7 +192,7 @@ class Pari(RestfulBaseInterface):
             self.set_shelve()
             return {"filepath": self.filepath,
                     "data": {"pari": {"data": [],
-                                      "total": self.shelf["total"],
+                                      "total": 0,
                                       "page": 1,
                                       "items_per_page": self.items_per_page}
                              },

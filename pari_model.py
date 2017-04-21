@@ -311,7 +311,7 @@ class Pari(RestfulBaseInterface):
             end = self.page * self.items_per_page
             if self.ids_facturas is not None and self.total_query > len_data:
                 if self.page*self.items_per_page > len_data:
-                    if end >= len_data:
+                    if end >= len(self.ids_facturas):
                         end = None
                     for id_factura in self.ids_facturas[ini:end]:
                         data = template.copy()

@@ -194,7 +194,7 @@ class Pari(RestfulBaseInterface):
 
     @log
     def replace(self, filter, data, **kwargs):
-        if self.loaded_file is not None and "file" in data and os.path.exists(data["file"]):
+        if "file" in data and os.path.exists(data["file"]):
             self.drop(filter, **kwargs)
             return self.new(data, **kwargs)
         #TODO: Reenviar algo si no hay nada

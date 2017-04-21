@@ -19,7 +19,8 @@ __all__ = ["UUID",
            "LOG_ERROR",
            "LOG_ERROR_PARI",
            "DATABASE_PATH",
-           "REMOTE_PATH"]
+           "REMOTE_PATH",
+           "N43_PATH"]
 
 
 #Identifier of session
@@ -79,6 +80,7 @@ LOCAL_PATH = os.path.join(os.environ["LOCALAPPDATA"], "pastel")
 REMOTE_PATH = r"//pnaspom2/campanas$/a-c/cobros/financiacion"
 PATH = search_win_drive("PASTEL")
 DATABASE_PATH = os.path.join(PATH, "DB")
+N43_PATH = search_win_drive(r"INFORMES GESTION DIARIA\0.REPORTES BBOO\001 CARPETA DE PAGOS\040 NORMA43_JAZZTEL\041 ENTRADAS")
 BASE_URI = "^/pastel/api/v1$"
 LOG_ERROR = os.path.join(LOCAL_PATH, "log_error_{}".format(UUID))
 LOG_ERROR_PARI = os.path.join(LOCAL_PATH, "log_error_pari_{}".format(UUID))

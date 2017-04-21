@@ -308,7 +308,12 @@ class Pari(RestfulBaseInterface):
                         while any(data[key] is None for key in template):
                             for subfilter in main_indexes:
                                 if subfilter in data:
-                                    data.update(self.shelf[subfilter][data[subfilter]])
+                                    try:
+                                        data.update(self.shelf[subfilter][data[subfilter]])
+                                    except KeyError:
+                                        print(subfilter)
+                                        print(data)
+                                        raise
                         self.list_data.append(data.copy())
             return {"data": self.list_data[ini:end],
                     "total": self.total_query,

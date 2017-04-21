@@ -25,10 +25,13 @@ class Pari(RestfulBaseInterface):
         self.list_data = list()
         self.page = 1
         self.items_per_page = 50
+        self.all = set()
+        self.ids_facturas = None
+        self.total_query = int()
 
     @log
-    def set_shelve(self): # To implement metadata
-        self._shelf = shelve.open(self.filepath)
+    def set_shelve(self, flag="r"): # To implement metadata
+        self._shelf = shelve.open(self.filepath, flag)
 
     @property
     def filepath(self):
@@ -103,6 +106,7 @@ class Pari(RestfulBaseInterface):
             (datetime.datetime.now() - datetime.timedelta(days=92)).strftime("%d%m%Y"),
             "%d%m%Y").date()
         total = int()
+        self.all = set()
         for row in self.read_pari(pari_file):
             id_factura = int(row["data"]["id_factura"])
             id_cuenta = int(row["data"]["id_cuenta"])
@@ -165,20 +169,25 @@ class Pari(RestfulBaseInterface):
                                 index_facturas[fecha] |= {id_factura}
                         else:
                             api["data"][item][index] = row["data"][head]
+                self.all |= {id_factura}
                 total += 1
             if "eta" in row:
                 yield row
+        self.shelf.close()
+        self.set_shelve("c")
         self.shelf.update(final)
         path, name = os.path.split(pari_file)
         self.shelf["file"] = name
         self.shelf["total"] = total
         self._loaded_file = name
+        self.shelf.close()
+        self.set_shelve()
 
     @log
     def replace(self, filter, data, **kwargs):
         if self.loaded_file is not None and "file" in data and os.path.exists(data["file"]):
             self.drop(filter, **kwargs)
-            self.new(data, **kwargs)
+            return self.new(data, **kwargs)
         #TODO: Reenviar algo si no hay nada
 
     @log
@@ -220,6 +229,7 @@ class Pari(RestfulBaseInterface):
             gc.collect()
         # TODO: Reenviar algo si no hay nada
 
+    @log
     def fetch(self, filter, **kwargs):
         if not self.loaded_file:
             return {"filepath": "",
@@ -232,6 +242,7 @@ class Pari(RestfulBaseInterface):
                     "page": 1,
                     "items_per_page": self.items_per_page }
         else:
+            main_indexes = ("id_factura", "id_cuenta", "id_cliente", "numdoc")
             if self.list_data == list() or self.filter != filter:
                 self.list_data = list()
                 self.filter = filter
@@ -244,9 +255,9 @@ class Pari(RestfulBaseInterface):
                             "importe_adeudado": None,
                             "estado_recibo": None
                             }
-                ids_factura = list()
-                main_indexes = ("id_factura", "id_cuenta", "id_cliente", "numdoc")
+                self.total_query = int()
                 if any(index in filter for index in main_indexes):
+                    self.ids_facturas = None
                     for index, id in enumerate(main_indexes):
                         if id in filter:
                             data = template.update()
@@ -269,12 +280,21 @@ class Pari(RestfulBaseInterface):
                                             subdata.update(self.shelf["id_factura"][id_factura])
                                             if all([filter[field] == data[field] for field in data if field in filter]):
                                                 lista.append(subdata.copy())
+                                                self.total_query += 1
                                         self.list_data.extend(lista)
                                     else:
                                         subdata = data.copy()
                                         del (subdata["facturas"])
                                         self.list_data.append(subdata.copy())
+                                        self.total_query += 1
                                     break
+                elif self.ids_facturas is None and filter != self.filter:
+                    self.ids_facturas = self.all.copy()
+                    if "estados" in filter and filter["estados"] in self.shelf["estados"]:
+                        self.ids_facturas &= self.shelf["index"]["estados"]
+                    self.ids_facturas = list(self.ids_facturas)
+                    self.ids_facturas.reverse() #From newer to older
+                    self.total_query = len(self.ids_facturas)
             if "page" in filter:
                 self.page = filter["page"]
             else:
@@ -283,7 +303,24 @@ class Pari(RestfulBaseInterface):
                 self.items_per_page = filter["items_per_page"]
             else:
                 self.items_per_page = 50
-            return
+            len_data = len(self.list_data)
+            ini = (self.page - 1) * self.items_per_page
+            end = self.page * self.items_per_page
+            if self.ids_facturas is not None and self.total_query > len_data:
+                if self.page*self.items_per_page > len_data:
+                    if end >= len_data:
+                        end = None
+                    for id_factura in self.ids_facturas[ini:end]:
+                        data = template.copy()
+                        while any(data[key] is None for key in template):
+                            for subfilter in main_indexes:
+                                if subfilter in data:
+                                    data.update(self.shelf[subfilter][data])
+                        self.list_data.append(data.copy())
+            return {"data": self.list_data[ini:end],
+                    "total": self.total_query,
+                    "page": self.page,
+                    "items_per_page": self.items_per_page}
 
 
 

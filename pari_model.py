@@ -254,30 +254,31 @@ class Pari(RestfulBaseInterface):
                         if id in filter:
                             data = template.update()
                             try:
-                                data.update(self.shelf[id][filter[id]])
+                                data.update(dict(zip(self.shelf[id]["_heads"],
+                                                     self.shelf[id]["data"][filter[id]])))
                             except ValueError:
                                 pass
                             else:
                                 while any(data[key] is None for key in template):
                                     for subfilter in main_indexes:
                                         if subfilter in data:
-                                            data.update(self.shelf[subfilter]["data"][data[subfilter]])
+                                            data.update(dict(zip(self.shelf[subfilter]["_heads"],
+                                                                 self.shelf[subfilter]["data"][data[subfilter]])))
                                 if all([filter[field] == data[field] for field in data if field in filter]):
                                     if "facturas" in data and "id_factura" not in filter:
                                         lista = list()
                                         subdata = data.copy()
                                         del(subdata["facturas"])
-                                        lista.append(subdata.copy())
                                         for id_factura in data["facturas"]:
-                                            subdata.update(self.shelf["id_factura"]["data"][id_factura])
+                                            subdata.update(dict(zip(self.shelf[subfilter]["_heads"],
+                                                                    self.shelf["id_factura"]["data"][id_factura])))
                                             if all([filter[field] == data[field] for field in data if field in filter]):
-                                                lista.append(subdata.copy())
+                                                self.list_data.append(self.friend_feych(subdata.copy()))
                                                 self.total_query += 1
-                                        self.list_data.extend(lista)
                                     else:
                                         subdata = data.copy()
                                         del (subdata["facturas"])
-                                        self.list_data.append(subdata.copy())
+                                        self.list_data.append(self.friend_fetch(subdata.copy()))
                                         self.total_query += 1
                                     break
                 elif self.ids_facturas is None:
@@ -309,18 +310,18 @@ class Pari(RestfulBaseInterface):
                             for subfilter in main_indexes:
                                 if subfilter in data:
                                     try:
-                                        data.update(self.shelf[subfilter]["data"][data[subfilter]])
+                                        data.update(dict(zip(self.shelf[subfilter]["_heads"],
+                                                             self.shelf[subfilter]["data"][data[subfilter]])))
                                     except KeyError:
                                         print(subfilter)
                                         print(data)
                                         raise
-                        self.list_data.append(data.copy())
+                        self.list_data.append(self.friend_fetch(data.copy()))
             return {"data": self.list_data[ini:end],
                     "total": self.total_query,
                     "page": self.page,
                     "items_per_page": self.items_per_page}
 
-
-
-
-
+    @log
+    def friend_fetch(self, data):
+        return data

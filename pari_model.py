@@ -30,6 +30,7 @@ class Pari(RestfulBaseInterface):
         self.all = set()
         self.ids_facturas = None
         self.total_query = int()
+        self.filter = None
 
     @log
     def set_shelve(self, flag="r"): # To implement metadata
@@ -199,6 +200,8 @@ class Pari(RestfulBaseInterface):
             self.shelf.close()
             for file in glob.glob("{}.*".format(self.filepath)):
                 os.remove(file)
+            self.set_shelve("c")
+            self.shelf.close()
             self.set_shelve()
             return {"filepath": self.filepath,
                     "data": {"pari": {"data": [],
@@ -277,7 +280,7 @@ class Pari(RestfulBaseInterface):
                                         self.list_data.append(subdata.copy())
                                         self.total_query += 1
                                     break
-                elif self.ids_facturas is None and filter != self.filter:
+                elif self.ids_facturas is None:
                     self.ids_facturas = self.all.copy()
                     if "estados" in filter and filter["estados"] in self.shelf["estados"]:
                         self.ids_facturas &= self.shelf["index"]["estados"]

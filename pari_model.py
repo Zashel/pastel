@@ -22,6 +22,9 @@ class Pari(RestfulBaseInterface):
         except KeyError:
             self._loaded_file = None
         self.name = None
+        self.list_data = list()
+        self.page = 1
+        self.items_per_page = 50
 
     @log
     def set_shelve(self): # To implement metadata
@@ -38,10 +41,6 @@ class Pari(RestfulBaseInterface):
     @property
     def loaded_file(self):
         return self._loaded_file
-
-    @property
-    def items_per_page(self):
-        return 50
 
     def headers(self):
         return PARI_FIELDS
@@ -208,7 +207,7 @@ class Pari(RestfulBaseInterface):
             filepath = data["file"]
             data = list(self.shelf["id_factura"]["data"].keys())
             data.sort()
-            data = [{"id_factura": factura} for factura in data[:self.items_per_page]]
+            data = [{"_id": factura} for factura in data[:self.items_per_page]]
             return {"filepath": filepath,
                     "data": {"pari": {"data": data,
                                       "total": self.shelf["total"],
@@ -218,6 +217,7 @@ class Pari(RestfulBaseInterface):
                     "total": 1,
                     "page": 1,
                     "items_per_page": self.items_per_page}
+            gc.collect()
         # TODO: Reenviar algo si no hay nada
 
     def fetch(self, filter, **kwargs):
@@ -231,3 +231,61 @@ class Pari(RestfulBaseInterface):
                     "total": 1,
                     "page": 1,
                     "items_per_page": self.items_per_page }
+        else:
+            if self.list_data == list() or self.filter != filter:
+                self.list_data = list()
+                self.filter = filter
+                template = {"numdoc": None,
+                            "id_cliente": None,
+                            "id_cuenta": None,
+                            "segmento": None,
+                            "id_factura": None,
+                            "fecha_factura": None,
+                            "importe_adeudado": None,
+                            "estado_recibo": None
+                            }
+                ids_factura = list()
+                main_indexes = ("id_factura", "id_cuenta", "id_cliente", "numdoc")
+                if any(index in filter for index in main_indexes):
+                    for index, id in enumerate(main_indexes):
+                        if id in filter:
+                            data = template.update()
+                            try:
+                                data.update(self.shelf[id][filter[id]])
+                            except ValueError:
+                                pass
+                            else:
+                                while any(data[key] is None for key in template):
+                                    for subfilter in main_indexes:
+                                        if subfilter in data:
+                                            data.update(self.shelf[subfilter][data])
+                                if all([filter[field] == data[field] for field in data if field in filter]):
+                                    if "facturas" in data and "id_factura" not in filter:
+                                        lista = list()
+                                        subdata = data.copy()
+                                        del(subdata["facturas"])
+                                        lista.append(subdata.copy())
+                                        for id_factura in data["facturas"]:
+                                            subdata.update(self.shelf["id_factura"][id_factura])
+                                            if all([filter[field] == data[field] for field in data if field in filter]):
+                                                lista.append(subdata.copy())
+                                        self.list_data.extend(lista)
+                                    else:
+                                        subdata = data.copy()
+                                        del (subdata["facturas"])
+                                        self.list_data.append(subdata.copy())
+                                    break
+            if "page" in filter:
+                self.page = filter["page"]
+            else:
+                self.page = 1
+            if "items_per_page" in filter:
+                self.items_per_page = filter["items_per_page"]
+            else:
+                self.items_per_page = 50
+            return
+
+
+
+
+

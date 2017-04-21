@@ -340,6 +340,6 @@ class Pari(RestfulBaseInterface):
         data["fecha_factura"] = str(int.from_bytes(data["fecha_factura"], "big"))
         while len(data["fecha_factura"]) < 8:
             data["fecha_factura"] = "0" + data["fecha_factura"]
-        data["segmento"] = self.indexes["segmento"][int.frombytes(data["segmento"], "big")]
-        data["estado_recibo"] = self.indexes["estado_recibo"][int.frombytes(data["estado_recibo"], "big")]
+        data["segmento"] = self.indexes["segmentos"][int.frombytes(data["segmento"], "big")]
+        data["estado_recibo"] = self.indexes["estados"][int.frombytes(data["estado_recibo"], "big")]
         return data

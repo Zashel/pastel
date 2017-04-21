@@ -126,7 +126,7 @@ class Pari(RestfulBaseInterface):
                      "segmentos": API_segmentos,
                      "index":{"estados": index_estados,
                               "segmentos": index_segmentos}}
-            if (row["data"]["estado_recibo"] in ("IMPAGADO") or
+            if (row["data"]["estado_recibo"] == "IMPAGADO" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
                 for name, item, api in (("id_factura", id_factura, API_id_factura),
                                         ("id_cuenta", id_cuenta, API_id_cuenta),
@@ -140,9 +140,9 @@ class Pari(RestfulBaseInterface):
                                     "id_cuenta"):
                             if head == "id_cliente":
                                 API_numdocs.update({numdoc: id_cliente})
-                                api["data"][item][index] = {"id_factura": id_factura,
-                                                "id_cliente": id_cliente,
-                                                "id_cuenta": id_cuenta}[head]
+                            api["data"][item][index] = {"id_factura": id_factura,
+                                                        "id_cliente": id_cliente,
+                                                        "id_cuenta": id_cuenta}[head]
                         elif head == "facturas":
                             if api["data"][item][index] is None:
                                 api["data"][item][index] = list()

@@ -218,8 +218,7 @@ class Pari(RestfulBaseInterface):
             for item in self.set_pari(data["file"]):
                 print("\r{0:{w}}".format(str(item["eta"]), w=79, fill=" "), end="")
             print()
-            return self.fetch({})
-        # TODO: Reenviar algo si no hay nada
+        return self.fetch({})
 
     @log
     def fetch(self, filter, **kwargs):

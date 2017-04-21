@@ -235,6 +235,7 @@ class Pari(RestfulBaseInterface):
         else:
             main_indexes = ("id_factura", "id_cuenta", "id_cliente", "numdoc")
             if self.list_data == list() or self.filter != filter:
+                shelf = dict(self.shelf)
                 self.list_data = list()
                 self.filter = filter
                 template = {"numdoc": None,
@@ -254,24 +255,24 @@ class Pari(RestfulBaseInterface):
                         if id in filter:
                             data = template.update()
                             try:
-                                data.update(dict(zip(self.shelf[id]["_heads"],
-                                                     self.shelf[id]["data"][filter[id]])))
+                                data.update(dict(zip(shelf[id]["_heads"],
+                                                     shelf[id]["data"][filter[id]])))
                             except ValueError:
                                 pass
                             else:
                                 while any(data[key] is None for key in template):
                                     for subfilter in main_indexes:
                                         if subfilter in data and data[subfilter] is not None:
-                                            data.update(dict(zip(self.shelf[subfilter]["_heads"],
-                                                                 self.shelf[subfilter]["data"][data[subfilter]])))
+                                            data.update(dict(zip(shelf[subfilter]["_heads"],
+                                                                 shelf[subfilter]["data"][data[subfilter]])))
                                 if all([filter[field] == data[field] for field in data if field in filter]):
                                     if "facturas" in data and "id_factura" not in filter:
                                         lista = list()
                                         subdata = data.copy()
                                         del(subdata["facturas"])
                                         for id_factura in data["facturas"]:
-                                            subdata.update(dict(zip(self.shelf[subfilter]["_heads"],
-                                                                    self.shelf["id_factura"]["data"][id_factura])))
+                                            subdata.update(dict(zip(shelf[subfilter]["_heads"],
+                                                                    shelf["id_factura"]["data"][id_factura])))
                                             if all([filter[field] == data[field] for field in data if field in filter]):
                                                 self.list_data.append(self.friend_feych(subdata.copy()))
                                                 self.total_query += 1
@@ -283,8 +284,8 @@ class Pari(RestfulBaseInterface):
                                     break
                 elif self.ids_facturas is None:
                     self.ids_facturas = self.all.copy()
-                    if "estados" in filter and filter["estados"] in self.shelf["estados"]:
-                        self.ids_facturas &= self.shelf["index"]["estados"]
+                    if "estados" in filter and filter["estados"] in shelf["estados"]:
+                        self.ids_facturas &= shelf["index"]["estados"]
                     self.ids_facturas = list(self.ids_facturas)
                     self.ids_facturas.reverse() #From newer to older
                     self.total_query = len(self.ids_facturas)
@@ -310,13 +311,15 @@ class Pari(RestfulBaseInterface):
                             for subfilter in main_indexes:
                                 if subfilter in data and data[subfilter] is not None:
                                     try:
-                                        data.update(dict(zip(self.shelf[subfilter]["_heads"],
-                                                             self.shelf[subfilter]["data"][data[subfilter]])))
+                                        data.update(dict(zip(shelf[subfilter]["_heads"],
+                                                             shelf[subfilter]["data"][data[subfilter]])))
                                     except KeyError:
                                         print(subfilter)
                                         print(data)
                                         raise
                         self.list_data.append(self.friend_fetch(data.copy()))
+            del(shelf)
+            gc.collect()
             return {"data": self.list_data[ini:end],
                     "total": self.total_query,
                     "page": self.page,

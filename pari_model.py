@@ -323,7 +323,7 @@ class Pari(RestfulBaseInterface):
                                     data.update(dict(zip(shelf[subfilter]["_heads"],
                                                              shelf[subfilter]["data"][data[subfilter]])))
                             print(data)
-                        self.list_data[ini+index] = (self.friend_fetch(data.copy())
+                        self.list_data[ini+index] = self.friend_fetch(data.copy())
             try:
                 del(shelf)
             except UnboundLocalError:

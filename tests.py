@@ -22,10 +22,8 @@ class Test_API(unittest.TestCase):
 
     def test_1_pari_model(self):
         print(self.app.action(GET, "/facturas"))
-        print(self.app.action(POST, "/facturas",
-                              data=json.dumps({"file": r"c:\users\IURIRIV\Documents\pastel\BI_131_FICHERO_PARI_DIARIO_20170412.csv"})))
         print(self.app.action(PUT, "/facturas",
-                              data=json.dumps({"file": r"c:\users\IURIRIV\Documents\pastel\BI_131_FICHERO_PARI_DIARIO_20170412.csv"})))
+                              data=json.dumps({"file": os.path.join(N43_PATH, "BI_131_FICHERO_PARI_DIARIO_20170420.csv")})))
         print(self.app.action(DELETE, "/facturas"))
 
 

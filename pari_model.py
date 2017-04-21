@@ -324,7 +324,10 @@ class Pari(RestfulBaseInterface):
                                                              shelf[subfilter]["data"][data[subfilter]])))
                             print(data)
                         self.list_data.append(self.friend_fetch(data.copy()))
-            del(shelf)
+            try:
+                del(shelf)
+            except UnboundLocalError:
+                pass
             gc.collect()
             return {"data": self.list_data[ini:end],
                     "total": self.total_query,

@@ -16,6 +16,8 @@ class Pari(RestfulBaseInterface):
         path, filename = os.path.split(self.filepath)
         if not os.path.exists(path):
             os.makedirs(path)
+        self.set_shelve("c")
+        self.shelve.close()
         self.set_shelve()
         try:
             self._loaded_file = self.shelf["file"]
@@ -213,20 +215,7 @@ class Pari(RestfulBaseInterface):
             for item in self.set_pari(data["file"]):
                 print("\r{0:{w}}".format(str(item["eta"]), w=79, fill=" "), end="")
             print()
-            filepath = data["file"]
-            data = list(self.shelf["id_factura"]["data"].keys())
-            data.sort()
-            data = [{"_id": factura} for factura in data[:self.items_per_page]]
-            return {"filepath": filepath,
-                    "data": {"pari": {"data": data,
-                                      "total": self.shelf["total"],
-                                      "page": 1,
-                                      "items_per_page": self.items_per_page}
-                             },
-                    "total": 1,
-                    "page": 1,
-                    "items_per_page": self.items_per_page}
-            gc.collect()
+            return self.fetch({})
         # TODO: Reenviar algo si no hay nada
 
     @log

@@ -27,7 +27,10 @@ class Pari(RestfulBaseInterface):
         self.list_data = list()
         self.page = 1
         self.items_per_page = 50
-        self.all = set()
+        try:
+            self.all = self.shelf["all"]
+        except KeyError:
+            self.all = set()
         self.ids_facturas = None
         self.total_query = int()
         self.filter = None
@@ -182,6 +185,7 @@ class Pari(RestfulBaseInterface):
         path, name = os.path.split(pari_file)
         self.shelf["file"] = name
         self.shelf["total"] = total
+        self.shelf["all"] = self.all
         self._loaded_file = name
         self.shelf.close()
         self.set_shelve()
@@ -248,9 +252,9 @@ class Pari(RestfulBaseInterface):
                             "estado_recibo": None
                             }
                 self.total_query = int()
+                self.ids_facturas = None
                 gc.collect()
                 if any(index in filter for index in main_indexes):
-                    self.ids_facturas = None
                     for index, id in enumerate(main_indexes):
                         if id in filter:
                             data = template.update()
@@ -283,6 +287,8 @@ class Pari(RestfulBaseInterface):
                                         self.total_query += 1
                                     break
                 elif self.ids_facturas is None:
+                    print("Here all: {}".format(len(self.all)))
+                    print(list(self.all)[:10])
                     self.ids_facturas = self.all.copy()
                     if "estados" in filter and filter["estados"] in shelf["estados"]:
                         self.ids_facturas &= shelf["index"]["estados"]

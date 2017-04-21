@@ -285,6 +285,7 @@ class Pari(RestfulBaseInterface):
                                             subdata.update(dict(zip(shelf[subfilter]["_heads"],
                                                                     shelf["id_factura"]["data"][id_factura])))
                                             if all([filter[field] == data[field] for field in data if field in filter]):
+                                                del (subdata["facturas"])
                                                 self.list_data.append(self.friend_feych(subdata.copy()))
                                                 self.total_query += 1
                                     else:
@@ -340,6 +341,6 @@ class Pari(RestfulBaseInterface):
         data["fecha_factura"] = str(int.from_bytes(data["fecha_factura"], "big"))
         while len(data["fecha_factura"]) < 8:
             data["fecha_factura"] = "0" + data["fecha_factura"]
-        data["segmento"] = self.indexes["segmentos"][int.frombytes(data["segmento"], "big")]
-        data["estado_recibo"] = self.indexes["estados"][int.frombytes(data["estado_recibo"], "big")]
+        data["segmento"] = self.indexes["segmentos"][int.from_bytes(data["segmento"], "big")]
+        data["estado_recibo"] = self.indexes["estados"][int.from_bytes(data["estado_recibo"], "big")]
         return data

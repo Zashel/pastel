@@ -24,7 +24,7 @@ class Pari(RestfulBaseInterface):
         except KeyError:
             self._loaded_file = None
         self.name = None
-        self.list_data = list()
+        self.list_data = dict()
         self.page = 1
         self.items_per_page = 50
         try:
@@ -240,9 +240,9 @@ class Pari(RestfulBaseInterface):
                     "items_per_page": self.items_per_page }
         else:
             main_indexes = ("id_factura", "id_cuenta", "id_cliente", "numdoc")
-            if self.list_data == list() or self.filter != filter:
+            if self.list_data == dict() or self.filter != filter:
                 shelf = dict(self.shelf)
-                self.list_data = list()
+                self.list_data = dict()
                 self.filter = filter
                 template = {"numdoc": None,
                             "id_cliente": None,
@@ -281,12 +281,12 @@ class Pari(RestfulBaseInterface):
                                                                     shelf["id_factura"]["data"][id_factura])))
                                             if all([filter[field] == data[field] for field in data if field in filter]):
                                                 del (subdata["facturas"])
-                                                self.list_data.append(self.friend_feych(subdata.copy()))
+                                                self.list_data[self.total_query] = self.friend_feych(subdata.copy())
                                                 self.total_query += 1
                                     else:
                                         subdata = data.copy()
                                         del (subdata["facturas"])
-                                        self.list_data.append(self.friend_fetch(subdata.copy()))
+                                        self.list_data[self.total_query] = self.friend_fetch(subdata.copy())
                                         self.total_query += 1
                                     break
                 elif self.ids_facturas is None:
@@ -310,10 +310,10 @@ class Pari(RestfulBaseInterface):
             ini = (self.page - 1) * self.items_per_page
             end = self.page * self.items_per_page
             if self.ids_facturas is not None and self.total_query > len_data:
-                if self.page*self.items_per_page > len_data:
-                    if end >= len(self.ids_facturas):
-                        end = None
-                    for id_factura in self.ids_facturas[ini:end]:
+                if end >= len(self.ids_facturas):
+                    end = len(self.ids_facturas)
+                for index, id_factura in enumerate(self.ids_facturas[ini:end]):
+                    if ini+index not in self.list_data:
                         data = template.copy()
                         data["id_factura"] = id_factura
                         print(id_factura)
@@ -323,13 +323,13 @@ class Pari(RestfulBaseInterface):
                                     data.update(dict(zip(shelf[subfilter]["_heads"],
                                                              shelf[subfilter]["data"][data[subfilter]])))
                             print(data)
-                        self.list_data.append(self.friend_fetch(data.copy()))
+                        self.list_data[ini+index] = (self.friend_fetch(data.copy())
             try:
                 del(shelf)
             except UnboundLocalError:
                 pass
             gc.collect()
-            return {"data": self.list_data[ini:end],
+            return {"data": [self.list_data[index] for index in range(ini, end)],
                     "total": self.total_query,
                     "page": self.page,
                     "items_per_page": self.items_per_page}

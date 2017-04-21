@@ -17,7 +17,7 @@ class Pari(RestfulBaseInterface):
         if not os.path.exists(path):
             os.makedirs(path)
         self.set_shelve("c")
-        self.shelve.close()
+        self.shelf.close()
         self.set_shelve()
         try:
             self._loaded_file = self.shelf["file"]

@@ -16,12 +16,16 @@ class Pari(RestfulBaseInterface):
         path, filename = os.path.split(self.filepath)
         if not os.path.exists(path):
             os.makedirs(path)
-        self._shelf = shelve.open(self.filepath)
+        self.set_shelve()
         try:
             self._loaded_file = self.shelf["file"]
         except KeyError:
             self._loaded_file = None
         self.name = None
+
+    @log
+    def set_shelve(self): # To implement metadata
+        self._shelf = shelve.open(self.filepath)
 
     @property
     def filepath(self):
@@ -95,9 +99,6 @@ class Pari(RestfulBaseInterface):
         API_estados = list()
         index_estados = dict()
         index_facturas = dict()
-        #API_ids_factura = list()
-        #API_ids_cliente = list()
-        #API_ids_cuenta = list()
         API_numdocs = {"_heads": ["id_cuenta"]}
         limit_date = datetime.datetime.strptime(
             (datetime.datetime.now() - datetime.timedelta(days=92)).strftime("%d%m%Y"),
@@ -185,8 +186,10 @@ class Pari(RestfulBaseInterface):
     def drop(self, filter, **kwargs):
         if self.loaded_file is not None:
             self._loaded_file = None
+            self.shelf.close()
             for file in glob.glob("{}.*".format(self.filepath)):
                 os.remove(file)
+            self.set_shelve()
             return {"filepath": self.filepath,
                     "data": {"pari": {"data": [],
                                       "total": self.shelf["total"],

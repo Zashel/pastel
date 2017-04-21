@@ -261,7 +261,7 @@ class Pari(RestfulBaseInterface):
                                 while any(data[key] is None for key in template):
                                     for subfilter in main_indexes:
                                         if subfilter in data:
-                                            data.update(self.shelf[subfilter][data[subfilter]])
+                                            data.update(self.shelf[subfilter]["data"][data[subfilter]])
                                 if all([filter[field] == data[field] for field in data if field in filter]):
                                     if "facturas" in data and "id_factura" not in filter:
                                         lista = list()
@@ -269,7 +269,7 @@ class Pari(RestfulBaseInterface):
                                         del(subdata["facturas"])
                                         lista.append(subdata.copy())
                                         for id_factura in data["facturas"]:
-                                            subdata.update(self.shelf["id_factura"][id_factura])
+                                            subdata.update(self.shelf["id_factura"]["data"][id_factura])
                                             if all([filter[field] == data[field] for field in data if field in filter]):
                                                 lista.append(subdata.copy())
                                                 self.total_query += 1
@@ -309,7 +309,7 @@ class Pari(RestfulBaseInterface):
                             for subfilter in main_indexes:
                                 if subfilter in data:
                                     try:
-                                        data.update(self.shelf[subfilter][data[subfilter]])
+                                        data.update(self.shelf[subfilter]["data"][data[subfilter]])
                                     except KeyError:
                                         print(subfilter)
                                         print(data)

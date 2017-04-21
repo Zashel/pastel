@@ -16,7 +16,9 @@ __all__ = ["UUID",
            "PATH",
            "BASE_URI",
            "LOG_ERROR",
-           "LOG_ERROR_PARI"]
+           "LOG_ERROR_PARI",
+           "DATABASE_PATH",
+           "REMOTE_PATH"]
 
 
 #Identifier of session
@@ -73,7 +75,9 @@ CONFIG_FIELDS = ["container",
 
 HOST, PORT = "localhost", 44752
 LOCAL_PATH = os.path.join(os.environ["LOCALAPPDATA"], "pastel")
-PATH = LOCAL_PATH
+REMOTE_PATH = r"\\pnaspom2\campanas$\a-c\cobros\financiacion"
+PATH = os.path.join(REMOTE_PATH, "PASTEL")
+DATABASE_PATH = os.path.join(PATH, "DB")
 BASE_URI = "^/pastel/api/v1$"
 LOG_ERROR = os.path.join(LOCAL_PATH, "log_error_{}".format(UUID))
 LOG_ERROR_PARI = os.path.join(LOCAL_PATH, "log_error_pari_{}".format(UUID))

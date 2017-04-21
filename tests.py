@@ -16,7 +16,7 @@ class Test_API(unittest.TestCase):
 
     def setUp(self):
         self.app = App()
-        self.app.set_model(Pari(os.path.join(PATH, "facturas")),
+        self.app.set_model(Pari(os.path.join(DATABASE_PATH, "facturas")),
                            "facturas",
                             "^/facturas/<id_factura>$")
 

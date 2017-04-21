@@ -16,7 +16,7 @@ if __name__ == "__main__":
                               index_fields=CONFIG_FIELDS),
                   "config",
                   "^/config/<container>$")
-    app.set_model(ShelveModel(os.path.join(PATH, "admin"),
+    app.set_model(ShelveModel(os.path.join(DATABASE_PATH, "admin"),
                               1,
                               index_fields=CONFIG_FIELDS),
                   "admin",
@@ -29,15 +29,15 @@ if __name__ == "__main__":
     #                          unique_is_id = True),
     #              "facturas",
     #              "^/facturas/<id_factura>$")
-    app.set_model(Pari(os.path.join(PATH, "facturas")),
+    app.set_model(Pari(os.path.join(DATABASE_PATH, "facturas")),
                   "facturas",
                   "^/facturas/<id_factura>$")
-    app.set_model(ShelveModel(os.path.join(PATH, "pagos"),
+    app.set_model(ShelveModel(os.path.join(DATABASE_PATH, "pagos"),
                               index_fields=PAYMENTS_FIELDS,
                               headers=PAYMENTS_FIELDS),
                   "pagos",
                   "^/pagos/<_id>$")
-    app.set_model(ShelveRelational(os.path.join(PATH, "aplicados"),
+    app.set_model(ShelveRelational(os.path.join(DATABASE_PATH, "aplicados"),
                                    index_fields=APLICATION_FIELDS,
                                    headers=APLICATION_FIELDS,
                                    relations=[app.get_model("facturas"),

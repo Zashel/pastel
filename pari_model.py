@@ -340,7 +340,7 @@ class Pari(RestfulBaseInterface):
         while len(data["fecha_factura"]) < 6:
             data["fecha_factura"] = "0" + data["fecha_factura"]
         fecha = data["fecha_factura"]
-        data["fecha_factura"] = datetime.datetime.stpftime(fecha, "%d%m%y").strftime("%d/%m/%y")
+        data["fecha_factura"] = datetime.datetime.strptime(fecha, "%d%m%y").strftime("%d/%m/%y")
         data["segmento"] = self.shelf["segmentos"][int.from_bytes(data["segmento"], "big")]
         data["estado_recibo"] = self.shelf["estados"][int.from_bytes(data["estado_recibo"], "big")]
         return data

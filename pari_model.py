@@ -224,7 +224,8 @@ class Pari(RestfulBaseInterface):
             for item in self.set_pari(data["file"]):
                 print("\r{0:{w}}".format(str(item["eta"]), w=79, fill=" "), end="")
             print()
-        return self.fetch({})
+        #return self.fetch({})
+        return ""
 
     @log
     def fetch(self, filter, **kwargs):

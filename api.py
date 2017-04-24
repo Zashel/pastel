@@ -95,8 +95,9 @@ class API:
             except UnboundLocalError:
                 raise ValueError
         finaldates = ",".join(finaldates)
-        return requests.get("http://{}:{}{}/facturas?fecha_factura={}&estado_recibo=IMPAGADO".format(HOST,
-                                                                                              str(PORT),
-                                                                                              BASE_URI[1:-1],
-                                                                                              finaldates),
+        return requests.get(
+                "http://{}:{}{}/facturas?fecha_factura={}&estado_recibo=IMPAGADO&items_per_page=200".format(HOST,
+                                                                                                            str(PORT),
+                                                                                                            BASE_URI[1:-1],
+                                                                                                            finaldates),
                             headers = {"Content-Type": "text/csv; charset=utf-8"}).text

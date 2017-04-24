@@ -35,7 +35,6 @@ class Pari(RestfulBaseInterface):
         self.total_query = int()
         self.filter = None
 
-    @log
     def set_shelve(self, flag="r"): # To implement metadata
         self._shelf = shelve.open(self.filepath, flag)
 
@@ -324,7 +323,7 @@ class Pari(RestfulBaseInterface):
             else:
                 self.page = 1
             if "items_per_page" in filter:
-                self.items_per_page = filter["items_per_page"]
+                self.items_per_page = int(filter["items_per_page"])
             else:
                 self.items_per_page = 50
             len_data = len(self.list_data)

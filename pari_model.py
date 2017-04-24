@@ -246,8 +246,8 @@ class Pari(RestfulBaseInterface):
                 self.filter = filter
                 if "fecha_factura" in filter:
                     fechas_factura = filter["fecha_factura"].split(",")
-                    filters = [filter.copy().update({"fecha_factura": fecha_factura})
-                               for fecha_factura in fechas_factura]
+                    filters = [filter.copy() for fecha_factura in fechas_factura]
+                    [filter.update({"fecha_factura": fecha_factura}) for fecha_factura in fechas_factura]
                 else:
                     filters = [filter]
                 template = {"numdoc": None,

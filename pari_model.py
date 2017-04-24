@@ -320,7 +320,7 @@ class Pari(RestfulBaseInterface):
             else:
                 pass
             if "page" in filter:
-                self.page = filter["page"]
+                self.page = int(filter["page"])
             else:
                 self.page = 1
             if "items_per_page" in filter:

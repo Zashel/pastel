@@ -244,6 +244,12 @@ class Pari(RestfulBaseInterface):
                 shelf = dict(self.shelf)
                 self.list_data = dict()
                 self.filter = filter
+                if "fecha_factura" in filter:
+                    fechas_factura = filter["fecha_factura"].split(",")
+                    filters = [filter.copy().update({"fecha_factura": fecha_factura})
+                               for fecha_factura in fechas_factura]
+                else:
+                    filters = [filter]
                 template = {"numdoc": None,
                             "id_cliente": None,
                             "id_cuenta": None,
@@ -256,7 +262,7 @@ class Pari(RestfulBaseInterface):
                 self.total_query = int()
                 self.ids_facturas = None
                 gc.collect()
-                if any(index in filter for index in main_indexes):
+                if any(index in filter for index in main_indexes): #TODO: Redo
                     for index, id in enumerate(main_indexes):
                         if id in filter:
                             data = template.update()
@@ -271,33 +277,41 @@ class Pari(RestfulBaseInterface):
                                         if subfilter in data and data[subfilter] is not None:
                                             data.update(dict(zip(shelf[subfilter]["_heads"],
                                                                  shelf[subfilter]["data"][data[subfilter]])))
-                                if all([filter[field] == data[field] for field in data if field in filter]):
-                                    if "facturas" in data and "id_factura" not in filter:
-                                        lista = list()
-                                        subdata = data.copy()
-                                        del(subdata["facturas"])
-                                        for id_factura in data["facturas"]:
-                                            subdata.update(dict(zip(shelf[subfilter]["_heads"],
-                                                                    shelf["id_factura"]["data"][id_factura])))
-                                            if all([filter[field] == data[field] for field in data if field in filter]):
-                                                del (subdata["facturas"])
-                                                self.list_data[self.total_query] = self.friend_feych(subdata.copy())
-                                                self.total_query += 1
-                                    else:
-                                        subdata = data.copy()
-                                        del (subdata["facturas"])
-                                        self.list_data[self.total_query] = self.friend_fetch(subdata.copy())
+                                if "facturas" in data and "id_factura" not in filter:
+                                    subdata = data.copy()
+                                    del(subdata["facturas"])
+                                    for id_factura in data["facturas"]:
+                                        subdata.update(dict(zip(shelf[subfilter]["_heads"],
+                                                                shelf["id_factura"]["data"][id_factura])))
+                                        subdata = self.friend_fetch(subdata)
+                                        if any([all([filter[field] == data[field] for field in data if field in filter])
+                                                for filter in filters]):
+                                            del (subdata["facturas"])
+                                            self.list_data[self.total_query] = subdata.copy()
+                                            self.total_query += 1
+                                else:
+                                    subdata = self.friend_fetch(data.copy())
+                                    if any([all([filter[field] == data[field] for field in data if field in filter])
+                                            for filter in filters]):
+                                        self.list_data[self.total_query] = subdata
                                         self.total_query += 1
-                                    break
+                                break
                 elif self.ids_facturas is None:
-                    print("Here all: {}".format(len(self.all)))
-                    print(list(self.all)[:10])
                     self.ids_facturas = self.all.copy()
-                    if "estados" in filter and filter["estados"] in shelf["estados"]:
-                        self.ids_facturas &= shelf["index"]["estados"]
+                    for filter in filters:
+                        ids = self.all.copy()
+                        if "estados" in filter and filter["estados"] in shelf["estados"]:
+                            ids &= shelf["index"]["estados"]
+                        elif "fecha_factura" in filter and filter["fecha_factura"] in shelf["fecha_factura"]:
+                            ids &= shelf["index"]["fecha_factura"]
+                        elif "segmentos" in filter and filter["segmentos"] in shelf["segmentos"]:
+                            ids &= shelf["index"]["segmentos"]
+                        self.ids_facturas |= ids
                     self.ids_facturas = list(self.ids_facturas)
                     self.ids_facturas.reverse() #From newer to older
                     self.total_query = len(self.ids_facturas)
+            else:
+                pass
             if "page" in filter:
                 self.page = filter["page"]
             else:

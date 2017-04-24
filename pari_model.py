@@ -301,12 +301,13 @@ class Pari(RestfulBaseInterface):
                     self.ids_facturas = set()
                     for filter in filters:
                         ids = self.all.copy()
-                        if "estado_recibo" in filter and filter["estado_recibo"] in shelf["estados"]:
-                            ids &= shelf["index"]["estados"][filter["estado_recibo"]]
-                        elif "fecha_factura" in filter and filter["fecha_factura"] in shelf["fecha_factura"]:
-                            ids &= shelf["index"]["fecha_factura"][filter["fecha_factura"]]
-                        elif "segmentos" in filter and filter["segmentos"] in shelf["segmentos"]:
-                            ids &= shelf["index"]["segmentos"][filter["segmentos"]]
+                        if any(field in filter for field in ("estado_recibo", "fecha_factura", "segmentos")):
+                            if "estado_recibo" in filter and filter["estado_recibo"] in shelf["estados"]:
+                                ids &= shelf["index"]["estados"][filter["estado_recibo"]]
+                            if "fecha_factura" in filter and filter["fecha_factura"] in shelf["fecha_factura"]:
+                                ids &= shelf["index"]["fecha_factura"][filter["fecha_factura"]]
+                            if "segmentos" in filter and filter["segmentos"] in shelf["segmentos"]:
+                                ids &= shelf["index"]["segmentos"][filter["segmentos"]]
                         else:
                             ids = set()
                         self.ids_facturas |= ids

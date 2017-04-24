@@ -307,6 +307,8 @@ class Pari(RestfulBaseInterface):
                             ids &= shelf["index"]["fecha_factura"][filter["fecha_factura"]]
                         elif "segmentos" in filter and filter["segmentos"] in shelf["segmentos"]:
                             ids &= shelf["index"]["segmentos"][filter["segmentos"]]
+                        else:
+                            ids = set()
                         self.ids_facturas |= ids
                     self.ids_facturas = list(self.ids_facturas)
                     self.ids_facturas.reverse() #From newer to older

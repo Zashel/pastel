@@ -300,7 +300,7 @@ class Pari(RestfulBaseInterface):
                     self.ids_facturas = self.all.copy()
                     for filter in filters:
                         ids = self.all.copy()
-                        if "estados" in filter and filter["estados"] in shelf["estados"]:
+                        if "estado_recibo" in filter and filter["estado_recibo"] in shelf["estados"]:
                             ids &= shelf["index"]["estados"]
                         elif "fecha_factura" in filter and filter["fecha_factura"] in shelf["fecha_factura"]:
                             ids &= shelf["index"]["fecha_factura"]

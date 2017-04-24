@@ -69,3 +69,34 @@ class API:
                                                                  str(PORT),
                                                                  BASE_URI[1:-1]),
                                 json = {"file": files[0]})
+
+    @classmethod
+    @log
+    def export_unpaid_by_invoice_date(cls, dates):
+        format = "%d/%m/%y"
+        finaldates = list()
+        if not isinstance(dates, list) and not isinstance(dates, tuple):
+            dates = [dates]
+        for date in dates:
+            if isinstance(date, datetime.datetime) or isinstance(date, datetime.date):
+                date = date.strftime(format)
+            elif isinstance(dates, str):
+                try:
+                    date = datetime.datetime.strptime("%d/%m/%y")
+                except ValueError:
+                    try:
+                        date = datetime.datetime.strptime("%d/%m/%Y")
+                    except ValueError:
+                        raise
+                else:
+                    date = date.strftime(format)
+            try:
+                finaldates.append(date)
+            except UnboundLocalError:
+                raise ValueError
+        finaldates = ",".join(finaldates)
+        return requests.get("http://{}:{}{}/facturas?fecha_factura={}&estado_recibo=IMPAGADO".format(HOST,
+                                                                                              str(PORT),
+                                                                                              BASE_URI[1:-1],
+                                                                                              finaldates),
+                            headers = {"Content-Type": "text/csv; charset=utf-8"}).text

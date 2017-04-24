@@ -302,11 +302,11 @@ class Pari(RestfulBaseInterface):
                     for filter in filters:
                         ids = self.all.copy()
                         if "estado_recibo" in filter and filter["estado_recibo"] in shelf["estados"]:
-                            ids &= shelf["index"]["estados"]
+                            ids &= shelf["index"]["estados"][filter["estado_recibo"]]
                         elif "fecha_factura" in filter and filter["fecha_factura"] in shelf["fecha_factura"]:
-                            ids &= shelf["index"]["fecha_factura"]
+                            ids &= shelf["index"]["fecha_factura"][filter["fecha_factura"]]
                         elif "segmentos" in filter and filter["segmentos"] in shelf["segmentos"]:
-                            ids &= shelf["index"]["segmentos"]
+                            ids &= shelf["index"]["segmentos"][filter["segmentos"]]
                         self.ids_facturas |= ids
                     self.ids_facturas = list(self.ids_facturas)
                     self.ids_facturas.reverse() #From newer to older

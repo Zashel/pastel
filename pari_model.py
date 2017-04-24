@@ -298,7 +298,7 @@ class Pari(RestfulBaseInterface):
                                         self.total_query += 1
                                 break
                 elif self.ids_facturas is None:
-                    self.ids_facturas = self.all.copy()
+                    self.ids_facturas = set()
                     for filter in filters:
                         ids = self.all.copy()
                         if "estado_recibo" in filter and filter["estado_recibo"] in shelf["estados"]:

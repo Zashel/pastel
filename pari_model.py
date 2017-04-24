@@ -224,8 +224,7 @@ class Pari(RestfulBaseInterface):
             for item in self.set_pari(data["file"]):
                 print("\r{0:{w}}".format(str(item["eta"]), w=79, fill=" "), end="")
             print()
-        #return self.fetch({})
-        return ""
+        return self.fetch({})
 
     @log
     def fetch(self, filter, **kwargs):
@@ -305,6 +304,7 @@ class Pari(RestfulBaseInterface):
                             if "estado_recibo" in filter and filter["estado_recibo"] in shelf["estados"]:
                                 ids &= shelf["index"]["estados"][filter["estado_recibo"]]
                             if "fecha_factura" in filter and filter["fecha_factura"] in shelf["index"]["fecha_factura"]:
+                                print(shelf["index"]["fecha_factura"][filter["fecha_factura"]])
                                 ids &= shelf["index"]["fecha_factura"][filter["fecha_factura"]]
                             if "segmentos" in filter and filter["segmentos"] in shelf["segmentos"]:
                                 ids &= shelf["index"]["segmentos"][filter["segmentos"]]

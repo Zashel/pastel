@@ -304,7 +304,7 @@ class Pari(RestfulBaseInterface):
                         if any(field in filter for field in ("estado_recibo", "fecha_factura", "segmentos")):
                             if "estado_recibo" in filter and filter["estado_recibo"] in shelf["estados"]:
                                 ids &= shelf["index"]["estados"][filter["estado_recibo"]]
-                            if "fecha_factura" in filter and filter["fecha_factura"] in shelf["fecha_factura"]:
+                            if "fecha_factura" in filter and filter["fecha_factura"] in shelf["index"]["fecha_factura"]:
                                 ids &= shelf["index"]["fecha_factura"][filter["fecha_factura"]]
                             if "segmentos" in filter and filter["segmentos"] in shelf["segmentos"]:
                                 ids &= shelf["index"]["segmentos"][filter["segmentos"]]

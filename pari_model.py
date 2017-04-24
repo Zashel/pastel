@@ -164,7 +164,7 @@ class Pari(RestfulBaseInterface):
                                 API_estados.append(row["data"][head])
                             if row["data"][head] not in index_estados:
                                 index_estados[row["data"][head]] = set() #id_factura
-                                index_estados[row["data"][head]] |= {id_factura}
+                            index_estados[row["data"][head]] |= {id_factura}
                             estado = API_estados.index(row["data"][head])
                             api["data"][item][index] = estado.to_bytes(ceil(estado.bit_length() / 8), "big")
                         elif head == "fecha_factura":

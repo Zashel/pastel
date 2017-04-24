@@ -172,9 +172,9 @@ class Pari(RestfulBaseInterface):
                             fecha = int(fecha.strftime("%d%m%y"))
                             fecha = fecha.to_bytes(ceil(fecha.bit_length() / 8), "big")
                             api["data"][id_factura][index] = fecha
-                            if fecha not in index_facturas:
-                                index_facturas[fecha] = set() #id_factura
-                            index_facturas[fecha] |= {id_factura}
+                            if row["data"][head] not in index_facturas:
+                                index_facturas[row["data"][head]] = set() #id_factura
+                            index_facturas[row["data"][head]] |= {id_factura}
                         else:
                             api["data"][item][index] = row["data"][head]
                 self.all |= {id_factura}

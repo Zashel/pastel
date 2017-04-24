@@ -299,7 +299,6 @@ class Pari(RestfulBaseInterface):
                 elif self.ids_facturas is None:
                     self.ids_facturas = set()
                     print("Filters: {}".format(filters))
-                    print(shelf["index"]["fecha_factura"])
                     for filter in filters:
                         ids = self.all.copy()
                         if any(field in filter for field in ("estado_recibo", "fecha_factura", "segmentos")):

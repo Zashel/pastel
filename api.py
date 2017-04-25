@@ -99,7 +99,13 @@ class API:
                             importe_devuelto = "{},{}".format(importe_devuelto[:-2], importe_devuelto[-2:])
                             importe_impagado = str(ife[segmento][fecha][estado])
                             importe_impagado = "{},{}".format(importe_impagado[:-2], importe_impagado[-2:])
-                            f.write(";".join(segmento, fecha_str, estado, facturas, importe_devuelto, importe_impagado)+"\n")
+                            f.write(";".join((segmento,
+                                              fecha_str,
+                                              estado,
+                                              facturas,
+                                              importe_devuelto,
+                                              importe_impagado
+                                              ))+"\n")
             return os.path.join(REPORT_PATH, "Pari", name)
 
     @classmethod

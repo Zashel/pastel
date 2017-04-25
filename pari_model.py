@@ -75,7 +75,7 @@ class Pari(RestfulBaseInterface):
                 #    if key.upper() in headers:
                 #        final[key] = row[headers.index(key.upper())]
                 for index, key in enumerate(headers):
-                    final[key.lower()] = row[key]
+                    final[key.lower()] = row[index]
                 #final["ciclo_facturado"] = API.get_billing_period(final["fecha_factura"])
                 if info is True:
                     time = datetime.datetime.now() - begin

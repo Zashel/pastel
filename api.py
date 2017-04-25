@@ -1,7 +1,7 @@
 import requests
 import pprint
 from definitions import *
-from zashel.utils import log
+from zashel.utils import log, daemonize
 from zrest.datamodels.shelvemodels import ShelveModel
 from math import ceil
 import datetime
@@ -10,6 +10,7 @@ import shelve
 import glob
 import os
 import gc
+import sched
 import json
 if sys.version_info.minor == 3:
     from contextlib import closing
@@ -30,6 +31,18 @@ class API:
                              "id_cuenta"]}
     segmentos = list()
     estados = list()
+    scheduler = sched.scheduler()
+
+    @classmethod
+    @daemonize
+    def run(cls):
+        while True:
+            today = datetime.datetime.now()
+            tomorrow = today + datetime.timedelta(days=1)
+            next_set_pari = tomorrow
+            next_set_pari.replace(hour=7, minute=50, second=0, microsecond=0).toordinal() #TODO: define function
+            API.scheduler.enterabs(next_set_pari, 0, API.set_pari)
+            API.scheduler.run()
 
     @classmethod
     @log

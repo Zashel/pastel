@@ -71,9 +71,11 @@ class Pari(RestfulBaseInterface):
                     info = True
                 row = line.strip("\n").split("|")
                 final = dict()
-                for key in PARI_FIELDS:
-                    if key.upper() in headers:
-                        final[key] = row[headers.index(key.upper())]
+                #for key in PARI_FIELDS:
+                #    if key.upper() in headers:
+                #        final[key] = row[headers.index(key.upper())]
+                for key in headers:
+                    final[key.lower()] = row[key]
                 #final["ciclo_facturado"] = API.get_billing_period(final["fecha_factura"])
                 if info is True:
                     time = datetime.datetime.now() - begin

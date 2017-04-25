@@ -115,6 +115,12 @@ class Pari(RestfulBaseInterface):
             "%d%m%Y").date()
         total = int()
         self.all = set()
+        reports = {"importes por fechas y estados": dict(),
+                    "facturas por fechas y estados": dict(),
+                    "devoluciones por fechas y estados": dict()}
+        ife = reports["importes por fechas y estados"]
+        ffe = reports["facturas por fechas y estados"]
+        dfe = reports["devoluciones por fechas y estados"]
         for row in self.read_pari(pari_file):
             id_factura = int(row["data"]["id_factura"])
             id_cuenta = int(row["data"]["id_cuenta"])
@@ -129,14 +135,9 @@ class Pari(RestfulBaseInterface):
                      "index":{"estados": index_estados,
                               "segmentos": index_segmentos,
                               "fecha_factura": index_facturas},
-                     "reports": {"importes por fechas y estados": dict(),
-                                 "facturas por fechas y estados": dict(),
-                                 "devoluciones por fechas y estados": dict()}
+                     "reports": reports
                      }
             data = row["data"]
-            ife = final["reports"]["importes por fechas y estados"]
-            ffe = final["reports"]["facturas por fechas y estados"]
-            dfe = final["reports"]["devoluciones por fechas y estados"]
             for report in (ife, ffe, dfe):
                 if data["segmento"] not in report:
                     report[data["segmento"]] = dict()

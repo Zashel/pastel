@@ -87,8 +87,8 @@ class API:
             assert len(estados) > 0
             heads = "segmento;fecha_factura;estado;facturas;importe_devuelto;importe_impagado\n"
             name = os.path.split(files[0])[1].strip("BI_131_FICHERO_PARI_DIARIO")
-            name = "report_pari{}".format(name)
-            with open(os.path.join(REPORT_PATH, "Pari", name)) as f:
+            name = "report_pari_{}".format(name)
+            with open(os.path.join(REPORT_PATH, "Pari", name), "w") as f:
                 f.write(heads)
                 for segmento in segmentos:
                     for fecha in fechas:

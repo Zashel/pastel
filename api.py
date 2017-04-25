@@ -65,6 +65,7 @@ class API:
     def set_pari(cls):
         files =  glob.glob("{}*.csv".format(os.path.join(N43_PATH, "BI_131_FICHERO_PARI_DIARIO")))
         files.reverse()
+        print(files)
         if len(files) > 0:
             data = requests.put("http://{}:{}{}/facturas".format(HOST,
                                                                  str(PORT),

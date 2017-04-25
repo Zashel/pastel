@@ -64,6 +64,7 @@ class API:
     @log
     def set_pari(cls):
         files =  glob.glob("{}*.csv".format(os.path.join(N43_PATH, "BI_131_FICHERO_PARI_DIARIO")))
+        files.sort()
         files.reverse()
         print(files)
         if len(files) > 0:

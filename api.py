@@ -10,8 +10,8 @@ import shelve
 import glob
 import os
 import gc
-import sched
 import json
+import time
 if sys.version_info.minor == 3:
     from contextlib import closing
     shelve_open = lambda file, flag="c", protocol=None, writeback=False: closing(shelve.open(file, flag))
@@ -31,18 +31,32 @@ class API:
                              "id_cuenta"]}
     segmentos = list()
     estados = list()
-    scheduler = sched.scheduler(datetime.datetime)
+    procesos = {}
+    procesos_done = list()
 
     @classmethod
     @daemonize
     def run(cls):
+        today = datetime.datetime.now()
+        tomorrow = today + datetime.timedelta(days=1)
+        next_set_pari = tomorrow
+        next_set_pari = next_set_pari.replace(hour=8, minute=50, second=0, microsecond=0).toordinal()
+        API.procesos.update({next_set_pari: {"function": API.set_pari,
+                                             "args": [],
+                                             "kwargs": {},
+                                             "repeat": datetime.timedelta(days = 1)}})
         while True:
-            today = datetime.datetime.now()
-            tomorrow = today + datetime.timedelta(days=1)
-            next_set_pari = tomorrow
-            next_set_pari = next_set_pari.replace(hour=8, minute=50, second=0, microsecond=0).toordinal() #TODO: define function
-            API.scheduler.enterabs(next_set_pari, 0, API.set_pari)
-            API.scheduler.run()
+            for fecha in API.procesos:
+                if fecha <= datetime.datetime.now():
+                    proceso = API.procesos[fecha]
+                    proceso["function"](*proceso["args"], **proceso["kwargs"])
+                    API.procesos_done.append(fecha)
+            for fecha in API.procesos_done:
+                if API.procesos[fecha]["repeat"] is not None:
+                    API.procesos[fecha+API.procesos[fecha]["repeat"]] = API.procesos[fecha].copy()
+                    del(API.procesos[fecha])
+            API.procesos_done = list()
+            time.sleep(60)
 
     @classmethod
     @log

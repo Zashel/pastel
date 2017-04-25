@@ -10,6 +10,7 @@ import shelve
 import glob
 import os
 import gc
+import json
 if sys.version_info.minor == 3:
     from contextlib import closing
     shelve_open = lambda file, flag="c", protocol=None, writeback=False: closing(shelve.open(file, flag))
@@ -65,10 +66,39 @@ class API:
         files =  glob.glob("{}*.csv".format(os.path.join(N43_PATH, "BI_131_FICHERO_PARI_DIARIO")))
         files.reverse()
         if len(files) > 0:
-            return requests.put("http://{}:{}{}/facturas".format(HOST,
+            data = requests.put("http://{}:{}{}/facturas".format(HOST,
                                                                  str(PORT),
                                                                  BASE_URI[1:-1]),
                                 json = {"file": files[0]})
+            data = json.loads(data)["data"]
+            ife = data["importes por fechas y estados"]
+            ffe = data["facturas por fechas y estados"]
+            dfe = data["devoluciones por fechas y estados"]
+            segmentos = list(ife.keys())
+            segmentos.sort()
+            assert len(segmentos) > 0
+            fechas = list(ife[segmentos[0]].keys())
+            fechas.sort()
+            assert len(fechas) > 0
+            estados = list(ife[segmentos[0]][fechas[0]].keys())
+            estados.sort()
+            assert len(estados) > 0
+            heads = "segmento;fecha_factura;estado;facturas;importe_devuelto;importe_impagado\n"
+            name = os.path.split(files[0])[1].strip("BI_131_FICHERO_PARI_DIARIO")
+            name = "report_pari{}".format(name)
+            with open(os.path.join(REPORT_PATH, "Pari", name)) as f:
+                f.write(heads)
+                for segmento in segmentos:
+                    for fecha in fechas:
+                        for estado in estados:
+                            fecha_str = datetime.datetime.strptime(fecha, "%d/%m/%y").strftime("%d/%m/%Y")
+                            facturas = str(ffe[segmento][fecha][estado])
+                            importe_devuelto = str(dfe[segmento][fecha][estado])
+                            importe_devuelto = "{},{}".format(importe_devuelto[:-2], importe_devuelto[-2:])
+                            importe_impagado = str(ife[segmento][fecha][estado])
+                            importe_impagado = "{},{}".format(importe_impagado[:-2], importe_impagado[-2:])
+                            f.write(";".join(segmento, fecha_str, estado, importe_devuelto, importe_impagado)+"\n")
+            return os.path.join(REPORT_PATH, "Pari", name)
 
     @classmethod
     @log

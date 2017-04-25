@@ -72,7 +72,7 @@ class API:
                                                                  str(PORT),
                                                                  BASE_URI[1:-1]),
                                 json = {"file": files[0]})
-            data = json.loads(data)["data"]
+            data = json.loads(data.text)["data"]
             ife = data["importes por fechas y estados"]
             ffe = data["facturas por fechas y estados"]
             dfe = data["devoluciones por fechas y estados"]

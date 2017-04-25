@@ -101,3 +101,5 @@ class API:
                                                                                                             BASE_URI[1:-1],
                                                                                                             finaldates),
                             headers = {"Content-Type": "text/csv; charset=utf-8"}).text
+
+

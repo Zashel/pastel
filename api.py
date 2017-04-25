@@ -40,7 +40,7 @@ class API:
             today = datetime.datetime.now()
             tomorrow = today + datetime.timedelta(days=1)
             next_set_pari = tomorrow
-            next_set_pari.replace(hour=7, minute=50, second=0, microsecond=0).toordinal() #TODO: define function
+            next_set_pari.replace(hour=8, minute=50, second=0, microsecond=0).toordinal() #TODO: define function
             API.scheduler.enterabs(next_set_pari, 0, API.set_pari)
             API.scheduler.run()
 

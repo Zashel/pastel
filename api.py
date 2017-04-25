@@ -31,7 +31,7 @@ class API:
                              "id_cuenta"]}
     segmentos = list()
     estados = list()
-    scheduler = sched.scheduler()
+    scheduler = sched.scheduler(datetime.datetime)
 
     @classmethod
     @daemonize

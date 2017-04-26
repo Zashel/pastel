@@ -223,7 +223,11 @@ class Pari(RestfulBaseInterface):
     @log
     def read_n43(self, filepath):
         if os.path.exists(filepath):
+            total_bytes = os.stat(pari_file).st_size
+            read_bytes = int()
+            last = 0.0000
             total = int()
+            info = False
             re_nif = re.compile(r"[A-Z]?[0-9]{5,8}[A-Z]{1}")
             re_cif = re.compile(r"[A-Z]{1}[0-9]{8}")
             re_tels = re.compilte(r"\+34[6-9]{1}[0-9]{8}|[6-9]{1}[0-9]{8}")
@@ -235,6 +239,11 @@ class Pari(RestfulBaseInterface):
                 observaciones = str()
                 account = str()
                 for row in file_:
+                    read_bytes += len(bytearray(line, "utf-8")) + 1
+                    percent = read_bytes / total_bytes
+                    if percent >= last:
+                        last += 0.0001
+                        info = True
                     row = row.strip("\n")
                     if row.startswith("11"):
                         account = row[2:20]
@@ -280,7 +289,15 @@ class Pari(RestfulBaseInterface):
                             oficina_orig = str()
                             importe = str()
                             observaciones = str()
-                            yield final
+                            if info is True:
+                                time = datetime.datetime.now() - begin
+                                yield {"percent": round(percent, 4),
+                                       "time": time,
+                                       "eta": (time / percent) - time,
+                                       "data": final}
+                                info = False
+                            else:
+                                yield {"data": final}
                         if row.startswith("22"):
                             row = row[4:].strip()
                             f_oper = datetime.datetime.strptime(row[10:16], "%y%m%d")
@@ -292,9 +309,15 @@ class Pari(RestfulBaseInterface):
 
     @log
     def set_n43(self, filepath):
+        shelf = self.shelf.copy()
         if os.path.exists(filepath):
             account_number = "01823999330014690035" #TODO: set in shitty config
-
+            for row in self.read_n43(filepath):
+                data = row["data"]
+                if data["cuenta"] == account_number:
+                    pass
+                if "eta" in row:
+                    yield row
 
     @log
     def replace(self, filter, data, **kwargs):

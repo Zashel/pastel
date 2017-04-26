@@ -39,8 +39,8 @@ class API:
     def run(cls):
         today = datetime.datetime.now()
         tomorrow = today + datetime.timedelta(days=1)
-        next_set_pari = tomorrow
-        next_set_pari = next_set_pari.replace(hour=8, minute=50, second=0, microsecond=0)
+        next_set_pari = today
+        next_set_pari = next_set_pari.replace(hour=6, minute=50, second=0, microsecond=0)
         API.procesos.update({next_set_pari: {"function": API.set_pari,
                                              "args": [],
                                              "kwargs": {},

@@ -60,26 +60,6 @@ class API:
 
     @classmethod
     @log
-    def get_billing_period(cls, invoice_date):
-        if isinstance(invoice_date, str):
-            invoice_date = datetime.datetime.strptime(invoice_date, "%d/%m/%y").date()
-        if isinstance(invoice_date, datetime.datetime):
-            invoice_date = invoice_date.date()
-        assert isinstance(invoice_date, datetime.date)
-        #prev_day = datetime.date.fromordinal((invoice_date - datetime.date(1, 1, 1)).days)
-        prev_day = invoice_date
-        prev_month_day = prev_day.day
-        prev_month_month = prev_day.month - 1
-        if prev_month_month == 0:
-            prev_month_month = 12
-            prev_month_year = prev_day.year - 1
-        else:
-            prev_month_year = prev_day.year
-        prev_month = datetime.date(prev_month_year, prev_month_month, prev_month_day)
-        return "{}-{}".format(prev_month.strftime("%d/%m/%y"), prev_day.strftime("%d/%m/%y"))
-
-    @classmethod
-    @log
     def log_error(cls, function, aditional_dict, file=LOG_ERROR):
         with open(file, "a") as logger:
             to_log = "{} - API.{}:\n\t{}\n".format(datetime.datetime.now().strftime("%d/%m/%Y - %H:%M:%S"),
@@ -161,7 +141,7 @@ class API:
                 raise ValueError
         finaldates = ",".join(finaldates)
         return requests.get(
-                "http://{}:{}{}/facturas?fecha_factura={}&estado_recibo=IMPAGADO&items_per_page=200".format(HOST,
+                "http://{}:{}{}/facturas?fecha_factura={}&estado_recibo=IMPAGADO&items_per_page=1000".format(HOST,
                                                                                                             str(PORT),
                                                                                                             BASE_URI[1:-1],
                                                                                                             finaldates),

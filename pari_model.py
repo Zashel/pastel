@@ -170,9 +170,14 @@ class Pari(RestfulBaseInterface):
                                     "id_cuenta"):
                             if head == "id_cliente":
                                 API_numdocs["data"].update({numdoc: [id_cliente]})
-                            api["data"][item][index] = {"id_factura": id_factura,
-                                                        "id_cliente": id_cliente,
-                                                        "id_cuenta": id_cuenta}[head]
+                            if name == "id_cliente" and head == "id_cuenta":
+                                if api["data"][item][index] is None:
+                                    api["data"][item][index] = list()
+                                api["data"][item][index].append(id_cuenta)
+                            else:
+                                api["data"][item][index] = {"id_factura": id_factura,
+                                                            "id_cliente": id_cliente,
+                                                            "id_cuenta": id_cuenta}[head]
                         elif head == "facturas":
                             if api["data"][item][index] is None:
                                 api["data"][item][index] = list()
@@ -230,7 +235,7 @@ class Pari(RestfulBaseInterface):
             info = False
             re_nif = re.compile(r"[A-Z]?[0-9]{5,8}[A-Z]{1}")
             re_cif = re.compile(r"[A-Z]{1}[0-9]{8}")
-            re_tels = re.compilte(r"\+34[6-9]{1}[0-9]{8}|[6-9]{1}[0-9]{8}")
+            re_tels = re.compile(r"\+34[6-9]{1}[0-9]{8}|[6-9]{1}[0-9]{8}")
             with open(filepath, "r") as file_:
                 f_oper = None
                 f_valor = None
@@ -239,7 +244,7 @@ class Pari(RestfulBaseInterface):
                 observaciones = str()
                 account = str()
                 for row in file_:
-                    read_bytes += len(bytearray(line, "utf-8")) + 1
+                    read_bytes += len(bytearray(row, "utf-8")) + 1
                     percent = read_bytes / total_bytes
                     if percent >= last:
                         last += 0.0001
@@ -276,6 +281,11 @@ class Pari(RestfulBaseInterface):
                                     telefonos = list(tels)
                                     nifs = list(nifs)
                                     nif = nifs[0]
+                            nif = nif.replace("-", "")
+                            if nif[0] in "ABCDEFGHJNPQRUVW":
+                                nif = "{}-{}".format(nif[0], nif[1:])
+                            elif nif[-1] in "TRWAGMYFPDXBNJZSQVHLCKE":
+                                nif = "{}-{}".format(nif[:-1], nif[-1])
                             final = {"cuenta": account,
                                      "fecha_operacion": f_oper,
                                      "fecha_valor": f_valor,
@@ -307,15 +317,92 @@ class Pari(RestfulBaseInterface):
                     elif row.startswith("23"):
                         observaciones += row[4:].strip()
 
+    @classmethod
+    @log
+    def get_billing_period(cls, invoice_date):
+        if isinstance(invoice_date, str):
+            invoice_date = datetime.datetime.strptime(invoice_date, "%d/%m/%y").date()
+        if isinstance(invoice_date, datetime.datetime):
+            invoice_date = invoice_date.date()
+        assert isinstance(invoice_date, datetime.date)
+        prev_day = datetime.date.fromordinal((invoice_date - datetime.date(1, 1, 1)).days)
+        #prev_day = invoice_date
+        prev_month_day = prev_day.day
+        if prev_month_day == 7:
+            prev_month_day == 8
+        prev_month_month = prev_day.month - 1
+        if prev_month_month == 0:
+            prev_month_month = 12
+            prev_month_year = prev_day.year - 1
+        else:
+            prev_month_year = prev_day.year
+        prev_month = datetime.date(prev_month_year, prev_month_month, prev_month_day)
+        return "{}-{}".format(prev_month.strftime("%d/%m/%y"), prev_day.strftime("%d/%m/%y"))
+
+    @log
+    def get_codes(self):
+        fechas_facturas = list(self.shelf["reports"]["RESIDENCIAL"].keys())
+        fechas_facturas.sort()
+        fecha_inicio = datetime.datetime(year=2017, month=3, day=1)
+        codigo_inicio = 492
+        final = dict()
+        if fecha_inicio in fechas_facturas:
+            index_inicio = fechas_facturas.index(fecha_inicio)
+            for index, fecha in enumerate(fechas_facturas):
+                final[fecha] = codigo_inicio+index-index_inicio
+        return final
+
     @log
     def set_n43(self, filepath):
-        shelf = self.shelf.copy()
         if os.path.exists(filepath):
-            account_number = "01823999330014690035" #TODO: set in shitty config
+            shelf = dict(self.shelf)
+            codes = get_codes
+            gc.collect()
+            account_number = ["01823999330014690035"] #TODO: set in shitty config
+            applied = dict()
+            final = list()
             for row in self.read_n43(filepath):
                 data = row["data"]
-                if data["cuenta"] == account_number:
-                    pass
+                total = int()
+                possibles = dict()
+                if data["cuenta"] in account_number:
+                    if data["nif"] in shelf["numdoc"]:
+                        id_cliente = shelf["numdoc"][data["nif"]]["id_cliente"]
+                        id_cuentas = shelf["id_cuenta"][id_cliente]["id_cuenta"]
+                        for id_cuenta in id_cuentas:
+                            for id_factura in shelf["id_cuenta"][id_cuenta]["facturas"]:
+                                total += 1
+                                estado = (shelf["index"]["estados"][int.from_bytes(
+                                        shelf["id_factura"][id_factura]["estado_recibo"], "big")])
+                                fecha_factura = int.from_bytes(shelf["id_factura"][id_factura]["fecha_factura"],
+                                                               "big")
+                                fecha_factura = datetime.datetime.fromordinal(fecha_factura)
+                                possibles[id_factura] = {"importe": shelf["id_factura"][id_factura]["importe_adeudado"],
+                                                         "id_cuenta": id_cuenta,
+                                                         "fecha_factura": fecha_factura,
+                                                         "estado": estado}
+                        election = None
+                        if total == 1:
+                            election = [id_factura for id_factura in possibles][0]
+                            if (election in applied and
+                                        applied[election]["importe_aplicado"] >= applied[election]["importe"]):
+                                election = None
+                                #TODO: File to upload
+                        elif total > 1:
+                            ids_factura = [possibles.keys()]
+                            ids_factura.sort()
+                            election = list()
+                            pdte = data["importe"]
+                            for id_factura in ids_factura:
+                                if possibles[id_factura]["estado"]=="IMPAGADO":
+                                    if (not id_factura in applied or
+                                            (id_factura in applied and
+                                            applied[id_factura]["importe_aplicado"] < applied[id_factura]["importe"])):
+                                        unpaid = applied[id_factura]["importe"] - applied[id_factura]["importe_aplicado"]
+                                        pdte -= abs(unpaid)
+                                        election.append(id_factura)
+
+
                 if "eta" in row:
                     yield row
 

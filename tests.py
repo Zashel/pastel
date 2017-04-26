@@ -4,6 +4,7 @@ from pari_model import Pari
 import os
 from definitions import *
 from zrest.server import App, GET, PUT, POST, DELETE
+from utils import *
 import json
 
 class Test_API(unittest.TestCase):
@@ -25,7 +26,6 @@ class Test_API(unittest.TestCase):
         print(self.app.action(PUT, "/facturas",
                               data=json.dumps({"file": os.path.join(N43_PATH, "BI_131_FICHERO_PARI_DIARIO_20170420.csv")})))
         print(self.app.action(DELETE, "/facturas"))
-
 
 if __name__ == "__main__":
     unittest.main()

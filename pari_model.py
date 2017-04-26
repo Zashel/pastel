@@ -7,6 +7,10 @@ import datetime
 from zashel.utils import log
 from math import ceil
 import glob
+import re
+from .utils import *
+
+#TODO: Fix imports order
 
 
 class Pari(RestfulBaseInterface):
@@ -215,6 +219,82 @@ class Pari(RestfulBaseInterface):
         self._loaded_file = name
         self.shelf.close()
         self.set_shelve()
+
+    @log
+    def read_n43(self, filepath):
+        if os.path.exists(filepath):
+            total = int()
+            re_nif = re.compile(r"[A-Z]?[0-9]{5,8}[A-Z]{1}")
+            re_cif = re.compile(r"[A-Z]{1}[0-9]{8}")
+            re_tels = re.compilte(r"\+34[6-9]{1}[0-9]{8}|[6-9]{1}[0-9]{8}")
+            with open(filepath, "r") as file_:
+                f_oper = None
+                f_valor = None
+                oficina_orig = str()
+                importe = str()
+                observaciones = str()
+                account = str()
+                for row in file_:
+                    row = row.strip("\n")
+                    if row.startswith("11"):
+                        account = row[2:20]
+                    if row.startswith("22") or row.startswith("33"):
+                        if not f_oper is None and not observaciones.startswith("TRASP. AGRUPADO") and not observaciones.startswith("TRASPASO A CTA"):
+                            total += 1
+                            observaciones = observaciones.strip()
+                            telefonos = list(observaciones[53:62])
+                            nif = None
+                            if observaciones.startswith("TRANSFER"):
+                                observaciones = observaciones[:-8]
+                            elif observaciones.startswith("81856015"):
+                                nif = calcular_letra_dni(observaciones[15:23])
+                                telefonos.append(observaciones[53:62])
+                            nifs = set()
+                            tels = set()
+                            if nif is None:
+                                for restring in (observaciones,
+                                                 observaciones.replace(".", ""),
+                                                 observaciones.replace("-", ""),
+                                                 observaciones.replace(" ", "")):
+                                    for nif in re_nif.findall(restring.upper()):
+                                        nifs.add(nif)
+                                    for cif in re_cif.findall(restring.upper()):
+                                        if cif[0] in "XYZ":
+                                            cif = calcular_letra_dni(cif)
+                                        nifs.add(cif)
+                                    for tel in re_tels.findall(restring.upper()):
+                                        tels.add(tel)
+                                    telefonos = list(tels)
+                                    nifs = list(nifs)
+                                    nif = nifs[0]
+                            final = {"cuenta": account,
+                                     "fecha_operacion": f_oper,
+                                     "fecha_valor": f_valor,
+                                     "oficina_origen": oficina_orig,
+                                     "importe": importe,
+                                     "observaciones": observaciones,
+                                     "nif": nif,
+                                     "telefonos": telefonos}
+                            f_oper = None
+                            f_valor = None
+                            oficina_orig = str()
+                            importe = str()
+                            observaciones = str()
+                            yield final
+                        if row.startswith("22"):
+                            row = row[4:].strip()
+                            f_oper = datetime.datetime.strptime(row[10:16], "%y%m%d")
+                            f_valor = datetime.datetime.strptime(row[16:22], "%y%m%d")
+                            importe = int(row[28:42])
+                            observaciones = row[52:].strip()
+                    elif row.startswith("23"):
+                        observaciones += row[4:].strip()
+
+    @log
+    def set_n43(self, filepath):
+        if os.path.exists(filepath):
+            account_number = "01823999330014690035" #TODO: set in shitty config
+
 
     @log
     def replace(self, filter, data, **kwargs):

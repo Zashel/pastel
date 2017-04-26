@@ -21,14 +21,7 @@ if __name__ == "__main__":
                               index_fields=CONFIG_FIELDS),
                   "admin",
                   "^/admin/<container>$")
-    #app.set_model(ShelveModel(os.path.join(PATH, "facturas"),
-    #                          30,
-    #                          index_fields=PARI_FIELDS,
-    #                          headers=PARI_FIELDS,
-    #                          unique=PARI_UNIQUE,
-    #                          unique_is_id = True),
-    #              "facturas",
-    #              "^/facturas/<id_factura>$")
+    #TODO: set model to set_n43 in facturas
     app.set_model(Pari(os.path.join(DATABASE_PATH, "facturas")),
                   "facturas",
                   "^/facturas/<id_factura>$")

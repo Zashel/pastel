@@ -156,7 +156,7 @@ class Pari(RestfulBaseInterface):
                           "a") as f:
                     final_list = list()
                     for head in PARI_FILE_FIELDS:
-                        if "factura" in head:
+                        if "fecha" in head:
                             item = datetime.datetime.strptime(data[head], "%d/%m/%y").strftime("%d/%m/%Y")
                         else:
                             item = data[head]

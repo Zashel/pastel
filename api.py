@@ -119,23 +119,6 @@ class API:
                                               importe_devuelto,
                                               importe_impagado
                                               ))+"\n")
-            daily = data["diario"]
-            heads = ";".join(PARI_FILE_FIELDS)
-            print(list(data["diario"].keys()))
-            for fecha_factura in daily:
-                str_fecha_factura = datetime.datetime.strptime(fecha_factura, "%d/%m/%y")
-                with open(os.path.join(DAILY_EXPORT_PATH, "jazztel_ciclo_"+str_fecha_factura.strftime("%Y-%m-%d")+".csv"),
-                          "w") as f:
-                    f.write(heads+"\n")
-                    for row in daily[fecha_factura]:
-                        final_list = list()
-                        for index, head in enumerate(PARI_FILE_FIELDS):
-                            if "factura" in head:
-                                item = datetime.datetime.strptime(row[index], "%d/%m/%y").strftime("%d/%m/%Y")
-                            else:
-                                item = row[index]
-                            final_list.append(item)
-                        f.write(";".join(final_list)+"\n")
             return os.path.join(REPORT_PATH, "Pari", name)
 
     @classmethod

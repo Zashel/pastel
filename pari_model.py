@@ -120,7 +120,7 @@ class Pari(RestfulBaseInterface):
         ife = reports["importes por fechas y estados"]
         ffe = reports["facturas por fechas y estados"]
         dfe = reports["devoluciones por fechas y estados"]
-        diario = reports["diario"]
+        diario = list()
         for row in self.read_pari(pari_file):
             id_factura = int(row["data"]["id_factura"])
             id_cuenta = int(row["data"]["id_cuenta"])
@@ -144,8 +144,21 @@ class Pari(RestfulBaseInterface):
                                                                                                      minute=0,
                                                                                                      second=0,
                                                                                                      microsecond=0):
-                if data["fecha_factura"] not in diario:
-                    diario[data["fecha_factura"]] = list()
+                str_fecha_factura = datetime.datetime.strptime(fecha_factura, "%d/%m/%y")
+                with open(os.path.join(DAILY_EXPORT_PATH,
+                                       "jazztel_ciclo_" + str_fecha_factura.strftime("%Y-%m-%d") + ".csv"),
+                          "w") as f:
+                    if data["fecha_factura"] not in diario:
+                        f.write(heads + "\n")
+                        diario.append(data["fecha_factura"])
+                    final_list = list()
+                    for head in PARI_FILE_FIELDS:
+                        if "factura" in head:
+                            item = datetime.datetime.strptime(row[head], "%d/%m/%y").strftime("%d/%m/%Y")
+                        else:
+                            item = row[head]
+                        final_list.append(item)
+                    f.write(";".join(final_list) + "\n")
                 diario[data["fecha_factura"]].append([data[head] for head in PARI_FILE_FIELDS])
             for report in (ife, ffe, dfe):
                 if data["segmento"] not in report:

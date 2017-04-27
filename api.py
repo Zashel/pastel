@@ -149,7 +149,7 @@ class API:
                         final_list = list()
                         for index, head in enumerate(headers):
                             if "factura" in head:
-                                item = datetime.datetime.strptime(row[head], "%d/%m/%y").strftime("%d/%m/%Y")
+                                item = datetime.datetime.strptime(row[index], "%d/%m/%y").strftime("%d/%m/%Y")
                             else:
                                 item = row[index]
                             final_list.append(item)

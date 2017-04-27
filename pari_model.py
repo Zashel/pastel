@@ -147,7 +147,7 @@ class Pari(RestfulBaseInterface):
                 str_fecha_factura = datetime.datetime.strptime(data["fecha_factura"], "%d/%m/%y")
                 if data["fecha_factura"] not in diario:
                     diario[data["fecha_factura"]] = list()
-                    diario[data["fecha_factura"]].append(";".join(PARI_FILE_FIELDS) + "\n")
+                    diario[data["fecha_factura"]].append(";".join(PARI_FILE_FIELDS))
                 final_list = list()
                 for head in PARI_FILE_FIELDS:
                     if "fecha" in head:
@@ -155,7 +155,7 @@ class Pari(RestfulBaseInterface):
                     else:
                         item = data[head]
                     final_list.append(item)
-                diario[data["fecha_factura"]].append(";".join(final_list) + "\n")
+                diario[data["fecha_factura"]].append(";".join(final_list))
             for report in (ife, ffe, dfe):
                 if data["segmento"] not in report:
                     report[data["segmento"]] = dict()

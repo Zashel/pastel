@@ -155,7 +155,7 @@ class Pari(RestfulBaseInterface):
                     else:
                         item = data[head]
                     final_list.append(item)
-                    diario[data["fecha_factura"]].append(";".join(final_list) + "\n")
+                diario[data["fecha_factura"]].append(";".join(final_list) + "\n")
             for report in (ife, ffe, dfe):
                 if data["segmento"] not in report:
                     report[data["segmento"]] = dict()

@@ -146,7 +146,7 @@ class Pari(RestfulBaseInterface):
                                                                                                      minute=0,
                                                                                                      second=0,
                                                                                                      microsecond=0):
-                diario[data["fecha_factura"]] = data.coy()
+                diario[data["fecha_factura"]] = data.copy()
             for report in (ife, ffe, dfe):
                 if data["segmento"] not in report:
                     report[data["segmento"]] = dict()

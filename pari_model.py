@@ -75,12 +75,8 @@ class Pari(RestfulBaseInterface):
                     info = True
                 row = line.strip("\n").split("|")
                 final = dict()
-                #for key in PARI_FIELDS:
-                #    if key.upper() in headers:
-                #        final[key] = row[headers.index(key.upper())]
                 for index, key in enumerate(headers):
                     final[key.lower()] = row[index]
-                #final["ciclo_facturado"] = API.get_billing_period(final["fecha_factura"])
                 if info is True:
                     time = datetime.datetime.now() - begin
                     yield {"percent": round(percent, 4),
@@ -150,7 +146,7 @@ class Pari(RestfulBaseInterface):
                                                                                                      minute=0,
                                                                                                      second=0,
                                                                                                      microsecond=0):
-                diario[data["fecha_factura"]] = data.copy()
+                diario[data["fecha_factura"]] = data.coy()
             for report in (ife, ffe, dfe):
                 if data["segmento"] not in report:
                     report[data["segmento"]] = dict()
@@ -472,8 +468,7 @@ class Pari(RestfulBaseInterface):
             self.set_shelve("c")
             self.shelf.close()
             self.set_shelve()
-            return {"filepath": self.filepath,
-                    "data": {"pari": {"data": [],
+            return {"data": {"pari": {"data": [],
                                       "total": 0,
                                       "page": 1,
                                       "items_per_page": self.items_per_page}
@@ -481,6 +476,18 @@ class Pari(RestfulBaseInterface):
                     "total": 1,
                     "page": 1,
                     "items_per_page": self.items_per_page}
+
+    @log
+    def new_n43(self, data, **kwargs): #TODO: Move to Server
+        if self.loaded_file is not None and "file" in data and os.path.exists(data["file"]):
+            final = None
+            for item in self.set_n43(data["file"]):
+                print("\r{0:{w}}".format(str(item["eta"]), w=79, fill=" "), end="")
+                final = item
+            print()
+        return {"data": final,
+                "headers": {"Content-Type": "text/csv"}}
+
     @log
     def new(self, data, **kwargs): #TODO: Move to Server
         if self.loaded_file is None and "file" in data and os.path.exists(data["file"]):

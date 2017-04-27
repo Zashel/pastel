@@ -69,6 +69,15 @@ class API:
 
     @classmethod
     @log
+    def set_n43(cls, filename):
+        data = requests.put("http://{}:{}{}/n43".format(HOST,
+                                                             str(PORT),
+                                                             BASE_URI[1:-1]),
+                            json={"file": filename})
+        return data
+
+    @classmethod
+    @log
     def set_pari(cls):
         files =  glob.glob("{}*.csv".format(os.path.join(N43_PATH_INCOMING, "BI_131_FICHERO_PARI_DIARIO")))
         files.sort()
@@ -113,6 +122,39 @@ class API:
                                               importe_devuelto,
                                               importe_impagado
                                               ))+"\n")
+            daily = data["diario"]
+            headers = ("id_cliente",
+                              "id_cuenta",
+                              "numdoc",
+                              "tipo_doc",
+                              "fecha_factura",
+                              "fecha_puesta_cobro",
+                              "id_factura",
+                              "segmento",
+                              "importe_adeudado",
+                              "metodo_pago",
+                              "fecha_devolucion",
+                              "importe_devolucion",
+                              "fecha_pago",
+                              "importe_aplicado",
+                              "metodo_recobro",
+                              "fecha_entrada_fichero",
+                              "fecha_salida_fichero",
+                              "estado_recibo",
+                              "primera_factura")
+            heads = ";".join(headers)
+            for fecha_factura in daily:
+                fecha_factura = datetime.datetime.strptime(fecha_factura, "%d/%m/%y")
+                with open(os.path.join(DAILY_EXPORT_PATH, "jazztel_ciclo_"+fecha_factura.strftime("%Y-%m-%d")+".csv")) as f:
+                    for row in daily[fecha_factura]:
+                        final_list = list()
+                        for head in headers:
+                            if "factura" in head:
+                                item = datetime.datetime.strptime(row[head], "%d/%m/%y").strftime("%d/%m/%Y")
+                            else:
+                                item = row[head]
+                            final_list.append(item)
+                        f.write(";".join(final_list)+"\n")
             return os.path.join(REPORT_PATH, "Pari", name)
 
     @classmethod

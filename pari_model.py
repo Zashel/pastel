@@ -145,12 +145,15 @@ class Pari(RestfulBaseInterface):
                                                                                                      second=0,
                                                                                                      microsecond=0):
                 str_fecha_factura = datetime.datetime.strptime(data["fecha_factura"], "%d/%m/%y")
-                with open(os.path.join(DAILY_EXPORT_PATH,
-                                       "jazztel_ciclo_" + str_fecha_factura.strftime("%Y-%m-%d") + ".csv"),
-                          "w") as f:
-                    if data["fecha_factura"] not in diario:
+                if data["fecha_factura"] not in diario:
+                    with open(os.path.join(DAILY_EXPORT_PATH,
+                                           "jazztel_ciclo_" + str_fecha_factura.strftime("%Y-%m-%d") + ".csv"),
+                              "w") as f:
                         f.write(heads + "\n")
                         diario.append(data["fecha_factura"])
+                with open(os.path.join(DAILY_EXPORT_PATH,
+                                       "jazztel_ciclo_" + str_fecha_factura.strftime("%Y-%m-%d") + ".csv"),
+                          "a") as f:
                     final_list = list()
                     for head in PARI_FILE_FIELDS:
                         if "factura" in head:

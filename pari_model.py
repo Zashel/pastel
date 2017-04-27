@@ -146,6 +146,7 @@ class Pari(RestfulBaseInterface):
                                                                                                      microsecond=0):
                 str_fecha_factura = datetime.datetime.strptime(data["fecha_factura"], "%d/%m/%y")
                 if data["fecha_factura"] not in diario:
+                    diario[data["fecha_factura"]] = list()
                     diario[data["fecha_factura"]].append(";".join(PARI_FILE_FIELDS) + "\n")
                 final_list = list()
                 for head in PARI_FILE_FIELDS:

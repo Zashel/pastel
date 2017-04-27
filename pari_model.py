@@ -149,7 +149,7 @@ class Pari(RestfulBaseInterface):
                     with open(os.path.join(DAILY_EXPORT_PATH,
                                            "jazztel_ciclo_" + str_fecha_factura.strftime("%Y-%m-%d") + ".csv"),
                               "w") as f:
-                        f.write(PARI_FILE_FIELDS + "\n")
+                        f.write(";".join(PARI_FILE_FIELDS) + "\n")
                         diario.append(data["fecha_factura"])
                 with open(os.path.join(DAILY_EXPORT_PATH,
                                        "jazztel_ciclo_" + str_fecha_factura.strftime("%Y-%m-%d") + ".csv"),

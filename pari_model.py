@@ -146,7 +146,7 @@ class Pari(RestfulBaseInterface):
                                                                                                      microsecond=0):
                 if data["fecha_factura"] not in diario:
                     diario[data["fecha_factura"]] = list()
-                diario[data["fecha_factura"]].append(data.copy())
+                diario[data["fecha_factura"]].append([data[head] for head in PARI_FILE_FIELDS])
             for report in (ife, ffe, dfe):
                 if data["segmento"] not in report:
                     report[data["segmento"]] = dict()

@@ -120,26 +120,7 @@ class API:
                                               importe_impagado
                                               ))+"\n")
             daily = data["diario"]
-            headers = ("id_cliente",
-                       "id_cuenta",
-                       "numdoc",
-                       "tipo_doc",
-                       "fecha_factura",
-                       "fecha_puesta_cobro",
-                       "id_factura",
-                       "segmento",
-                       "importe_adeudado",
-                       "metodo_pago",
-                       "fecha_devolucion",
-                       "importe_devolucion",
-                       "fecha_pago",
-                       "importe_aplicado",
-                       "metodo_recobro",
-                       "fecha_entrada_fichero",
-                       "fecha_salida_fichero",
-                       "estado_recibo",
-                       "primera_factura")
-            heads = ";".join(headers)
+            heads = ";".join(PARI_FILE_FIELDS)
             print(list(data["diario"].keys()))
             for fecha_factura in daily:
                 str_fecha_factura = datetime.datetime.strptime(fecha_factura, "%d/%m/%y")
@@ -148,11 +129,11 @@ class API:
                     f.write(heads+"\n")
                     for row in daily[fecha_factura]:
                         final_list = list()
-                        for index, head in enumerate(headers):
+                        for index, head in enumerate(PARI_FILE_FIELDS):
                             if "factura" in head:
-                                item = datetime.datetime.strptime(row[head], "%d/%m/%y").strftime("%d/%m/%Y")
+                                item = datetime.datetime.strptime(row[index], "%d/%m/%y").strftime("%d/%m/%Y")
                             else:
-                                item = row[head]
+                                item = row[index]
                             final_list.append(item)
                         f.write(";".join(final_list)+"\n")
             return os.path.join(REPORT_PATH, "Pari", name)

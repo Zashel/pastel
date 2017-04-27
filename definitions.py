@@ -28,7 +28,8 @@ __all__ = ["UUID",
            "PM_PAYMENT_METHOD",
            "PM_PAYMENT_WAY",
            "EXPORT_PATH",
-           "DAILY_EXPORT_PATH"]
+           "DAILY_EXPORT_PATH",
+           "PARI_FILE_FIELDS"]
 
 
 #Identifier of session
@@ -53,6 +54,26 @@ PARI_FIELDS = ["id_cliente",
                "segmento",
                "importe_adeudado",
                "estado_recibo"]
+
+PARI_FILE_FIELDS = ["id_cliente",
+                    "id_cuenta",
+                    "numdoc",
+                    "tipo_doc",
+                    "fecha_factura",
+                    "fecha_puesta_cobro",
+                    "id_factura",
+                    "segmento",
+                    "importe_adeudado",
+                    "metodo_pago",
+                    "fecha_devolucion",
+                    "importe_devolucion",
+                    "fecha_pago",
+                    "importe_aplicado",
+                    "metodo_recobro",
+                    "fecha_entrada_fichero",
+                    "fecha_salida_fichero",
+                    "estado_recibo",
+                    "primera_factura"]
 
 PARI_UNIQUE = "id_factura"
 

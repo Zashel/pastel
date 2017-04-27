@@ -557,24 +557,22 @@ class Pari(RestfulBaseInterface):
                         if ini+index not in self.list_data:
                             data = template.copy()
                             data["id_factura"] = id_factura
-                            print(id_factura)
                             while any(data[key] is None for key in template):
                                 for subfilter in main_indexes:
                                     if subfilter in data and data[subfilter] is not None:
                                         data.update(dict(zip(shelf[subfilter]["_heads"],
                                                                  shelf[subfilter]["data"][data[subfilter]])))
-                                print(data)
                             self.list_data[ini+index] = self.friend_fetch(data.copy())
                 try:
                     del(shelf)
                 except UnboundLocalError:
                     pass
                 gc.collect()
-                print("LEN list_data: {}".format(len(self.list_data)))
-                print("LEN ids_facturas: {}".format(len(self.ids_facturas)))
-                print("INI: {}".format(ini))
-                print("END: {}".format(end))
-                return {"data": [self.list_data[index] for index in range(ini, end)],
+                if len(self.list_data) == 0:
+                    data = []
+                else:
+                    data = [self.list_data[index] for index in range(ini, end)]
+                return {"data": data,
                         "total": self.total_query,
                         "page": self.page,
                         "items_per_page": self.items_per_page}

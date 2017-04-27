@@ -144,14 +144,15 @@ class API:
                 str_fecha_factura = datetime.datetime.strptime(fecha_factura, "%d/%m/%y")
                 with open(os.path.join(DAILY_EXPORT_PATH, "jazztel_ciclo_"+str_fecha_factura.strftime("%Y-%m-%d")+".csv"),
                           "w") as f:
+                    f.write(heads+"\n")
                     for row in daily[fecha_factura]:
                         final_list = list()
-                        for head in headers:
+                        for index, head in enumerate(headers):
                             if "factura" in head:
                                 item = datetime.datetime.strptime(row[head], "%d/%m/%y").strftime("%d/%m/%Y")
                             else:
                                 item = row[head]
-                            final_list.append(item)
+                            final_list.append(index)
                         f.write(";".join(final_list)+"\n")
             return os.path.join(REPORT_PATH, "Pari", name)
 

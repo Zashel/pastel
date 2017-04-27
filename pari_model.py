@@ -57,7 +57,6 @@ class Pari(RestfulBaseInterface):
     def headers(self):
         return PARI_FIELDS
 
-    @log
     def read_pari(self, pari_file):
         assert os.path.exists(pari_file)
         begin = datetime.datetime.now()
@@ -87,7 +86,6 @@ class Pari(RestfulBaseInterface):
                 else:
                     yield {"data": final}
 
-    @log
     def set_pari(self, pari_file):
         API_id_factura = {"_heads": ["fecha_factura",
                                      "importe_adeudado",
@@ -230,7 +228,6 @@ class Pari(RestfulBaseInterface):
         self.shelf.close()
         self.set_shelve()
 
-    @log
     def read_n43(self, filepath):
         if os.path.exists(filepath):
             total_bytes = os.stat(pari_file).st_size
@@ -323,7 +320,6 @@ class Pari(RestfulBaseInterface):
                         observaciones += row[4:].strip()
 
     @classmethod
-    @log
     def get_billing_period(cls, invoice_date):
         if isinstance(invoice_date, str):
             invoice_date = datetime.datetime.strptime(invoice_date, "%d/%m/%y").date()
@@ -344,7 +340,6 @@ class Pari(RestfulBaseInterface):
         prev_month = datetime.date(prev_month_year, prev_month_month, prev_month_day)
         return "{}-{}".format(prev_month.strftime("%d/%m/%y"), prev_day.strftime("%d/%m/%y"))
 
-    @log
     def get_codes(self):
         fechas_facturas = list(self.shelf["reports"]["RESIDENCIAL"].keys())
         fechas_facturas.sort()
@@ -357,7 +352,6 @@ class Pari(RestfulBaseInterface):
                 final[fecha] = codigo_inicio+index-index_inicio
         return final
 
-    @log
     def set_n43(self, filepath):
         if os.path.exists(filepath):
             apply_date = datetime.datetime.today().strftime("%d/%m/%Y") #TODO: To config
@@ -447,7 +441,6 @@ class Pari(RestfulBaseInterface):
                     yield row
                 yield manuals
 
-    @log
     def replace(self, filter, data, **kwargs):
         if "file" in data and os.path.exists(data["file"]):
             path, name = os.path.split(data["file"])
@@ -458,7 +451,6 @@ class Pari(RestfulBaseInterface):
                 return self.fetch({}, reportes=True)
         #TODO: Reenviar algo si no hay nada
 
-    @log
     def drop(self, filter, **kwargs):
         if self.loaded_file is not None:
             self._loaded_file = None
@@ -477,7 +469,6 @@ class Pari(RestfulBaseInterface):
                     "page": 1,
                     "items_per_page": self.items_per_page}
 
-    @log
     def new_n43(self, data, **kwargs): #TODO: Move to Server
         if self.loaded_file is not None and "file" in data and os.path.exists(data["file"]):
             final = None
@@ -488,7 +479,6 @@ class Pari(RestfulBaseInterface):
         return {"data": final,
                 "headers": {"Content-Type": "text/csv"}}
 
-    @log
     def new(self, data, **kwargs): #TODO: Move to Server
         if self.loaded_file is None and "file" in data and os.path.exists(data["file"]):
             for item in self.set_pari(data["file"]):
@@ -496,7 +486,6 @@ class Pari(RestfulBaseInterface):
             print()
         return self.fetch({}, reportes=True)
 
-    @log
     def fetch(self, filter, **kwargs):
         if not self.loaded_file:
             return {"filepath": "",

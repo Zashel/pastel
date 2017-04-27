@@ -59,7 +59,6 @@ class API:
             time.sleep(60)
 
     @classmethod
-    @log
     def log_error(cls, function, aditional_dict, file=LOG_ERROR):
         with open(file, "a") as logger:
             to_log = "{} - API.{}:\n\t{}\n".format(datetime.datetime.now().strftime("%d/%m/%Y - %H:%M:%S"),
@@ -68,7 +67,6 @@ class API:
             logger.write(to_log)
 
     @classmethod
-    @log
     def set_n43(cls, filename):
         data = requests.put("http://{}:{}{}/n43".format(HOST,
                                                              str(PORT),
@@ -77,7 +75,6 @@ class API:
         return data
 
     @classmethod
-    @log
     def set_pari(cls):
         files =  glob.glob("{}*.csv".format(os.path.join(N43_PATH_INCOMING, "BI_131_FICHERO_PARI_DIARIO")))
         files.sort()
@@ -145,7 +142,8 @@ class API:
             heads = ";".join(headers)
             for fecha_factura in daily:
                 fecha_factura = datetime.datetime.strptime(fecha_factura, "%d/%m/%y")
-                with open(os.path.join(DAILY_EXPORT_PATH, "jazztel_ciclo_"+fecha_factura.strftime("%Y-%m-%d")+".csv")) as f:
+                with open(os.path.join(DAILY_EXPORT_PATH, "jazztel_ciclo_"+fecha_factura.strftime("%Y-%m-%d")+".csv"),
+                          "w") as f:
                     for row in daily[fecha_factura]:
                         final_list = list()
                         for head in headers:
@@ -158,7 +156,6 @@ class API:
             return os.path.join(REPORT_PATH, "Pari", name)
 
     @classmethod
-    @log
     def export_unpaid_by_invoice_date(cls, dates):
         format = "%d/%m/%y"
         finaldates = list()

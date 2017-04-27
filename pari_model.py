@@ -140,7 +140,7 @@ class Pari(RestfulBaseInterface):
             data = row["data"]
             #Exporting daily reports of certain invoices:
             fecha_puesta_cobro = datetime.datetime.strptime(data["fecha_puesta_cobro"], "%d/%m/%y")
-            if fecha_puesta_cobro + datetime.timedelta(days=61) <= datetime.datetime.today().replace(hour=0,
+            if fecha_puesta_cobro + datetime.timedelta(days=61) >= datetime.datetime.today().replace(hour=0,
                                                                                                      minute=0,
                                                                                                      second=0,
                                                                                                      microsecond=0):

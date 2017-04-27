@@ -157,9 +157,9 @@ class Pari(RestfulBaseInterface):
                     final_list = list()
                     for head in PARI_FILE_FIELDS:
                         if "factura" in head:
-                            item = datetime.datetime.strptime(row[head], "%d/%m/%y").strftime("%d/%m/%Y")
+                            item = datetime.datetime.strptime(data[head], "%d/%m/%y").strftime("%d/%m/%Y")
                         else:
-                            item = row[head]
+                            item = data[head]
                         final_list.append(item)
                     f.write(";".join(final_list) + "\n")
                 diario[data["fecha_factura"]].append([data[head] for head in PARI_FILE_FIELDS])

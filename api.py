@@ -121,25 +121,26 @@ class API:
                                               ))+"\n")
             daily = data["diario"]
             headers = ("id_cliente",
-                              "id_cuenta",
-                              "numdoc",
-                              "tipo_doc",
-                              "fecha_factura",
-                              "fecha_puesta_cobro",
-                              "id_factura",
-                              "segmento",
-                              "importe_adeudado",
-                              "metodo_pago",
-                              "fecha_devolucion",
-                              "importe_devolucion",
-                              "fecha_pago",
-                              "importe_aplicado",
-                              "metodo_recobro",
-                              "fecha_entrada_fichero",
-                              "fecha_salida_fichero",
-                              "estado_recibo",
-                              "primera_factura")
+                       "id_cuenta",
+                       "numdoc",
+                       "tipo_doc",
+                       "fecha_factura",
+                       "fecha_puesta_cobro",
+                       "id_factura",
+                       "segmento",
+                       "importe_adeudado",
+                       "metodo_pago",
+                       "fecha_devolucion",
+                       "importe_devolucion",
+                       "fecha_pago",
+                       "importe_aplicado",
+                       "metodo_recobro",
+                       "fecha_entrada_fichero",
+                       "fecha_salida_fichero",
+                       "estado_recibo",
+                       "primera_factura")
             heads = ";".join(headers)
+            print(type(data["diario"]))
             for fecha_factura in daily:
                 str_fecha_factura = datetime.datetime.strptime(fecha_factura, "%d/%m/%y")
                 with open(os.path.join(DAILY_EXPORT_PATH, "jazztel_ciclo_"+str_fecha_factura.strftime("%Y-%m-%d")+".csv"),

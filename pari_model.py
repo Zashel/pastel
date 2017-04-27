@@ -120,7 +120,7 @@ class Pari(RestfulBaseInterface):
         ife = reports["importes por fechas y estados"]
         ffe = reports["facturas por fechas y estados"]
         dfe = reports["devoluciones por fechas y estados"]
-        diario = list()
+        diario = dict()
         for row in self.read_pari(pari_file):
             id_factura = int(row["data"]["id_factura"])
             id_cuenta = int(row["data"]["id_cuenta"])
@@ -146,22 +146,15 @@ class Pari(RestfulBaseInterface):
                                                                                                      microsecond=0):
                 str_fecha_factura = datetime.datetime.strptime(data["fecha_factura"], "%d/%m/%y")
                 if data["fecha_factura"] not in diario:
-                    with open(os.path.join(DAILY_EXPORT_PATH,
-                                           "jazztel_ciclo_" + str_fecha_factura.strftime("%Y-%m-%d") + ".csv"),
-                              "w") as f:
-                        f.write(";".join(PARI_FILE_FIELDS) + "\n")
-                        diario.append(data["fecha_factura"])
-                with open(os.path.join(DAILY_EXPORT_PATH,
-                                       "jazztel_ciclo_" + str_fecha_factura.strftime("%Y-%m-%d") + ".csv"),
-                          "a") as f:
-                    final_list = list()
-                    for head in PARI_FILE_FIELDS:
-                        if "fecha" in head:
-                            item = datetime.datetime.strptime(data[head], "%d/%m/%y").strftime("%d/%m/%Y")
-                        else:
-                            item = data[head]
-                        final_list.append(item)
-                    f.write(";".join(final_list) + "\n")
+                    diario[data["fecha_factura"]].append(";".join(PARI_FILE_FIELDS) + "\n")
+                final_list = list()
+                for head in PARI_FILE_FIELDS:
+                    if "fecha" in head:
+                        item = datetime.datetime.strptime(data[head], "%d/%m/%y").strftime("%d/%m/%Y")
+                    else:
+                        item = data[head]
+                    final_list.append(item)
+                    diario[data["fecha_factura"]].append(";".join(final_list) + "\n")
             for report in (ife, ffe, dfe):
                 if data["segmento"] not in report:
                     report[data["segmento"]] = dict()
@@ -244,6 +237,12 @@ class Pari(RestfulBaseInterface):
         self._loaded_file = name
         self.shelf.close()
         self.set_shelve()
+        for fecha_factura in diario:
+            str_fecha_factura = datetime.datetime.strptime(data["fecha_factura"], "%d/%m/%y")
+            with open(os.path.join(DAILY_EXPORT_PATH,
+                                   "jazztel_ciclo_" + str_fecha_factura.strftime("%Y-%m-%d") + ".csv"),
+                      "w") as f:
+                f.write("\n".join(diario[fecha_factura]))
 
     def read_n43(self, filepath):
         if os.path.exists(filepath):

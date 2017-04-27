@@ -8,7 +8,7 @@ from zashel.utils import log
 from math import ceil
 import glob
 import re
-from .utils import *
+from utils import *
 
 #TODO: Fix imports order
 

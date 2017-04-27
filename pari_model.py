@@ -239,7 +239,7 @@ class Pari(RestfulBaseInterface):
         self.shelf.close()
         self.set_shelve()
         for fecha_factura in diario:
-            str_fecha_factura = datetime.datetime.strptime(data["fecha_factura"], "%d/%m/%y")
+            str_fecha_factura = datetime.datetime.strptime(fecha_factura, "%d/%m/%y")
             with open(os.path.join(DAILY_EXPORT_PATH,
                                    "jazztel_ciclo_" + str_fecha_factura.strftime("%Y-%m-%d") + ".csv"),
                       "w") as f:

@@ -1,6 +1,6 @@
 #! Python/pastel.exe
 
-from zrest.server import App, GET
+from zrest.server import App, GET, PUT
 from zrest.datamodels.shelvemodels import ShelveModel, ShelveRelational
 from definitions import *
 from pari_model import Pari
@@ -21,10 +21,10 @@ if __name__ == "__main__":
                               index_fields=CONFIG_FIELDS),
                   "admin",
                   "^/admin/<container>$")
-    #TODO: set model to set_n43 in facturas
     app.set_model(Pari(os.path.join(DATABASE_PATH, "facturas")),
                   "facturas",
                   "^/facturas/<id_factura>$")
+    app.set_method("facturas", "^/n43$", PUT, "new_n43")
     app.set_model(ShelveModel(os.path.join(DATABASE_PATH, "pagos"),
                               index_fields=PAYMENTS_FIELDS,
                               headers=PAYMENTS_FIELDS),

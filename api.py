@@ -141,8 +141,8 @@ class API:
                               "primera_factura")
             heads = ";".join(headers)
             for fecha_factura in daily:
-                fecha_factura = datetime.datetime.strptime(fecha_factura, "%d/%m/%y")
-                with open(os.path.join(DAILY_EXPORT_PATH, "jazztel_ciclo_"+fecha_factura.strftime("%Y-%m-%d")+".csv"),
+                str_fecha_factura = datetime.datetime.strptime(fecha_factura, "%d/%m/%y")
+                with open(os.path.join(DAILY_EXPORT_PATH, "jazztel_ciclo_"+str_fecha_factura.strftime("%Y-%m-%d")+".csv"),
                           "w") as f:
                     for row in daily[fecha_factura]:
                         final_list = list()

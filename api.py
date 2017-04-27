@@ -151,8 +151,8 @@ class API:
                             if "factura" in head:
                                 item = datetime.datetime.strptime(row[head], "%d/%m/%y").strftime("%d/%m/%Y")
                             else:
-                                item = row[head]
-                            final_list.append(index)
+                                item = row[index]
+                            final_list.append(item)
                         f.write(";".join(final_list)+"\n")
             return os.path.join(REPORT_PATH, "Pari", name)
 

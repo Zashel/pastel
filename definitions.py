@@ -21,10 +21,14 @@ __all__ = ["UUID",
            "DATABASE_PATH",
            "REMOTE_PATH",
            "N43_PATH",
+           "N43_PATH_INCOMING",
+           "N43_PATH_OUTGOING",
            "REPORT_PATH",
            "PM_CUSTOMER",
            "PM_PAYMENT_METHOD",
-           "PM_PAYMENT_WAY"]
+           "PM_PAYMENT_WAY",
+           "EXPORT_PATH",
+           "DAILY_EXPORT_PATH"]
 
 
 #Identifier of session
@@ -85,7 +89,11 @@ REMOTE_PATH = r"//pnaspom2/campanas$/a-c/cobros/financiacion"
 PATH = search_win_drive("PASTEL")
 DATABASE_PATH = os.path.join(PATH, "DB")
 REPORT_PATH = os.path.join(PATH, "Reportes")
-N43_PATH = search_win_drive(r"INFORMES GESTIÓN DIARIA\0.REPORTES BBOO\001 CARPETA DE PAGOS\040 NORMA43_JAZZTEL\041 ENTRADAS")
+EXPORT_PATH = os.path.join(PATH, "Exportaciones")
+DAILY_EXPORT_PATH = os.path.join(EXPORT_PATH, "Diarias")
+N43_PATH = search_win_drive(r"INFORMES GESTIÓN DIARIA\0.REPORTES BBOO\001 CARPETA DE PAGOS\040 NORMA43_JAZZTEL")
+N43_PATH_INCOMING = os.path.join(N43_PATH, "041 ENTRADAS")
+N43_PATH_OUTGOING = os.path.join(N43_PATH, "042 SALIDAS")
 BASE_URI = "^/pastel/api/v1$"
 LOG_ERROR = os.path.join(LOCAL_PATH, "log_error_{}".format(UUID))
 LOG_ERROR_PARI = os.path.join(LOCAL_PATH, "log_error_pari_{}".format(UUID))

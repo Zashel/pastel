@@ -121,10 +121,12 @@ class Pari(RestfulBaseInterface):
         self.all = set()
         reports = {"importes por fechas y estados": dict(),
                     "facturas por fechas y estados": dict(),
-                    "devoluciones por fechas y estados": dict()}
+                    "devoluciones por fechas y estados": dict(),
+                    "diario": dict()}
         ife = reports["importes por fechas y estados"]
         ffe = reports["facturas por fechas y estados"]
         dfe = reports["devoluciones por fechas y estados"]
+        diario = reports["diario"]
         for row in self.read_pari(pari_file):
             id_factura = int(row["data"]["id_factura"])
             id_cuenta = int(row["data"]["id_cuenta"])
@@ -142,6 +144,13 @@ class Pari(RestfulBaseInterface):
                      "reports": reports
                      }
             data = row["data"]
+            #Exporting daily reports of certain invoices:
+            fecha_puesta_cobro = datetime.datetime.strptime(data["fecha_puesta_cobro"], "%d/%m/%y")
+            if fecha_puesta_cobro + datetime.timedelta(days=61) <= datetime.datetime.today().replace(hour=0,
+                                                                                                     minute=0,
+                                                                                                     second=0,
+                                                                                                     microsecond=0):
+                diario[data["fecha_factura"]] = data.copy()
             for report in (ife, ffe, dfe):
                 if data["segmento"] not in report:
                     report[data["segmento"]] = dict()
@@ -156,7 +165,7 @@ class Pari(RestfulBaseInterface):
             dfe[data["segmento"]][data["fecha_factura"]][data["estado_recibo"]] += int(
                     data["importe_devolucion"].replace(",", ""))
             ffe[data["segmento"]][data["fecha_factura"]][data["estado_recibo"]] += 1
-            if (row["data"]["estado_recibo"] == "IMPAGADO" or
+            if (row["data"]["estado_recibo"] == "IMPAGADO" or row["data"]["estado_recibo"] == "PAGO PARCIAL" or
                         datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
                 for name, item, api in (("id_factura", id_factura, API_id_factura),
                                         ("id_cuenta", id_cuenta, API_id_cuenta),
@@ -355,6 +364,7 @@ class Pari(RestfulBaseInterface):
     @log
     def set_n43(self, filepath):
         if os.path.exists(filepath):
+            apply_date = datetime.datetime.today().strftime("%d/%m/%Y") #TODO: To config
             shelf = dict(self.shelf)
             codes = self.get_codes()
             gc.collect()
@@ -364,11 +374,15 @@ class Pari(RestfulBaseInterface):
             else:
                 applied = dict()
             final = list()
+            manuals = list()
             for row in self.read_n43(filepath):
                 data = row["data"]
                 total = int()
                 possibles = dict()
+                go_on = True
                 if data["cuenta"] in account_number:
+                    id_cliente = str()
+                    id_cuentas = list()
                     if data["nif"] in shelf["numdoc"]:
                         id_cliente = shelf["numdoc"][data["nif"]]["id_cliente"]
                         id_cuentas = shelf["id_cuenta"][id_cliente]["id_cuenta"]
@@ -388,7 +402,6 @@ class Pari(RestfulBaseInterface):
                         if total >= 1:
                             ids_factura = [possibles.keys()]
                             ids_factura.sort()
-                            election = list()
                             pdte = data["importe"]
                             for id_factura in ids_factura:
                                 if possibles[id_factura]["estado"]=="IMPAGADO":
@@ -396,16 +409,47 @@ class Pari(RestfulBaseInterface):
                                             (id_factura in applied and
                                             applied[id_factura]["importe_aplicado"] < applied[id_factura]["importe"]) and
                                             pdte > 0):
+                                        if not id_factura in applied:
+                                            applied[id_factura] = {"importe_aplicado": 0,
+                                                                   "importe": possibles[id_factura]["importe"]}
                                         unpaid = applied[id_factura]["importe"] - applied[id_factura]["importe_aplicado"]
-                                        pdte -= unpaid
+                                        to_apply = pdte < unpaid and pdte or unpaid
+                                        pdte -= to_apply
                                         if pdte < 0:
                                             pdte = 0
-                                        election.append(id_factura)
+                                        code = codes[possibles[id_factura]["fecha_factura"]]
+                                        subdata = [str(apply_date),
+                                                   str(code),
+                                                   str(PM_CUSTOMER),
+                                                   str(data["nif"]),
+                                                   str(id_factura),
+                                                   str(data["fecha_valor"]),
+                                                   str(to_apply)[:-2]+","+str(to_apply)[-2:],
+                                                   str(self.get_billing_period(possibles[id_factura]["fecha_factura"])),
+                                                   str(PM_PAYMENT_METHOD),
+                                                   str(PM_PAYMENT_WAY)
+                                                   ]
+                                        final.append(";".join(subdata))
+                                        applied[id_factura]["importe_aplicado"] += to_apply
                                 if pdte == 0:
+                                    go_on = False
                                     break
+                        if pdte > 0:
+                            go_on = True
+                    else:
+                        go_on = True
+                    if go_on is True:
+                        go_on_final = row
+                        go_on_final.update({"id_cliente": id_cliente,
+                                      "id_cuentas": id_cuentas,
+                                      "posibles": possibles})
+                        manuals.append(go_on_final)
                 self.shelf["aplicados"] = applied
+                with open(os.path.join(EXPORT_PATH, "localizacion_automatica_{}.csv".format(apply_date)), "w") as f:
+                    f.write("\n".join(final))
                 if "eta" in row:
                     yield row
+                yield manuals
 
     @log
     def replace(self, filter, data, **kwargs):
@@ -438,7 +482,7 @@ class Pari(RestfulBaseInterface):
                     "page": 1,
                     "items_per_page": self.items_per_page}
     @log
-    def new(self, data, **kwargs):
+    def new(self, data, **kwargs): #TODO: Move to Server
         if self.loaded_file is None and "file" in data and os.path.exists(data["file"]):
             for item in self.set_pari(data["file"]):
                 print("\r{0:{w}}".format(str(item["eta"]), w=79, fill=" "), end="")

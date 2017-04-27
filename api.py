@@ -140,7 +140,7 @@ class API:
                        "estado_recibo",
                        "primera_factura")
             heads = ";".join(headers)
-            print(type(data["diario"]))
+            print(list(data["diario"].keys()))
             for fecha_factura in daily:
                 str_fecha_factura = datetime.datetime.strptime(fecha_factura, "%d/%m/%y")
                 with open(os.path.join(DAILY_EXPORT_PATH, "jazztel_ciclo_"+str_fecha_factura.strftime("%Y-%m-%d")+".csv"),

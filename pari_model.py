@@ -356,10 +356,13 @@ class Pari(RestfulBaseInterface):
     def set_n43(self, filepath):
         if os.path.exists(filepath):
             shelf = dict(self.shelf)
-            codes = get_codes
+            codes = self.get_codes()
             gc.collect()
             account_number = ["01823999330014690035"] #TODO: set in shitty config
-            applied = dict()
+            if "aplicados" in shelf:
+                applied = shelf["aplicados"]
+            else:
+                applied = dict()
             final = list()
             for row in self.read_n43(filepath):
                 data = row["data"]
@@ -382,13 +385,7 @@ class Pari(RestfulBaseInterface):
                                                          "fecha_factura": fecha_factura,
                                                          "estado": estado}
                         election = None
-                        if total == 1:
-                            election = [id_factura for id_factura in possibles][0]
-                            if (election in applied and
-                                        applied[election]["importe_aplicado"] >= applied[election]["importe"]):
-                                election = None
-                                #TODO: File to upload
-                        elif total > 1:
+                        if total >= 1:
                             ids_factura = [possibles.keys()]
                             ids_factura.sort()
                             election = list()
@@ -397,12 +394,16 @@ class Pari(RestfulBaseInterface):
                                 if possibles[id_factura]["estado"]=="IMPAGADO":
                                     if (not id_factura in applied or
                                             (id_factura in applied and
-                                            applied[id_factura]["importe_aplicado"] < applied[id_factura]["importe"])):
+                                            applied[id_factura]["importe_aplicado"] < applied[id_factura]["importe"]) and
+                                            pdte > 0):
                                         unpaid = applied[id_factura]["importe"] - applied[id_factura]["importe_aplicado"]
-                                        pdte -= abs(unpaid)
+                                        pdte -= unpaid
+                                        if pdte < 0:
+                                            pdte = 0
                                         election.append(id_factura)
-
-
+                                if pdte == 0:
+                                    break
+                self.shelf["aplicados"] = applied
                 if "eta" in row:
                     yield row
 
@@ -550,7 +551,7 @@ class Pari(RestfulBaseInterface):
                 ini = (self.page - 1) * self.items_per_page
                 end = self.page * self.items_per_page
                 if self.ids_facturas is not None and self.total_query > len_data:
-                    if end >= len(self.ids_facturas):
+                    if end > len(self.ids_facturas):
                         end = len(self.ids_facturas)
                     for index, id_factura in enumerate(self.ids_facturas[ini:end]):
                         if ini+index not in self.list_data:
@@ -569,6 +570,10 @@ class Pari(RestfulBaseInterface):
                 except UnboundLocalError:
                     pass
                 gc.collect()
+                print("LEN list_data: {}".format(len(self.list_data)))
+                print("LEN ids_facturas: {}".format(len(self.ids_facturas)))
+                print("INI: {}".format(ini))
+                print("END: {}".format(end))
                 return {"data": [self.list_data[index] for index in range(ini, end)],
                         "total": self.total_query,
                         "page": self.page,

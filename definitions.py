@@ -21,7 +21,10 @@ __all__ = ["UUID",
            "DATABASE_PATH",
            "REMOTE_PATH",
            "N43_PATH",
-           "REPORT_PATH"]
+           "REPORT_PATH",
+           "PM_CUSTOMER",
+           "PM_PAYMENT_METHOD",
+           "PM_PAYMENT_WAY"]
 
 
 #Identifier of session
@@ -86,3 +89,10 @@ N43_PATH = search_win_drive(r"INFORMES GESTIÓN DIARIA\0.REPORTES BBOO\001 CARPE
 BASE_URI = "^/pastel/api/v1$"
 LOG_ERROR = os.path.join(LOCAL_PATH, "log_error_{}".format(UUID))
 LOG_ERROR_PARI = os.path.join(LOCAL_PATH, "log_error_pari_{}".format(UUID))
+
+#Payment matching definitions
+
+PM_CUSTOMER = "DEPARTAMENTO DE COBROS"
+PM_PAYMENT_METHOD = "TRANSFERENCIA"
+PM_PAYMENT_WAY = "INTERNA"
+

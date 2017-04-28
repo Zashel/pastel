@@ -501,8 +501,10 @@ class Pari(RestfulBaseInterface):
             if self.loaded_file is not None and "file" in data and os.path.exists(data["file"]):
                 final = None
                 for item in self.set_n43(data["file"]):
-                    print("\r{0:{w}}".format(str(item["eta"]), w=79, fill=" "), end="")
-                    final = item
+                    if isinstance(item, dict):
+                        print("\r{0:{w}}".format(str(item["eta"]), w=79, fill=" "), end="")
+                    else:
+                        final = item
                 print()
             return {"data": final,
                     "headers": {"Content-Type": "text/csv"}}

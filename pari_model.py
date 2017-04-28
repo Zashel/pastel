@@ -249,6 +249,7 @@ class Pari(RestfulBaseInterface):
 
     def read_n43(self, filepath):
         if os.path.exists(filepath):
+            begin = datetime.datetime.now()
             total_bytes = os.stat(filepath).st_size
             read_bytes = int()
             last = 0.0000

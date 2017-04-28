@@ -455,16 +455,17 @@ class Pari(RestfulBaseInterface):
                     if go_on is True:
                         go_on_final = row
                         go_on_final.update({"id_cliente": id_cliente,
-                                      "id_cuentas": id_cuentas,
-                                      "posibles": possibles})
+                                            "id_cuentas": id_cuentas,
+                                            "posibles": possibles})
                         manuals.append(go_on_final)
                 self.shelf["aplicados"] = applied
-                with open(os.path.join(EXPORT_PATH,
-                                       "localizacion_automatica_{}.csv".format(apply_date.replace("/", "-"))), "w") as f:
-                    f.write("\n".join(final))
                 if "eta" in row:
                     yield row
-                yield manuals
+            with open(os.path.join(EXPORT_PATH,
+                                   "localizacion_automatica_{}.csv".format(apply_date.replace("/", "-"))),
+                      "w") as f:
+                f.write("\n".join(final))
+            yield manuals
 
     def replace(self, filter, data, **kwargs):
         if "file" in data and os.path.exists(data["file"]):
@@ -506,8 +507,8 @@ class Pari(RestfulBaseInterface):
                     else:
                         final = item
                 print()
-            return {"data": final,
-                    "headers": {"Content-Type": "text/csv"}}
+            return json.dumps({"data": final,
+                               "headers": {"Content-Type": "text/csv"}})
         except:
             print(type(data))
             raise

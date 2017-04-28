@@ -523,8 +523,7 @@ class Pari(RestfulBaseInterface):
                 return json.dumps({"data": final,
                                    "headers": {"Content-Type": "text/csv"}})
         except:
-            print(type(data))
-            raise
+            print(final)
 
     def new(self, data, **kwargs): #TODO: Move to Server
         if self.loaded_file is None and "file" in data and os.path.exists(data["file"]):

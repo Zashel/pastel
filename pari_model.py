@@ -498,7 +498,7 @@ class Pari(RestfulBaseInterface):
             return {"data": final,
                     "headers": {"Content-Type": "text/csv"}}
         except:
-            print(data)
+            print(type(data))
             raise
 
     def new(self, data, **kwargs): #TODO: Move to Server

@@ -367,6 +367,8 @@ class Pari(RestfulBaseInterface):
 
     def get_codes(self):
         fechas_facturas = list(self.shelf["reports"]["importes por fechas y estados"]["RESIDENCIAL"].keys())
+        print(fechas_facturas)
+        raise Exception()
         fechas_facturas.sort()
         fecha_inicio = datetime.datetime(year=2017, month=3, day=1)
         codigo_inicio = 492
@@ -393,6 +395,7 @@ class Pari(RestfulBaseInterface):
                 applied = dict()
             print("LEN_APPLIED {}".format(len(applied)))
             print("LEN_NUMDOC {}".format(len(shelf["numdoc"]["data"])))
+            print("LEN_CODES {}".format(len(codes)))
             final = list()
             manuals = list()
             for row in self.read_n43(filepath):

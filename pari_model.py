@@ -446,7 +446,13 @@ class Pari(RestfulBaseInterface):
                                         pdte -= to_apply
                                         if pdte < 0:
                                             pdte = 0
-                                        code = codes[possibles[id_factura]["fecha_factura"]]
+                                        try:
+                                            code = codes[possibles[id_factura]["fecha_factura"]]
+                                        except KeyError:
+                                            print(possibles)
+                                            print("Orig: {}".format(int.from_bytes(shelf["id_factura"]["data"][id_factura][0],
+                                                               "big")))
+                                            code = 1
                                         subdata = [str(apply_date),
                                                    str(code),
                                                    str(PM_CUSTOMER),

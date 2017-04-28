@@ -330,7 +330,7 @@ class Pari(RestfulBaseInterface):
                             else:
                                 yield {"data": final}
                         if row.startswith("22"):
-                            row = row[4:].strip()
+                            row = row.strip()
                             f_oper = datetime.datetime.strptime(row[10:16], "%y%m%d")
                             f_valor = datetime.datetime.strptime(row[16:22], "%y%m%d")
                             importe = int(row[28:42])

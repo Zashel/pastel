@@ -507,8 +507,8 @@ class Pari(RestfulBaseInterface):
                     else:
                         final = item
                 print()
-            return json.dumps({"data": final,
-                               "headers": {"Content-Type": "text/csv"}})
+                return json.dumps({"data": final,
+                                   "headers": {"Content-Type": "text/csv"}})
         except:
             print(type(data))
             raise

@@ -419,7 +419,7 @@ class Pari(RestfulBaseInterface):
                                                          "estado": estado}
                         election = None
                         if total >= 1:
-                            ids_factura = [possibles.keys()]
+                            ids_factura = list(possibles.keys())
                             ids_factura.sort()
                             pdte = data["importe"]
                             for id_factura in ids_factura:

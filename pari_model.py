@@ -462,9 +462,7 @@ class Pari(RestfulBaseInterface):
                     if go_on is True:
                         go_on_final = row
                         go_on_final.update({"id_cliente": id_cliente,
-                                            "id_cuentas": id_cuentas,
-                                            "posibles": possibles,
-                                            "fecha_factura": data["fecha_factura"].strftime("%d/%m/%Y")})
+                                            "posibles": possibles})
                         manuals.append(go_on_final)
                 self.shelf["aplicados"] = applied
                 if "eta" in row:

@@ -467,7 +467,7 @@ class Pari(RestfulBaseInterface):
                         poss = possibles.copy()
                         for id in poss:
                             for field in poss[id]:
-                                if isinstance(poss[id][field]):
+                                if isinstance(poss[id][field], datetime.datetime):
                                     poss[id][field] = poss[id][field].strftime("%d/%m/%Y")
                         go_on_final.update({"id_cliente": id_cliente,
                                             "posibles": poss})

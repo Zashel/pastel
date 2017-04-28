@@ -273,7 +273,7 @@ class Pari(RestfulBaseInterface):
                         info = True
                     row = row.strip("\n")
                     if row.startswith("11"):
-                        account = row[2:20]
+                        account = row[2:22]
                     if row.startswith("22") or row.startswith("33"):
                         if not f_oper is None and not observaciones.startswith("TRASP. AGRUPADO") and not observaciones.startswith("TRASPASO A CTA"):
                             total += 1

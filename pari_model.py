@@ -370,7 +370,7 @@ class Pari(RestfulBaseInterface):
         fechas_facturas = [datetime.datetime.strptime(fecha, "%d/%m/%y") for fecha in fechas_facturas]
         print(fechas_facturas)
         fechas_facturas.sort()
-        fecha_inicio = datetime.datetime(year=2017, month=3, day=1)
+        fecha_inicio = datetime.datetime(year=2017, month=3, day=2)
         codigo_inicio = 492
         final = dict()
         if fecha_inicio in fechas_facturas:

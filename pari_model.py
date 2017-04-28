@@ -367,8 +367,8 @@ class Pari(RestfulBaseInterface):
 
     def get_codes(self):
         fechas_facturas = list(self.shelf["reports"]["importes por fechas y estados"]["RESIDENCIAL"].keys())
+        fechas_facturas = [datetime.datetime.strptime(fecha, "%d/%m/%y") for fecha in fechas_facturas]
         print(fechas_facturas)
-        raise Exception()
         fechas_facturas.sort()
         fecha_inicio = datetime.datetime(year=2017, month=3, day=1)
         codigo_inicio = 492
@@ -382,10 +382,10 @@ class Pari(RestfulBaseInterface):
     def set_n43(self, filepath):
         if os.path.exists(filepath):
             apply_date = datetime.datetime.today().strftime("%d/%m/%Y") #TODO: To config
-            print("Loading PARI")
-            shelf = dict(self.shelf)
             print("Loading Codes")
             codes = self.get_codes()
+            print("Loading PARI")
+            shelf = dict(self.shelf)
             print("Cleaning")
             gc.collect()
             account_number = ["018239990014690035"] #TODO: set in shitty config

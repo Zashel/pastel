@@ -273,7 +273,7 @@ class Pari(RestfulBaseInterface):
                         info = True
                     row = row.strip("\n")
                     if row.startswith("11"):
-                        account = row[2:22]
+                        account = row[2:20]
                     if row.startswith("22") or row.startswith("33"):
                         if not f_oper is None and not observaciones.startswith("TRASP. AGRUPADO") and not observaciones.startswith("TRASPASO A CTA"):
                             total += 1
@@ -382,7 +382,7 @@ class Pari(RestfulBaseInterface):
             shelf = dict(self.shelf)
             codes = self.get_codes()
             gc.collect()
-            account_number = ["01823999330014690035"] #TODO: set in shitty config
+            account_number = ["018239990014690035"] #TODO: set in shitty config
             if "aplicados" in shelf:
                 applied = shelf["aplicados"]
             else:
@@ -394,7 +394,6 @@ class Pari(RestfulBaseInterface):
                 total = int()
                 possibles = dict()
                 go_on = True
-                input(data["cuenta"])
                 if data["cuenta"] in account_number:
                     id_cliente = str()
                     id_cuentas = list()

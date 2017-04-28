@@ -1,6 +1,6 @@
 def calcular_letra_dni(nif):
     letras = "TRWAGMYFPDXBNJZSQVHLCKE"
-    nie = ["XYZ"]
+    nie = "XYZ"
     if isinstance(nif, str):
         if nif[0] in nie:
             nif = str(nie.index(nif[0]))+nif[1:]

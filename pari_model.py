@@ -411,7 +411,7 @@ class Pari(RestfulBaseInterface):
                             print("id_cuenta {}".format(id_cuentas))
                             for id_factura in shelf["id_cuenta"]["data"][id_cuenta][1]:
                                 total += 1
-                                estado = (shelf["index"]["estados"][int.from_bytes(
+                                estado = (shelf["estados"][int.from_bytes(
                                         shelf["id_factura"]["data"][id_factura][2], "big")])
                                 fecha_factura = int.from_bytes(shelf["id_factura"][id_factura][0],
                                                                "big")

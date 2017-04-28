@@ -395,6 +395,7 @@ class Pari(RestfulBaseInterface):
                 possibles = dict()
                 go_on = True
                 if data["cuenta"] in account_number:
+                    print(data["cuenta"])
                     id_cliente = str()
                     id_cuentas = list()
                     if data["nif"] in shelf["numdoc"]:

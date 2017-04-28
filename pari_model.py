@@ -248,7 +248,7 @@ class Pari(RestfulBaseInterface):
 
     def read_n43(self, filepath):
         if os.path.exists(filepath):
-            total_bytes = os.stat(pari_file).st_size
+            total_bytes = os.stat(filepath).st_size
             read_bytes = int()
             last = 0.0000
             total = int()
@@ -488,14 +488,18 @@ class Pari(RestfulBaseInterface):
                     "items_per_page": self.items_per_page}
 
     def new_n43(self, data, **kwargs): #TODO: Move to Server
-        if self.loaded_file is not None and "file" in data and os.path.exists(data["file"]):
-            final = None
-            for item in self.set_n43(data["file"]):
-                print("\r{0:{w}}".format(str(item["eta"]), w=79, fill=" "), end="")
-                final = item
-            print()
-        return {"data": final,
-                "headers": {"Content-Type": "text/csv"}}
+        try:
+            if self.loaded_file is not None and "file" in data and os.path.exists(data["file"]):
+                final = None
+                for item in self.set_n43(data["file"]):
+                    print("\r{0:{w}}".format(str(item["eta"]), w=79, fill=" "), end="")
+                    final = item
+                print()
+            return {"data": final,
+                    "headers": {"Content-Type": "text/csv"}}
+        except:
+            print(data)
+            raise
 
     def new(self, data, **kwargs): #TODO: Move to Server
         if self.loaded_file is None and "file" in data and os.path.exists(data["file"]):

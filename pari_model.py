@@ -360,7 +360,7 @@ class Pari(RestfulBaseInterface):
         return "{}-{}".format(prev_month.strftime("%d/%m/%y"), prev_day.strftime("%d/%m/%y"))
 
     def get_codes(self):
-        fechas_facturas = list(self.shelf["reports"]["RESIDENCIAL"].keys())
+        fechas_facturas = list(self.shelf["reports"]["importes por fechas y estados"]["RESIDENCIAL"].keys())
         fechas_facturas.sort()
         fecha_inicio = datetime.datetime(year=2017, month=3, day=1)
         codigo_inicio = 492

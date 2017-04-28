@@ -413,7 +413,7 @@ class Pari(RestfulBaseInterface):
                                 total += 1
                                 estado = (shelf["estados"][int.from_bytes(
                                         shelf["id_factura"]["data"][id_factura][2], "big")])
-                                fecha_factura = int.from_bytes(shelf["id_factura"][id_factura][0],
+                                fecha_factura = int.from_bytes(shelf["id_factura"]["data"][id_factura][0],
                                                                "big")
                                 fecha_factura = datetime.datetime.fromordinal(fecha_factura)
                                 possibles[id_factura] = {"importe": shelf["id_factura"]["data"][id_factura][1],

@@ -426,8 +426,8 @@ class Pari(RestfulBaseInterface):
                             ids_factura.sort()
                             pdte = data["importe"]
                             for id_factura in ids_factura:
-                                print("Posibles :{}".format(pprint.pprint(possibles[id_factura])))
-                                input("id_factura in applied {}".format(id_factura in applied))
+                                #print("Posibles :{}".format(pprint.pprint(possibles[id_factura])))
+                                #input("id_factura in applied {}".format(id_factura in applied))
                                 if possibles[id_factura]["estado"] in ("IMPAGADO", "PAGO PARCIAL"):
                                     if (not id_factura in applied or
                                             (id_factura in applied and

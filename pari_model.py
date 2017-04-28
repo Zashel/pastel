@@ -300,7 +300,7 @@ class Pari(RestfulBaseInterface):
                                         nifs.add(cif)
                                     for tel in re_tels.findall(restring.upper()):
                                         tels.add(tel)
-                                    telefonos = list(tels)
+                                telefonos = list(tels)
                                 nifs = list(nifs)
                                 if len(nifs) > 0:
                                     nif = nifs[0]

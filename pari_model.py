@@ -10,6 +10,7 @@ import glob
 import re
 from utils import *
 import json
+import pprint
 
 #TODO: Fix imports order
 
@@ -387,6 +388,7 @@ class Pari(RestfulBaseInterface):
                 applied = shelf["aplicados"]
             else:
                 applied = dict()
+            print("LEN_APPLIED {}".format(len(applied)))
             final = list()
             manuals = list()
             for row in self.read_n43(filepath):
@@ -418,7 +420,9 @@ class Pari(RestfulBaseInterface):
                             ids_factura.sort()
                             pdte = data["importe"]
                             for id_factura in ids_factura:
-                                if possibles[id_factura]["estado"]=="IMPAGADO":
+                                if possibles[id_factura]["estado"] in ("IMPAGADO", "PAGO PARCIAL"):
+                                    print("Posibles :{}".format(pprint.pprint(possibles[id_factura])))
+                                    print("id_factura in applied {}".format(id_factura in applied))
                                     if (not id_factura in applied or
                                             (id_factura in applied and
                                             applied[id_factura]["importe_aplicado"] < applied[id_factura]["importe"]) and
@@ -456,7 +460,8 @@ class Pari(RestfulBaseInterface):
                         go_on_final = row
                         go_on_final.update({"id_cliente": id_cliente,
                                             "id_cuentas": id_cuentas,
-                                            "posibles": possibles})
+                                            "posibles": possibles,
+                                            "fecha_factura": row["fecha_factura"].strftime("%d/%m/%Y")})
                         manuals.append(go_on_final)
                 self.shelf["aplicados"] = applied
                 if "eta" in row:

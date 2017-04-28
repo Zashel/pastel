@@ -405,18 +405,18 @@ class Pari(RestfulBaseInterface):
                     id_cuentas = list()
                     if data["nif"] in shelf["numdoc"]["data"]:
                         print("{} en numdoc".format(data["nif"]))
-                        id_cliente = shelf["numdoc"]["data"][data["nif"]]["id_cliente"]
-                        id_cuentas = shelf["id_cuenta"]["data"][id_cliente]["id_cuenta"]
+                        id_cliente = shelf["numdoc"]["data"][data["nif"]][0] #TODO: Get index of field by header position
+                        id_cuentas = shelf["id_cliente"]["data"][id_cliente][1]
                         for id_cuenta in id_cuentas:
                             print("id_cuenta {}".format(id_cuentas))
-                            for id_factura in shelf["id_cuenta"]["data"][id_cuenta]["facturas"]:
+                            for id_factura in shelf["id_cuenta"]["data"][id_cuenta][1]:
                                 total += 1
                                 estado = (shelf["index"]["estados"][int.from_bytes(
-                                        shelf["id_factura"]["data"][id_factura]["estado_recibo"], "big")])
-                                fecha_factura = int.from_bytes(shelf["id_factura"][id_factura]["fecha_factura"],
+                                        shelf["id_factura"]["data"][id_factura][2], "big")])
+                                fecha_factura = int.from_bytes(shelf["id_factura"][id_factura][0],
                                                                "big")
                                 fecha_factura = datetime.datetime.fromordinal(fecha_factura)
-                                possibles[id_factura] = {"importe": shelf["id_factura"]["data"][id_factura]["importe_adeudado"],
+                                possibles[id_factura] = {"importe": shelf["id_factura"]["data"][id_factura][1],
                                                          "id_cuenta": id_cuenta,
                                                          "fecha_factura": fecha_factura,
                                                          "estado": estado}

@@ -423,9 +423,9 @@ class Pari(RestfulBaseInterface):
                             ids_factura.sort()
                             pdte = data["importe"]
                             for id_factura in ids_factura:
+                                print("Posibles :{}".format(pprint.pprint(possibles[id_factura])))
+                                input("id_factura in applied {}".format(id_factura in applied))
                                 if possibles[id_factura]["estado"] in ("IMPAGADO", "PAGO PARCIAL"):
-                                    print("Posibles :{}".format(pprint.pprint(possibles[id_factura])))
-                                    print("id_factura in applied {}".format(id_factura in applied))
                                     if (not id_factura in applied or
                                             (id_factura in applied and
                                             applied[id_factura]["importe_aplicado"] < applied[id_factura]["importe"]) and
@@ -467,7 +467,7 @@ class Pari(RestfulBaseInterface):
                                 if isinstance(poss[id][field]):
                                     poss[id][field] = poss[id][field].strftime("%d/%m/%Y")
                         go_on_final.update({"id_cliente": id_cliente,
-                                            "posibles": possibles})
+                                            "posibles": poss})
                         manuals.append(go_on_final)
                 self.shelf["aplicados"] = applied
                 if "eta" in row:

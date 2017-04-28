@@ -461,6 +461,11 @@ class Pari(RestfulBaseInterface):
                         go_on = True
                     if go_on is True:
                         go_on_final = row
+                        poss = possibles.copy()
+                        for id in poss:
+                            for field in poss[id]:
+                                if isinstance(poss[id][field]):
+                                    poss[id][field] = poss[id][field].strftime("%d/%m/%Y")
                         go_on_final.update({"id_cliente": id_cliente,
                                             "posibles": possibles})
                         manuals.append(go_on_final)

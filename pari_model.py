@@ -392,6 +392,7 @@ class Pari(RestfulBaseInterface):
             else:
                 applied = dict()
             print("LEN_APPLIED {}".format(len(applied)))
+            print("LEN_NUMDOC {}".format(len(shelf["numdoc"])))
             final = list()
             manuals = list()
             for row in self.read_n43(filepath):
@@ -403,6 +404,7 @@ class Pari(RestfulBaseInterface):
                     id_cliente = str()
                     id_cuentas = list()
                     if data["nif"] in shelf["numdoc"]:
+                        print("{} en numdoc".format(data["nif"]))
                         id_cliente = shelf["numdoc"][data["nif"]]["id_cliente"]
                         id_cuentas = shelf["id_cuenta"][id_cliente]["id_cuenta"]
                         for id_cuenta in id_cuentas:

@@ -392,7 +392,7 @@ class Pari(RestfulBaseInterface):
             else:
                 applied = dict()
             print("LEN_APPLIED {}".format(len(applied)))
-            print("LEN_NUMDOC {}".format(len(shelf["numdoc"])))
+            print("LEN_NUMDOC {}".format(len(shelf["numdoc"]["data"])))
             final = list()
             manuals = list()
             for row in self.read_n43(filepath):
@@ -403,19 +403,19 @@ class Pari(RestfulBaseInterface):
                 if data["cuenta"] in account_number:
                     id_cliente = str()
                     id_cuentas = list()
-                    if data["nif"] in shelf["numdoc"]:
+                    if data["nif"] in shelf["numdoc"]["data"]:
                         print("{} en numdoc".format(data["nif"]))
-                        id_cliente = shelf["numdoc"][data["nif"]]["id_cliente"]
-                        id_cuentas = shelf["id_cuenta"][id_cliente]["id_cuenta"]
+                        id_cliente = shelf["numdoc"]["data"][data["nif"]]["id_cliente"]
+                        id_cuentas = shelf["id_cuenta"]["data"][id_cliente]["id_cuenta"]
                         for id_cuenta in id_cuentas:
-                            for id_factura in shelf["id_cuenta"][id_cuenta]["facturas"]:
+                            for id_factura in shelf["id_cuenta"]["data"][id_cuenta]["facturas"]:
                                 total += 1
                                 estado = (shelf["index"]["estados"][int.from_bytes(
-                                        shelf["id_factura"][id_factura]["estado_recibo"], "big")])
+                                        shelf["id_factura"]["data"][id_factura]["estado_recibo"], "big")])
                                 fecha_factura = int.from_bytes(shelf["id_factura"][id_factura]["fecha_factura"],
                                                                "big")
                                 fecha_factura = datetime.datetime.fromordinal(fecha_factura)
-                                possibles[id_factura] = {"importe": shelf["id_factura"][id_factura]["importe_adeudado"],
+                                possibles[id_factura] = {"importe": shelf["id_factura"]["data"][id_factura]["importe_adeudado"],
                                                          "id_cuenta": id_cuenta,
                                                          "fecha_factura": fecha_factura,
                                                          "estado": estado}

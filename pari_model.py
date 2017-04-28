@@ -380,8 +380,11 @@ class Pari(RestfulBaseInterface):
     def set_n43(self, filepath):
         if os.path.exists(filepath):
             apply_date = datetime.datetime.today().strftime("%d/%m/%Y") #TODO: To config
+            print("Loading PARI")
             shelf = dict(self.shelf)
+            print("Loading Codes")
             codes = self.get_codes()
+            print("Cleaning")
             gc.collect()
             account_number = ["018239990014690035"] #TODO: set in shitty config
             if "aplicados" in shelf:
@@ -461,7 +464,7 @@ class Pari(RestfulBaseInterface):
                         go_on_final.update({"id_cliente": id_cliente,
                                             "id_cuentas": id_cuentas,
                                             "posibles": possibles,
-                                            "fecha_factura": row["fecha_factura"].strftime("%d/%m/%Y")})
+                                            "fecha_factura": data["fecha_factura"].strftime("%d/%m/%Y")})
                         manuals.append(go_on_final)
                 self.shelf["aplicados"] = applied
                 if "eta" in row:

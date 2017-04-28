@@ -408,6 +408,7 @@ class Pari(RestfulBaseInterface):
                         id_cliente = shelf["numdoc"]["data"][data["nif"]]["id_cliente"]
                         id_cuentas = shelf["id_cuenta"]["data"][id_cliente]["id_cuenta"]
                         for id_cuenta in id_cuentas:
+                            print("id_cuenta {}".format(id_cuentas))
                             for id_factura in shelf["id_cuenta"]["data"][id_cuenta]["facturas"]:
                                 total += 1
                                 estado = (shelf["index"]["estados"][int.from_bytes(
@@ -523,7 +524,8 @@ class Pari(RestfulBaseInterface):
                 return json.dumps({"data": final,
                                    "headers": {"Content-Type": "text/csv"}})
         except:
-            print(final)
+            print("Final: {}".format(final))
+            raise
 
     def new(self, data, **kwargs): #TODO: Move to Server
         if self.loaded_file is None and "file" in data and os.path.exists(data["file"]):

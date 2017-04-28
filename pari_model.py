@@ -306,10 +306,11 @@ class Pari(RestfulBaseInterface):
                                     else:
                                         nif = ""
                             nif = nif.replace("-", "")
-                            if nif[0] in "ABCDEFGHJNPQRUVW":
-                                nif = "{}-{}".format(nif[0], nif[1:])
-                            elif nif[-1] in "TRWAGMYFPDXBNJZSQVHLCKE":
-                                nif = "{}-{}".format(nif[:-1], nif[-1])
+                            if len(nif) > 0:
+                                if nif[0] in "ABCDEFGHJNPQRUVW":
+                                    nif = "{}-{}".format(nif[0], nif[1:])
+                                elif nif[-1] in "TRWAGMYFPDXBNJZSQVHLCKE":
+                                    nif = "{}-{}".format(nif[:-1], nif[-1])
                             final = {"cuenta": account,
                                      "fecha_operacion": f_oper,
                                      "fecha_valor": f_valor,

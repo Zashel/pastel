@@ -301,11 +301,11 @@ class Pari(RestfulBaseInterface):
                                     for tel in re_tels.findall(restring.upper()):
                                         tels.add(tel)
                                     telefonos = list(tels)
-                                    nifs = list(nifs)
-                                    if len(nifs) > 0:
-                                        nif = nifs[0]
-                                    else:
-                                        nif = ""
+                                nifs = list(nifs)
+                                if len(nifs) > 0:
+                                    nif = nifs[0]
+                                else:
+                                    nif = ""
                             nif = nif.replace("-", "")
                             if len(nif) > 0:
                                 if nif[0] in "ABCDEFGHJNPQRUVW":

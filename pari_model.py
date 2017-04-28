@@ -394,8 +394,7 @@ class Pari(RestfulBaseInterface):
                 total = int()
                 possibles = dict()
                 go_on = True
-                if data["cuenta"].endswith("35"):
-                    input(data["cuenta"])
+                input(data["cuenta"])
                 if data["cuenta"] in account_number:
                     id_cliente = str()
                     id_cuentas = list()

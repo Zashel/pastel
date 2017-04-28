@@ -459,7 +459,8 @@ class Pari(RestfulBaseInterface):
                                       "posibles": possibles})
                         manuals.append(go_on_final)
                 self.shelf["aplicados"] = applied
-                with open(os.path.join(EXPORT_PATH, "localizacion_automatica_{}.csv".format(apply_date)), "w") as f:
+                with open(os.path.join(EXPORT_PATH,
+                                       "localizacion_automatica_{}.csv".format(apply_date.replace("/", "-"))), "w") as f:
                     f.write("\n".join(final))
                 if "eta" in row:
                     yield row

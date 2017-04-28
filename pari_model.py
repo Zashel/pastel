@@ -301,7 +301,10 @@ class Pari(RestfulBaseInterface):
                                         tels.add(tel)
                                     telefonos = list(tels)
                                     nifs = list(nifs)
-                                    nif = nifs[0]
+                                    if len(nifs) > 0:
+                                        nif = nifs[0]
+                                    else:
+                                        nif = ""
                             nif = nif.replace("-", "")
                             if nif[0] in "ABCDEFGHJNPQRUVW":
                                 nif = "{}-{}".format(nif[0], nif[1:])

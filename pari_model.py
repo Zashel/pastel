@@ -9,6 +9,7 @@ from math import ceil
 import glob
 import re
 from utils import *
+import json
 
 #TODO: Fix imports order
 
@@ -488,6 +489,8 @@ class Pari(RestfulBaseInterface):
                     "items_per_page": self.items_per_page}
 
     def new_n43(self, data, **kwargs): #TODO: Move to Server
+        if isinstance(data, str): #Direct call, transform to json
+            data = json.loads(data)
         try:
             if self.loaded_file is not None and "file" in data and os.path.exists(data["file"]):
                 final = None

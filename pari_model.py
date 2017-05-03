@@ -425,7 +425,7 @@ class Pari(RestfulBaseInterface):
                                 fecha_factura = int.from_bytes(shelf["id_factura"]["data"][id_factura][0],
                                                                "big")
                                 fecha_factura = str(fecha_factura)
-                                fecha_factura = "0"*(len(fecha_factura)-6)+fecha_factura
+                                fecha_factura = "0"*(6-len(fecha_factura))+fecha_factura
                                 fecha_factura = datetime.datetime.strptime(fecha_factura, "%d%m%y")
                                 possibles[id_factura] = {"importe": shelf["id_factura"]["data"][id_factura][1],
                                                          "id_cuenta": id_cuenta,

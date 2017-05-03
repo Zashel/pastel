@@ -256,8 +256,8 @@ class Pari(RestfulBaseInterface):
             last = 0.0000
             total = int()
             info = False
-            re_nif = re.compile(r"[A-Z]?[0-9]{5,8}[A-Z]{1}")
-            re_cif = re.compile(r"[A-Z]{1}[0-9]{8}")
+            re_nif = re.compile(r"[XYZ]?[0-9]{5,8}[TRWAGMYFPDXBNJZSQVHLCKE]{1}")
+            re_cif = re.compile(r"[ABCDEFGHJNPQRUVW]{1}[0-9]{8}")
             re_tels = re.compile(r"\+34[6-9]{1}[0-9]{8}|[6-9]{1}[0-9]{8}")
             with open(filepath, "r") as file_:
                 f_oper = None
@@ -308,6 +308,7 @@ class Pari(RestfulBaseInterface):
                                     for nifid in nifs:
                                         if nif[-1] in "TRWAGMYFPDXBNJZSQVHLCKE":
                                             nif = nifid
+                                            break
                                 else:
                                     nif = ""
                             nif = nif.replace("-", "")

@@ -200,7 +200,9 @@ class Pari(RestfulBaseInterface):
                                 api["data"][item][index] = list()
                                 api["data"][item][index].append(id_factura)
                         elif head == "importe_adeudado":
-                            api["data"][item][index] = int(row["data"][head].replace(",", ""))
+                            importe = float(row["data"][head].replace(",", "."))
+                            importe = int(importe*100)
+                            api["data"][item][index] = importe
                         elif head == "segmento":
                             if row["data"][head] not in API_segmentos:
                                 API_segmentos.append(row["data"][head])
@@ -279,7 +281,7 @@ class Pari(RestfulBaseInterface):
                         if not f_oper is None and not observaciones.startswith("TRASP. AGRUPADO") and not observaciones.startswith("TRASPASO A CTA"):
                             total += 1
                             observaciones = observaciones.strip()
-                            telefonos = list(observaciones[53:62])
+                            telefonos = list()
                             nif = None
                             if observaciones.startswith("TRANSFER"):
                                 observaciones = observaciones[:-8]
@@ -345,6 +347,7 @@ class Pari(RestfulBaseInterface):
                             f_valor = datetime.datetime.strptime(row[16:22], "%y%m%d")
                             importe = int(row[28:42])
                             observaciones = row[52:].strip()
+                            oficina_orig = row[6:10]
                     elif row.startswith("23"):
                         observaciones += row[4:].strip()
 
@@ -433,6 +436,7 @@ class Pari(RestfulBaseInterface):
                             ids_factura = list(possibles.keys())
                             ids_factura.sort()
                             pdte = data["importe"]
+                            applied_flag = False
                             for id_factura in ids_factura:
                                 #print("Posibles :{}".format(pprint.pprint(possibles[id_factura])))
                                 #input("id_factura in applied {}".format(id_factura in applied))
@@ -469,9 +473,31 @@ class Pari(RestfulBaseInterface):
                                                    ]
                                         final.append(";".join(subdata))
                                         applied[id_factura]["importe_aplicado"] += to_apply
+                                        applied_flag = True
                                 if pdte == 0:
                                     go_on = False
                                     break
+                            if pdte > 0 and applied_flag is True:
+                                id_factura = ids_factura[-1]
+                                try:
+                                    code = codes[possibles[id_factura]["fecha_factura"]]
+                                except KeyError:
+                                    print(possibles)
+                                    print("Orig: {}".format(int.from_bytes(shelf["id_factura"]["data"][id_factura][0],
+                                                                           "big")))
+                                    code = 1
+                                subdata = [str(apply_date),
+                                           str(code),
+                                           str(PM_CUSTOMER),
+                                           str(data["nif"]),
+                                           str(id_factura),
+                                           str(data["fecha_valor"]),
+                                           str(pdte)[:-2] + "," + str(pdte)[-2:],
+                                           str(self.get_billing_period(possibles[id_factura]["fecha_factura"])),
+                                           str(PM_PAYMENT_METHOD),
+                                           str(PM_PAYMENT_WAY)
+                                           ]
+                                final.append(";".join(subdata))
                         if pdte > 0:
                             go_on = True
                     else:

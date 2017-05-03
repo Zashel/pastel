@@ -514,7 +514,8 @@ class Pari(RestfulBaseInterface):
                                            ]
                                 final.append(";".join(subdata))
                                 pdte = 0
-                        if pdte > 0:
+                                go_on = False
+                        if pdte > 0 and applied_flag is False:
                             go_on = True
                     else:
                         go_on = True

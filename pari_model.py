@@ -393,10 +393,9 @@ class Pari(RestfulBaseInterface):
             print("Cleaning")
             gc.collect()
             account_number = ["018239990014690035"] #TODO: set in shitty config
-            if "aplicados" in shelf:
-                applied = shelf["aplicados"].copy()
-            else:
-                applied = dict()
+            if not "aplicados" in shelf:
+                shelf["aplicados"] = dict()
+            applied = dict(shelf["aplicados"])
             print("LEN_APPLIED {}".format(len(applied)))
             print("LEN_NUMDOC {}".format(len(shelf["numdoc"]["data"])))
             print("LEN_CODES {}".format(len(codes)))
@@ -490,7 +489,7 @@ class Pari(RestfulBaseInterface):
                         go_on_final.update({"id_cliente": id_cliente,
                                             "posibles": poss})
                         manuals.append(go_on_final)
-                self.shelf["aplicados"] = applied
+                self.shelf["aplicados"].update(applied)
                 if "eta" in row:
                     yield row
             with open(os.path.join(EXPORT_PATH,

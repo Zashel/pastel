@@ -291,10 +291,10 @@ class Pari(RestfulBaseInterface):
                             nifs = set()
                             tels = set()
                             if nif is None:
-                                for restring in (observaciones,
-                                                 observaciones.replace(".", ""),
-                                                 observaciones.replace("-", ""),
-                                                 observaciones.replace(" ", "")):
+                                for ind, restring in enumerate(observaciones,
+                                                               observaciones.replace(".", ""),
+                                                               observaciones.replace("-", ""),
+                                                               observaciones.replace(" ", "")):
                                     for nif in re_nif.findall(restring.upper()):
                                         nifs.add(nif)
                                     for cif in re_cif.findall(restring.upper()):
@@ -303,6 +303,8 @@ class Pari(RestfulBaseInterface):
                                         nifs.add(cif)
                                     for tel in re_tels.findall(restring.upper()):
                                         tels.add(tel)
+                                    if ind == 0 and len(nifs) > 0:
+                                        break
                                 telefonos = list(tels)
                                 nifs = list(nifs)
                                 if len(nifs) > 0:

@@ -1,5 +1,6 @@
 import os
 import uuid
+from zrest.datamodels.shelvemodels import ShelveModel
 from zashel.utils import search_win_drive
 
 __all__ = ["UUID",
@@ -31,6 +32,28 @@ __all__ = ["UUID",
            "DAILY_EXPORT_PATH",
            "PARI_FILE_FIELDS"]
 
+LOCAL_PATH = os.path.join(os.environ["LOCALAPPDATA"], "pastel")
+CONFIG_FIELDS = ["container",
+                 "field",
+                 "value"]
+
+class LocalConfigFile:
+    def __getattr__(self, attr):
+        shelf = shelve.open(os.path.join(LOCAL_PATH, "pastel"))
+        data = None
+        try:
+            data = shelf[attr]
+        finally:
+            shelf.close()
+            return data
+
+    def __setattr__(self, attr, value):
+        shelf = shelve.open(os.path.join(LOCAL_PATH, "pastel"))
+        data[attr] = value
+
+
+local = LocalConfigFile()
+        
 
 #Identifier of session
 UUID = uuid.uuid4()
@@ -99,13 +122,10 @@ APLICATION_FIELDS = ["tipo", # Automático o Manual
 
 METODOS_FIELDS = "nombre"
 
-CONFIG_FIELDS = ["container",
-                 "field"]
 
 #Path Definitions
 
 HOST, PORT = "localhost", 44752
-LOCAL_PATH = os.path.join(os.environ["LOCALAPPDATA"], "pastel")
 REMOTE_PATH = r"//pnaspom2/campanas$/a-c/cobros/financiacion"
 PATH = search_win_drive("PASTEL")
 DATABASE_PATH = os.path.join(PATH, "DB")

@@ -390,7 +390,7 @@ class Pari(RestfulBaseInterface):
             gc.collect()
             account_number = ["018239990014690035"] #TODO: set in shitty config
             if "aplicados" in shelf:
-                applied = shelf["aplicados"]
+                applied = shelf["aplicados"].copy()
             else:
                 applied = dict()
             print("LEN_APPLIED {}".format(len(applied)))

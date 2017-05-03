@@ -480,6 +480,9 @@ class Pari(RestfulBaseInterface):
                             for field in poss[id]:
                                 if isinstance(poss[id][field], datetime.datetime):
                                     poss[id][field] = poss[id][field].strftime("%d/%m/%Y")
+                        for item in go_on_final:
+                            if isinstance(go_on_final[item], datetime.datetime):
+                                go_on_final[item] = go_on_final[item].strftime("%d/%m/%Y")
                         go_on_final.update({"id_cliente": id_cliente,
                                             "posibles": poss})
                         manuals.append(go_on_final)

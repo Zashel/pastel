@@ -513,6 +513,7 @@ class Pari(RestfulBaseInterface):
                                            str(PM_PAYMENT_WAY)
                                            ]
                                 final.append(";".join(subdata))
+                                pdte = 0
                         if pdte > 0:
                             go_on = True
                     else:

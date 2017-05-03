@@ -396,9 +396,9 @@ class Pari(RestfulBaseInterface):
             print("Cleaning")
             gc.collect()
             account_number = ["018239990014690035"] #TODO: set in shitty config
-            if not "aplicados" in shelf:
-                shelf["aplicados"] = dict()
-            applied = dict(shelf["aplicados"])
+            if not "aplicados" in self.shelf:
+                self.shelf["aplicados"] = dict()
+            applied = dict(self.shelf["aplicados"])
             print("LEN_APPLIED {}".format(len(applied)))
             print("LEN_NUMDOC {}".format(len(shelf["numdoc"]["data"])))
             print("LEN_CODES {}".format(len(codes)))

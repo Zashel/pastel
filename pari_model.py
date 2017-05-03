@@ -451,7 +451,8 @@ class Pari(RestfulBaseInterface):
                             for id_factura in ids_factura:
                                 #print("Posibles :{}".format(pprint.pprint(possibles[id_factura])))
                                 #input("id_factura in applied {}".format(id_factura in applied))
-                                if possibles[id_factura]["estado"] in ("IMPAGADO", "PAGO PARCIAL"):
+                                if (possibles[id_factura]["estado"] in ("IMPAGADO", "PAGO PARCIAL") and
+                                            possibles[id_factura]["importe"] > 0):
                                     if (not id_factura in applied or
                                             (id_factura in applied and
                                             applied[id_factura]["importe_aplicado"] < applied[id_factura]["importe"]) and
@@ -468,7 +469,8 @@ class Pari(RestfulBaseInterface):
                                             code = codes[possibles[id_factura]["fecha_factura"]]
                                         except KeyError:
                                             print(possibles)
-                                            print("Orig: {}".format(int.from_bytes(shelf["id_factura"]["data"][id_factura][0],
+                                            print("Orig: {}".format(int.from_bytes(
+                                                               shelf["id_factura"]["data"][id_factura][0],
                                                                "big")))
                                             code = 1
                                         subdata = [str(apply_date),
@@ -477,7 +479,7 @@ class Pari(RestfulBaseInterface):
                                                    str(data["nif"]),
                                                    str(id_factura),
                                                    str(data["fecha_valor"]),
-                                                   str(to_apply)[:-2]+","+str(to_apply)[-2:],
+                                                   str(round(to_apply/100, 2)).replace(".", ","),
                                                    str(self.get_billing_period(possibles[id_factura]["fecha_factura"])),
                                                    str(PM_PAYMENT_METHOD),
                                                    str(PM_PAYMENT_WAY)
@@ -503,7 +505,7 @@ class Pari(RestfulBaseInterface):
                                            str(data["nif"]),
                                            str(id_factura),
                                            str(data["fecha_valor"]),
-                                           str(pdte)[:-2] + "," + str(pdte)[-2:],
+                                           str(round(pdte / 100, 2)).replace(".", ","),
                                            str(self.get_billing_period(possibles[id_factura]["fecha_factura"])),
                                            str(PM_PAYMENT_METHOD),
                                            str(PM_PAYMENT_WAY)

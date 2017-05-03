@@ -404,12 +404,23 @@ class Pari(RestfulBaseInterface):
             print("LEN_CODES {}".format(len(codes)))
             final = list()
             manuals = list()
+            anulaciones = dict()
+            for row in self.read_n43(filepath):
+                data = row["data"]
+                if data["cuenta"] in account_number and data["observaciones"].startswith("ANULACIONES"):
+                    if data["cuenta"] not in anulaciones:
+                        anulaciones[data["cuenta"]] = dict()
+                    anulaciones[data["cuenta"]][data["importe"]] = data["oficina_origen"]
             for row in self.read_n43(filepath):
                 data = row["data"]
                 total = int()
                 possibles = dict()
                 go_on = True
-                if data["cuenta"] in account_number:
+                if data["cuenta"] in account_number and not data["observaciones"].startswith("ANULACIONES"):
+                    if (data["importe"] in anulaciones[data["cuenta"]] and
+                            anulaciones[data["cuenta"]][data["importe"]] == data["oficina_origen"]):
+                        del(anulaciones[data["cuenta"]][data["importe"]])
+                        continue
                     id_cliente = str()
                     id_cuentas = list()
                     if data["nif"] in shelf["numdoc"]["data"]:
@@ -522,7 +533,7 @@ class Pari(RestfulBaseInterface):
                                    "localizacion_automatica_{}.csv".format(apply_date.replace("/", "-"))),
                       "w") as f:
                 f.write("\n".join(final))
-            yield manuals
+            yield {"manuals": manuals, "anulaciones": anulaciones}
 
     def replace(self, filter, data, **kwargs):
         if "file" in data and os.path.exists(data["file"]):

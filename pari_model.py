@@ -305,6 +305,9 @@ class Pari(RestfulBaseInterface):
                                 nifs = list(nifs)
                                 if len(nifs) > 0:
                                     nif = nifs[0]
+                                    for nifid in nifs:
+                                        if nif[-1] in "TRWAGMYFPDXBNJZSQVHLCKE":
+                                            nif = nifid
                                 else:
                                     nif = ""
                             nif = nif.replace("-", "")
@@ -474,7 +477,7 @@ class Pari(RestfulBaseInterface):
                     else:
                         go_on = True
                     if go_on is True:
-                        go_on_final = row
+                        go_on_final = row["data"].copy()
                         poss = possibles.copy()
                         for id in poss:
                             for field in poss[id]:

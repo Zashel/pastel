@@ -142,7 +142,10 @@ class LocalConfig: #To a dynamic access -> change API
     def __setattr__(self, attr, value):
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         if attr in LOCAL:
-            shelf[attr] = value
+            if attr in REMOTE_PATHS:
+                Path(shelf[attr]).path = value
+            else:
+                shelf[attr] = value
         shelf.close()
     def __getattr__(self, attr):
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
@@ -190,7 +193,10 @@ class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated mys
     def __setattr__(self, attr, value):
         shelf = shelve.open(os.path.join(local_config.ADMIN_DB, "config"))
         if attr in SHARED:
-            shelf[attr] = value
+            if attr in REMOTE_PATHS:
+                Path(shelf[attr]).path = value
+            else:
+                shelf[attr] = value
         shelf.close()
     def __getattr__(self, attr):
         shelf = shelve.open(os.path.join(local_config.ADMIN_DB, "config"))

@@ -100,6 +100,7 @@ LOCAL = ["HOST", "PORT",
          ]
 
 REMOTE_PATHS = ["PATH",
+                "ADMIN_DB",
                 "EXPORT_PATH",
                 "DAILY_EXPORT_PATH",
                 "DATABASE_PATH",

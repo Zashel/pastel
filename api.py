@@ -76,7 +76,7 @@ class API:
 
     @classmethod
     def set_pari(cls):
-        files =  glob.glob("{}*.csv".format(os.path.join(N43_PATH_INCOMING, "BI_131_FICHERO_PARI_DIARIO")))
+        files =  glob.glob("{}*.csv".format(os.path.join(admin_config.N43_PATH_INCOMING, "BI_131_FICHERO_PARI_DIARIO")))
         files.sort()
         files.reverse()
         print(files)
@@ -119,7 +119,7 @@ class API:
                                               importe_devuelto,
                                               importe_impagado
                                               ))+"\n")
-            return os.path.join(REPORT_PATH, "Pari", name)
+            return os.path.join(admin_config.REPORT_PATH, "Pari", name)
 
     @classmethod
     def export_unpaid_by_invoice_date(cls, dates):

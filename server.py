@@ -22,16 +22,16 @@ if __name__ == "__main__":
     #              "admin",
     #              "^/admin/<container>$")
     #TODO: New model of config and admin
-    app.set_model(Pari(os.path.join(DATABASE_PATH, "facturas")),
+    app.set_model(Pari(os.path.join(admin_config.DATABASE_PATH, "facturas")),
                   "facturas",
                   "^/facturas/<id_factura>$")
     app.set_method("facturas", "^/n43$", PUT, "new_n43")
-    app.set_model(ShelveModel(os.path.join(DATABASE_PATH, "pagos"),
+    app.set_model(ShelveModel(os.path.join(admin_config.DATABASE_PATH, "pagos"),
                               index_fields=PAYMENTS_FIELDS,
                               headers=PAYMENTS_FIELDS),
                   "pagos",
                   "^/pagos/<_id>$")
-    app.set_model(ShelveRelational(os.path.join(DATABASE_PATH, "aplicados"),
+    app.set_model(ShelveRelational(os.path.join(admin_config.DATABASE_PATH, "aplicados"),
                                    index_fields=APLICATION_FIELDS,
                                    headers=APLICATION_FIELDS,
                                    relations=[app.get_model("facturas"),

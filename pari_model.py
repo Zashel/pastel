@@ -150,9 +150,9 @@ class Pari(RestfulBaseInterface):
                 str_fecha_factura = datetime.datetime.strptime(data["fecha_factura"], "%d/%m/%y")
                 if data["fecha_factura"] not in diario:
                     diario[data["fecha_factura"]] = list()
-                    diario[data["fecha_factura"]].append(";".join(PARI_FILE_FIELDS))
+                    diario[data["fecha_factura"]].append(";".join(admin_config.PARI_FILE_FIELDS))
                 final_list = list()
-                for head in PARI_FILE_FIELDS:
+                for head in admin_config.PARI_FILE_FIELDS:
                     if "fecha" in head:
                         item = datetime.datetime.strptime(data[head], "%d/%m/%y").strftime("%d/%m/%Y")
                     else:
@@ -245,7 +245,7 @@ class Pari(RestfulBaseInterface):
         self.set_shelve()
         for fecha_factura in diario:
             str_fecha_factura = datetime.datetime.strptime(fecha_factura, "%d/%m/%y")
-            with open(os.path.join(DAILY_EXPORT_PATH,
+            with open(os.path.join(admin_config.DAILY_EXPORT_PATH,
                                    "jazztel_ciclo_" + str_fecha_factura.strftime("%Y-%m-%d") + ".csv"),
                       "w") as f:
                 f.write("\n".join(diario[fecha_factura]))
@@ -477,14 +477,14 @@ class Pari(RestfulBaseInterface):
                                             code = 1
                                         subdata = [str(apply_date),
                                                    str(code),
-                                                   str(PM_CUSTOMER),
+                                                   str(admin_config.PM_CUSTOMER),
                                                    str(data["nif"]),
                                                    str(id_factura),
                                                    str(data["fecha_operacion"].strftime("%d/%m/%y")),
                                                    str(round(to_apply/100, 2)).replace(".", ","),
                                                    str(self.get_billing_period(possibles[id_factura]["fecha_factura"])),
-                                                   str(PM_PAYMENT_METHOD),
-                                                   str(PM_PAYMENT_WAY)
+                                                   str(admin_config.PM_PAYMENT_METHOD),
+                                                   str(admin_config.PM_PAYMENT_WAY)
                                                    ]
                                         final.append(";".join(subdata))
                                         applied[id_factura]["importe_aplicado"] += to_apply
@@ -503,14 +503,14 @@ class Pari(RestfulBaseInterface):
                                     code = 1
                                 subdata = [str(apply_date),
                                            str(code),
-                                           str(PM_CUSTOMER),
+                                           str(admin_config.PM_CUSTOMER),
                                            str(data["nif"]),
                                            str(id_factura),
                                            str(data["fecha_operacion"].strftime("%d/%m/%y")),
                                            str(round(pdte / 100, 2)).replace(".", ","),
                                            str(self.get_billing_period(possibles[id_factura]["fecha_factura"])),
-                                           str(PM_PAYMENT_METHOD),
-                                           str(PM_PAYMENT_WAY)
+                                           str(admin_config.PM_PAYMENT_METHOD),
+                                           str(admin_config.PM_PAYMENT_WAY)
                                            ]
                                 final.append(";".join(subdata))
                                 pdte = 0

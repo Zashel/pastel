@@ -17,14 +17,15 @@ class Test_API(unittest.TestCase):
 
     def setUp(self):
         self.app = App()
-        self.app.set_model(Pari(os.path.join(DATABASE_PATH, "facturas")),
+        self.app.set_model(Pari(os.path.join(admin_config.DATABASE_PATH, "facturas")),
                            "facturas",
                             "^/facturas/<id_factura>$")
 
     def test_1_pari_model(self):
         print(self.app.action(GET, "/facturas"))
         print(self.app.action(PUT, "/facturas",
-                              data=json.dumps({"file": os.path.join(N43_PATH, "BI_131_FICHERO_PARI_DIARIO_20170420.csv")})))
+                              data=json.dumps({"file": os.path.join(admin_config.N43_PATH,
+                                                                    "BI_131_FICHERO_PARI_DIARIO_20170420.csv")})))
         print(self.app.action(DELETE, "/facturas"))
 
 if __name__ == "__main__":

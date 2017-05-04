@@ -11,6 +11,11 @@ if __name__ == "__main__":
     app = App()
     app.set_base_uri(BASE_URI)
     app.set_method("shutdown", "^/shutdown$", GET, app.shutdown)
+    app.set_model(ShelveModel(os.path.join(admin_config.DATABASE_PATH, "usuarios"),
+                              1,
+                              index_fields=USERS_FIELDS,
+                              headers=USERS_FIELDS,
+                              unique="id")
     #app.set_model(ShelveModel(os.path.join(LOCAL_PATH, "config"),
     #                          1,
     #                          index_fields=CONFIG_FIELDS),

@@ -94,6 +94,9 @@ class Path:
                 if sub is None:
                     sub = list()
                 paths = os.path.split(path)
+                if "admin" in path:
+                    os.makedirs(path)
+                    return path
                 sub.append(paths[1])
                 if paths[0] == "":
                     raise FileNotFoundError

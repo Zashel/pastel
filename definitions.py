@@ -129,7 +129,10 @@ class LocalConfig: #To a dynamic access -> change API
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         if attr in LOCAL:
             if attr in REMOTE_PATHS:
-                return Path(shelf[attr]).path
+                try:
+                    return Path(shelf[attr]).path
+                except:
+                    print(shelf[attr])
             else:
                 return shelf[attr]
         shelf.close()

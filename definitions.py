@@ -4,6 +4,9 @@ import shelve
 from zrest.datamodels.shelvemodels import ShelveModel
 from zashel.utils import search_win_drive
 
+
+#STATIC Variables, not configurable
+
 STATIC = ["UUID",
           "USERS_FIELDS",
           "USERS_UNIQUE",
@@ -19,62 +22,15 @@ STATIC = ["UUID",
           "LOCAL_PATH",
           "METODOS_FIELDS"]
 
-PATHS = ["DATABASE_PATH",
-         "REMOTE_PATH",
-         "N43_PATH",
-         "N43_PATH_INCOMING",
-         "N43_PATH_OUTGOING",
-         "REPORT_PATH"]
-
-LOCAL = ["HOST", "PORT",
-         "PATH",
-         "EXPORT_PATH",]
-
-SHARED = ["PM_CUSTOMER",
-           "PM_PAYMENT_METHOD",
-           "PM_PAYMENT_WAY",
-           "DAILY_EXPORT_PATH",
-           "PARI_FILE_FIELDS"]
-
-__all__ = list()
-__all__.extend(STATIC)
-__all__.extend(PATHS)
-__all__.extend(LOCAL)
-__all__.extend(SHARED)
+UUID = uuid.uuid4() #Identifier of session
 
 LOCAL_PATH = os.path.join(os.environ["LOCALAPPDATA"], "pastel")
-CONFIG_FIELDS = ["container",
-                 "field",
-                 "value"]
+if not os.path.exists(LOCAL_PATH):
+    os.makedirs(LOCAL_PATH)
 
-class LocalConfigFile:
-    def __getattr__(self, attr):
-        shelf = shelve.open(os.path.join(LOCAL_PATH, "pastel"))
-        data = None
-        try:
-            data = shelf[attr]
-        finally:
-            shelf.close()
-            return data
-
-    def __setattr__(self, attr, value):
-        shelf = shelve.open(os.path.join(LOCAL_PATH, "pastel"))
-        if attr in shelf["fields"]:
-            shelf[attr] = value
-        shelf.close()
-
-    def __getattr__(self, attr):
-        shelf = shelve.open(os.path.join(LOCAL_PATH, "pastel"))
-        if attr in shelf["fields"]:
-            return shelf[attr]["value"]
-        shelf.close()
-
-
-local = LocalConfigFile()
-        
-
-#Identifier of session
-UUID = uuid.uuid4()
+LOCAL_CONFIG = os.path.join(LOCAL_PATH, "config")
+if not os.path.exists(LOCAL_CONFIG):
+    os.makedirs(LOCAL_CONFIG)
 
 USERS_FIELDS = ["id",
                 "fullname",
@@ -95,26 +51,6 @@ PARI_FIELDS = ["id_cliente",
                "segmento",
                "importe_adeudado",
                "estado_recibo"]
-
-PARI_FILE_FIELDS = ["id_cliente",
-                    "id_cuenta",
-                    "numdoc",
-                    "tipodoc",
-                    "fecha_factura",
-                    "fecha_puesta_cobro",
-                    "id_factura",
-                    "segmento",
-                    "importe_adeudado",
-                    "metodo_pago",
-                    "fecha_devolucion",
-                    "importe_devolucion",
-                    "fecha_pago",
-                    "importe_aplicado",
-                    "metodo_recobro",
-                    "fecha_entrada_fichero",
-                    "fecha_salida_fichero",
-                    "estado_recibo",
-                    "primera_factura"]
 
 PARI_UNIQUE = "id_factura"
 
@@ -140,10 +76,94 @@ APLICATION_FIELDS = ["tipo", # Automático o Manual
 
 METODOS_FIELDS = "nombre"
 
+BASE_URI = "^/pastel/api/v1$"
+
+LOG_ERROR = os.path.join(LOCAL_PATH, "log_error_{}".format(UUID))
+
+LOG_ERROR_PARI = os.path.join(LOCAL_PATH, "log_error_pari_{}".format(UUID))
+
+#LOCAL defined variables
+LOCAL = ["HOST", "PORT",
+         "PATH",
+         "EXPORT_PATH"]
+
+class LocalConfigFile: #To a dynamic access -> change API
+    def __getattr__(self, attr):
+        shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
+        data = None
+        try:
+            data = shelf[attr]
+        finally:
+            shelf.close()
+            return data
+
+    def __setattr__(self, attr, value):
+        shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
+        if attr in LOCAL:
+            shelf[attr] = value
+        shelf.close()
+
+    def __getattr__(self, attr):
+        shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
+        if attr in LOCAL:
+            return shelf[attr]["value"]
+        shelf.close()
+
+    def set_default(self, attr, default):
+        shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
+        if attr in LOCAL and attr not in shelf:
+            shelf[attr] = default
+
+local_config = LocalConfigFile()
+
+HOST = local_config.set_default("localhost")
+PORT = local_config.set_default(44752)
+
+#PATH Variables
+PATHS = ["DATABASE_PATH",
+         "REMOTE_PATH",
+         "N43_PATH",
+         "N43_PATH_INCOMING",
+         "N43_PATH_OUTGOING",
+         "REPORT_PATH"]
+
+SHARED = ["PM_CUSTOMER",
+          "PM_PAYMENT_METHOD",
+          "PM_PAYMENT_WAY",
+          "DAILY_EXPORT_PATH",
+          "PARI_FILE_FIELDS"]
+
+__all__ = list()
+__all__.extend(STATIC)
+__all__.extend(PATHS)
+__all__.extend(LOCAL)
+__all__.extend(SHARED)
+__all__.extend(["local_config",
+                ])
+
+PARI_FILE_FIELDS = ["id_cliente",
+                    "id_cuenta",
+                    "numdoc",
+                    "tipodoc",
+                    "fecha_factura",
+                    "fecha_puesta_cobro",
+                    "id_factura",
+                    "segmento",
+                    "importe_adeudado",
+                    "metodo_pago",
+                    "fecha_devolucion",
+                    "importe_devolucion",
+                    "fecha_pago",
+                    "importe_aplicado",
+                    "metodo_recobro",
+                    "fecha_entrada_fichero",
+                    "fecha_salida_fichero",
+                    "estado_recibo",
+                    "primera_factura"]
+
 
 #Path Definitions
 
-HOST, PORT = "localhost", 44752
 REMOTE_PATH = r"//pnaspom2/campanas$/a-c/cobros/financiacion"
 PATH = search_win_drive("PASTEL")
 DATABASE_PATH = os.path.join(PATH, "DB")
@@ -153,9 +173,6 @@ DAILY_EXPORT_PATH = os.path.join(EXPORT_PATH, "Diarias")
 N43_PATH = search_win_drive(r"INFORMES GESTIÓN DIARIA\0.REPORTES BBOO\001 CARPETA DE PAGOS\040 NORMA43_JAZZTEL")
 N43_PATH_INCOMING = os.path.join(N43_PATH, "041 ENTRADAS")
 N43_PATH_OUTGOING = os.path.join(N43_PATH, "042 SALIDAS")
-BASE_URI = "^/pastel/api/v1$"
-LOG_ERROR = os.path.join(LOCAL_PATH, "log_error_{}".format(UUID))
-LOG_ERROR_PARI = os.path.join(LOCAL_PATH, "log_error_pari_{}".format(UUID))
 
 #Payment matching definitions
 

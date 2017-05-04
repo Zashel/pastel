@@ -535,7 +535,7 @@ class Pari(RestfulBaseInterface):
                 self.shelf["aplicados"].update(applied)
                 if "eta" in row:
                     yield row
-            with open(os.path.join(EXPORT_PATH,
+            with open(os.path.join(local_config.EXPORT_PATH,
                                    "localizacion_automatica_{}.csv".format(apply_date.replace("/", "-"))),
                       "w") as f:
                 f.write("\n".join(final))

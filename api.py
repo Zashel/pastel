@@ -19,7 +19,7 @@ else:
     shelve_open = shelve.open
 
 class API:
-    basepath = "http://{}:{}/{}".format(HOST, str(PORT), BASE_URI[1:-1].strip("/"))
+    basepath = "http://{}:{}/{}".format(local_config.HOST, str(local_config.PORT), BASE_URI[1:-1].strip("/"))
     id_factura = {"_heads": ["fecha_factura",
                             "importe_adeudado",
                             "estado_recibo",
@@ -68,8 +68,8 @@ class API:
 
     @classmethod
     def set_n43(cls, filename):
-        data = requests.put("http://{}:{}{}/n43".format(HOST,
-                                                             str(PORT),
+        data = requests.put("http://{}:{}{}/n43".format(local_config.HOST,
+                                                             str(local_config.PORT),
                                                              BASE_URI[1:-1]),
                             json={"file": filename})
         return data
@@ -81,8 +81,8 @@ class API:
         files.reverse()
         print(files)
         if len(files) > 0:
-            data = requests.put("http://{}:{}{}/facturas".format(HOST,
-                                                                 str(PORT),
+            data = requests.put("http://{}:{}{}/facturas".format(local_config.HOST,
+                                                                 str(local_config.PORT),
                                                                  BASE_URI[1:-1]),
                                 json = {"file": files[0]})
             data = json.loads(data.text)["data"]
@@ -146,8 +146,8 @@ class API:
                 raise ValueError
         finaldates = ",".join(finaldates)
         return requests.get(
-                "http://{}:{}{}/facturas?fecha_factura={}&estado_recibo=IMPAGADO&items_per_page=1000".format(HOST,
-                                                                                                            str(PORT),
+                "http://{}:{}{}/facturas?fecha_factura={}&estado_recibo=IMPAGADO&items_per_page=1000".format(local_config.HOST,
+                                                                                                            str(local_config.PORT),
                                                                                                             BASE_URI[1:-1],
                                                                                                             finaldates),
                             headers = {"Content-Type": "text/csv; charset=utf-8"}).text

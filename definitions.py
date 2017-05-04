@@ -82,12 +82,22 @@ LOG_ERROR = os.path.join(LOCAL_PATH, "log_error_{}".format(UUID))
 
 LOG_ERROR_PARI = os.path.join(LOCAL_PATH, "log_error_pari_{}".format(UUID))
 
+class Path:
+    def __init__(self, path):
+        self._path = path
+    @property
+    def path(self):
+        return search_win_drive(self._path)
+    @path.setter
+    def path(self, value):
+        self._path = value
+
 #LOCAL defined variables
 LOCAL = ["HOST", "PORT",
          "PATH",
          "EXPORT_PATH"]
 
-class LocalConfigFile: #To a dynamic access -> change API
+class LocalConfig: #To a dynamic access -> change API
     def __getattr__(self, attr):
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         data = None
@@ -96,28 +106,28 @@ class LocalConfigFile: #To a dynamic access -> change API
         finally:
             shelf.close()
             return data
-
     def __setattr__(self, attr, value):
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         if attr in LOCAL:
             shelf[attr] = value
         shelf.close()
-
     def __getattr__(self, attr):
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         if attr in LOCAL:
-            return shelf[attr]["value"]
+            return shelf[attr]
         shelf.close()
-
     def set_default(self, attr, default):
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         if attr in LOCAL and attr not in shelf:
             shelf[attr] = default
+        return self.__getattr__(attr.lower())
 
-local_config = LocalConfigFile()
+local_config = LocalConfig()
 
-HOST = local_config.set_default("localhost")
-PORT = local_config.set_default(44752)
+local_config.set_default("HOST", "localhost")
+local_config.set_default("PORT", 44752)
+local_config.set_default("PATH", "PASTEL")
+local_config.set_default("EXPORT_PATH",os.path.join(local_config.PATH, "Exportaciones"))
 
 #PATH Variables
 PATHS = ["DATABASE_PATH",
@@ -136,7 +146,7 @@ SHARED = ["PM_CUSTOMER",
 __all__ = list()
 __all__.extend(STATIC)
 __all__.extend(PATHS)
-__all__.extend(LOCAL)
+#__all__.extend(LOCAL)
 __all__.extend(SHARED)
 __all__.extend(["local_config",
                 ])
@@ -165,11 +175,9 @@ PARI_FILE_FIELDS = ["id_cliente",
 #Path Definitions
 
 REMOTE_PATH = r"//pnaspom2/campanas$/a-c/cobros/financiacion"
-PATH = search_win_drive("PASTEL")
-DATABASE_PATH = os.path.join(PATH, "DB")
-REPORT_PATH = os.path.join(PATH, "Reportes")
-EXPORT_PATH = os.path.join(PATH, "Exportaciones")
-DAILY_EXPORT_PATH = os.path.join(EXPORT_PATH, "Diarias")
+DATABASE_PATH = os.path.join(local_config.PATH, "DB")
+REPORT_PATH = os.path.join(local_config.PATH, "Reportes")
+DAILY_EXPORT_PATH = os.path.join(local_config.EXPORT_PATH, "Diarias")
 N43_PATH = search_win_drive(r"INFORMES GESTIÓN DIARIA\0.REPORTES BBOO\001 CARPETA DE PAGOS\040 NORMA43_JAZZTEL")
 N43_PATH_INCOMING = os.path.join(N43_PATH, "041 ENTRADAS")
 N43_PATH_OUTGOING = os.path.join(N43_PATH, "042 SALIDAS")

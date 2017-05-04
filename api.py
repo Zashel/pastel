@@ -85,7 +85,7 @@ class API:
                                     "id_cliente": payment["id_cliente"],
                                     "tels": payment["telefonos"],
                                     "oficina": payment["oficina_origen"],
-                                    "posibles": payment["poss"],
+                                    "posibles": payment["posibles"],
                                     "estado": "PENDIENTE"
                                     })
         return data

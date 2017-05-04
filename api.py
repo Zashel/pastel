@@ -82,7 +82,7 @@ class API:
                                     "importe": payment["importe"],
                                     "observaciones": payment["observaciones"],
                                     "dni": payment["nif"],
-                                    "id_cuenta": payment["id_cuenta"],
+                                    "id_cliente": payment["id_cliente"],
                                     "tels": payment["telefonos"],
                                     "oficina": payment["oficina_origen"],
                                     "posibles": payment["poss"],

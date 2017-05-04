@@ -103,6 +103,7 @@ class Pari(RestfulBaseInterface):
                           "data": dict()}
         #API_numdoc = {"_heads": ["numdoc",
         #                         "id_cliente"]}
+        PARI_FIELDS = admin_config.PARI_FILE_FIELDS
         API_segmentos = list()
         index_segmentos = dict()
         API_estados = list()
@@ -150,9 +151,9 @@ class Pari(RestfulBaseInterface):
                 str_fecha_factura = datetime.datetime.strptime(data["fecha_factura"], "%d/%m/%y")
                 if data["fecha_factura"] not in diario:
                     diario[data["fecha_factura"]] = list()
-                    diario[data["fecha_factura"]].append(";".join(admin_config.PARI_FILE_FIELDS))
+                    diario[data["fecha_factura"]].append(";".join(PARI_FIELDS))
                 final_list = list()
-                for head in admin_config.PARI_FILE_FIELDS:
+                for head in PARI_FILE_FIELDS:
                     if "fecha" in head:
                         item = datetime.datetime.strptime(data[head], "%d/%m/%y").strftime("%d/%m/%Y")
                     else:

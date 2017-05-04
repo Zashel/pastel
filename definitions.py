@@ -94,15 +94,16 @@ class Path:
                 if sub is None:
                     sub = list()
                 paths = os.path.split(path)
-                if "admin" in path:
-                    os.makedirs(path)
-                    return path
                 sub.append(paths[1])
                 if paths[0] == "":
                     raise FileNotFoundError
                 try:
-                    return os.path.join(search_win_drive(paths[0]),
-                                        *paths)
+                    spath = os.path.join(search_win_drive(paths[0]),
+                                         *paths)
+                    if "admin" in spath.lower():
+                        os.makedirs(path)
+                        return path
+                    return spath
                 except FileNotFoundError:
                     recursive_search(paths[0], sub)
             try:

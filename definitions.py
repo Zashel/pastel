@@ -19,7 +19,8 @@ STATIC = ["UUID",
           "LOG_ERROR",
           "LOG_ERROR_PARI",
           "LOCAL_PATH",
-          "METODOS_FIELDS"]
+          "METODOS_FIELDS",
+          "COMMITMENTS_FIELDS"]
 
 UUID = uuid.uuid4() #Identifier of session
 
@@ -78,6 +79,18 @@ APLICATION_FIELDS = ["tipo", # Automático o Manual
 
 METODOS_FIELDS = "nombre"
 
+COMMITMENTS_FIELDS = ["usuario",
+                      "id_cliente",
+                      "id_cuenta",
+                      "id_factura",
+                      "fecha_factura",
+                      "importe",
+                      "fecha",
+                      "hora",
+                      "canal",
+                      "observaciones",
+                      "estado"]
+                      
 BASE_URI = "^/pastel/api/v1$"
 
 LOG_ERROR = os.path.join(LOCAL_PATH, "log_error_{}".format(UUID))

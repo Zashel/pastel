@@ -99,14 +99,13 @@ class Path:
                     raise FileNotFoundError
                 try:
                     spath = os.path.join(search_win_drive(paths[0]),
-                                         *paths)
+                                         *sub)
                     return spath
                 except FileNotFoundError:
                     recursive_search(paths[0], sub)
             try:
                 return search_win_drive(self._path)
             except FileNotFoundError:
-                print(self._path)
                 return recursive_search(self._path)
         else:
             return self._path

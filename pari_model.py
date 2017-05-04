@@ -427,11 +427,11 @@ class Pari(RestfulBaseInterface):
                     id_cliente = str()
                     id_cuentas = list()
                     if data["nif"] in shelf["numdoc"]["data"]:
-                        print("{} en numdoc".format(data["nif"]))
+                        #print("{} en numdoc".format(data["nif"]))
                         id_cliente = shelf["numdoc"]["data"][data["nif"]][0] #TODO: Get index of field by header position
                         id_cuentas = shelf["id_cliente"]["data"][id_cliente][1]
                         for id_cuenta in id_cuentas:
-                            print("id_cuenta {}".format(id_cuentas))
+                            #print("id_cuenta {}".format(id_cuentas))
                             if shelf["id_cuenta"]["data"][id_cuenta][0] != "GRAN CUENTA":
                                 for id_factura in shelf["id_cuenta"]["data"][id_cuenta][1]:
                                     total += 1
@@ -472,10 +472,10 @@ class Pari(RestfulBaseInterface):
                                         try:
                                             code = codes[possibles[id_factura]["fecha_factura"]]
                                         except KeyError:
-                                            print(possibles)
-                                            print("Orig: {}".format(int.from_bytes(
-                                                               shelf["id_factura"]["data"][id_factura][0],
-                                                               "big")))
+                                            #print(possibles)
+                                            #print("Orig: {}".format(int.from_bytes(
+                                            #                   shelf["id_factura"]["data"][id_factura][0],
+                                            #                   "big")))
                                             code = 1
                                         subdata = [str(apply_date),
                                                    str(code),
@@ -499,9 +499,9 @@ class Pari(RestfulBaseInterface):
                                 try:
                                     code = codes[possibles[id_factura]["fecha_factura"]]
                                 except KeyError:
-                                    print(possibles)
-                                    print("Orig: {}".format(int.from_bytes(shelf["id_factura"]["data"][id_factura][0],
-                                                                           "big")))
+                                    #print(possibles)
+                                    #print("Orig: {}".format(int.from_bytes(shelf["id_factura"]["data"][id_factura][0],
+                                    #                                       "big")))
                                     code = 1
                                 subdata = [str(apply_date),
                                            str(code),

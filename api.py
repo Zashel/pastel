@@ -73,8 +73,8 @@ class API:
                                                              BASE_URI[1:-1]),
                             json={"file": filename})
         data = json.loads(data.text)
-        if "manuals" in data:
-            for payment in data["manuals"]:
+        if "data" in data and "manuals" in data["data"]:
+            for payment in data["data"]["manuals"]:
                 requests.post("http://{}:{}{}/pagos".format(local_config.HOST,
                                                          str(local_config.PORT),
                                                          BASE_URI[1:-1]),

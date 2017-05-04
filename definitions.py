@@ -209,7 +209,7 @@ admin_config = AdminConfig()
 
 admin_config.set_default("DATABASE_PATH", os.path.join(PATH, "DB"))
 admin_config.set_default("REPORT_PATH",  os.path.join(PATH, "Reportes"))
-admin_config.set_default("DAILY_EXPORT_PATH", os.path.join("Exportaciones", "Diarias"))
+admin_config.set_default("DAILY_EXPORT_PATH", os.path.join(PATH, "Exportaciones", "Diarias"))
 admin_config.set_default("N43_PATH", os.path.join("INFORMES GESTIÓN DIARIA",
                                                   "0.REPORTES BBOO",
                                                   "001 CARPETA DE PAGOS",

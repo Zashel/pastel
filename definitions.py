@@ -88,7 +88,25 @@ class Path:
         self._path = path
     @property
     def path(self):
-        return search_win_drive(self._path)
+        if os.path.splitdrive(self._path)[0] == "":
+            def recursive_search(path, sub=None):
+                if sub is None:
+                    sub = list()
+                paths = os.path.split(path)
+                sub.append(paths[1])
+                try:
+                    if paths[0] == "":
+                        raise FileNotFoundError
+                    return os.path.join(search_win_drive(paths[0]),
+                                        *paths)
+                except:
+                    recursive_search(paths[0], sub)
+            try:
+                return search_win_drive(self._path)
+            except:
+                return recursive_search(self._path)
+        else:
+            return self._path
     @path.setter
     def path(self, value):
         self._path = value
@@ -129,10 +147,7 @@ class LocalConfig: #To a dynamic access -> change API
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         if attr in LOCAL:
             if attr in REMOTE_PATHS:
-                try:
-                    return Path(shelf[attr]).path
-                except:
-                    print(shelf[attr])
+                path = Path(shelf[attr]).path
             else:
                 return shelf[attr]
         shelf.close()
@@ -148,7 +163,7 @@ local_config.set_default("HOST", "localhost")
 local_config.set_default("PORT", 44752)
 local_config.set_default("PATH", PATH)
 local_config.set_default("EXPORT_PATH", os.path.join(PATH, "Exportaciones"))
-local_config.set_default("ADMIN_DB", os.path.join(PATH, "Admin"))
+local_config.set_default("ADMIN_DB", os.path.join(PATH, "DB", "Admin"))
 
 SHARED = ["PM_CUSTOMER",
           "PM_PAYMENT_METHOD",

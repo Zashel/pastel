@@ -146,7 +146,7 @@ class Pari(RestfulBaseInterface):
                                                                                                       minute=0,
                                                                                                       second=0,
                                                                                                       microsecond=0) and
-                    data["primera_factura"] == 1):
+                    data["primera_factura"] == "1"):
                 str_fecha_factura = datetime.datetime.strptime(data["fecha_factura"], "%d/%m/%y")
                 if data["fecha_factura"] not in diario:
                     diario[data["fecha_factura"]] = list()

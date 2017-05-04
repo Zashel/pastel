@@ -1,36 +1,46 @@
 import os
 import uuid
+import shelve
 from zrest.datamodels.shelvemodels import ShelveModel
 from zashel.utils import search_win_drive
 
-__all__ = ["UUID",
-           "USERS_FIELDS",
-           "USERS_UNIQUE",
-           "USERS_PERMISSIONS",
-           "PARI_FIELDS",
-           "PARI_UNIQUE",
-           "PAYMENTS_FIELDS",
-           "APLICATION_FIELDS",
-           "METODOS_FIELDS",
-           "CONFIG_FIELDS",
-           "HOST", "PORT",
-           "LOCAL_PATH",
-           "PATH",
-           "BASE_URI",
-           "LOG_ERROR",
-           "LOG_ERROR_PARI",
-           "DATABASE_PATH",
-           "REMOTE_PATH",
-           "N43_PATH",
-           "N43_PATH_INCOMING",
-           "N43_PATH_OUTGOING",
-           "REPORT_PATH",
-           "PM_CUSTOMER",
+STATIC = ["UUID",
+          "USERS_FIELDS",
+          "USERS_UNIQUE",
+          "USERS_PERMISSIONS",
+          "PARI_FIELDS",
+          "PARI_UNIQUE",
+          "PAYMENTS_FIELDS",
+          "APLICATION_FIELDS",
+          "CONFIG_FIELDS",
+          "BASE_URI",
+          "LOG_ERROR",
+          "LOG_ERROR_PARI",
+          "LOCAL_PATH",
+          "METODOS_FIELDS"]
+
+PATHS = ["DATABASE_PATH",
+         "REMOTE_PATH",
+         "N43_PATH",
+         "N43_PATH_INCOMING",
+         "N43_PATH_OUTGOING",
+         "REPORT_PATH"]
+
+LOCAL = ["HOST", "PORT",
+         "PATH",
+         "EXPORT_PATH",]
+
+SHARED = ["PM_CUSTOMER",
            "PM_PAYMENT_METHOD",
            "PM_PAYMENT_WAY",
-           "EXPORT_PATH",
            "DAILY_EXPORT_PATH",
            "PARI_FILE_FIELDS"]
+
+__all__ = list()
+__all__.extend(STATIC)
+__all__.extend(PATHS)
+__all__.extend(LOCAL)
+__all__.extend(SHARED)
 
 LOCAL_PATH = os.path.join(os.environ["LOCALAPPDATA"], "pastel")
 CONFIG_FIELDS = ["container",
@@ -49,7 +59,15 @@ class LocalConfigFile:
 
     def __setattr__(self, attr, value):
         shelf = shelve.open(os.path.join(LOCAL_PATH, "pastel"))
-        data[attr] = value
+        if attr in shelf["fields"]:
+            shelf[attr] = value
+        shelf.close()
+
+    def __getattr__(self, attr):
+        shelf = shelve.open(os.path.join(LOCAL_PATH, "pastel"))
+        if attr in shelf["fields"]:
+            return shelf[attr]["value"]
+        shelf.close()
 
 
 local = LocalConfigFile()

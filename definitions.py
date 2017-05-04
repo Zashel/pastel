@@ -96,7 +96,8 @@ class Path:
 #LOCAL defined variables
 LOCAL = ["HOST", "PORT",
          "PATH",
-         "EXPORT_PATH"
+         "EXPORT_PATH",
+         "ADMIN_DB",
          ]
 
 REMOTE_PATHS = ["PATH",

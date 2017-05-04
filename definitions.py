@@ -94,16 +94,17 @@ class Path:
                     sub = list()
                 paths = os.path.split(path)
                 sub.append(paths[1])
+                if paths[0] == "":
+                    raise FileNotFoundError
                 try:
-                    if paths[0] == "":
-                        raise FileNotFoundError
                     return os.path.join(search_win_drive(paths[0]),
                                         *paths)
-                except:
+                except FileNotFoundError:
                     recursive_search(paths[0], sub)
             try:
                 return search_win_drive(self._path)
-            except:
+            except FileNotFoundError:
+                print(self._path)
                 return recursive_search(self._path)
         else:
             return self._path

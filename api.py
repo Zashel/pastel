@@ -72,6 +72,22 @@ class API:
                                                              str(local_config.PORT),
                                                              BASE_URI[1:-1]),
                             json={"file": filename})
+        data = json.loads(data.text)
+        if "manuals" in data:
+            for payment in data["manuals"]:
+                requests.post("http://{}:{}{}/pagos".format(local_config.HOST,
+                                                         str(local_config.PORT),
+                                                         BASE_URI[1:-1]),
+                              json={"fecha": payment["fecha_operacion"],
+                                    "importe": payment["importe"],
+                                    "observaciones": payment["observaciones"],
+                                    "dni": payment["nif"],
+                                    "id_cuenta": payment["id_cuenta"],
+                                    "tels": payment["telefonos"],
+                                    "oficina": payment["oficina_origen"],
+                                    "posibles": payment["poss"],
+                                    "estado": "PENDIENTE"
+                                    })
         return data
 
     @classmethod

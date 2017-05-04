@@ -60,9 +60,10 @@ PAYMENTS_FIELDS = ["fecha",
                    "observaciones",
                    "dni",
                    "id_cuenta",
-                   "tel1",
-                   "tel2",
-                   "oficina"]
+                   "tels",
+                   "oficina",
+                   "posibles",
+                   "estado"]
 
 APLICATION_FIELDS = ["tipo", # Automático o Manual
                      "pagos__id",
@@ -71,7 +72,7 @@ APLICATION_FIELDS = ["tipo", # Automático o Manual
                      "nombre_cliente", # Manual
                      "numdoc",
                      "id_cuenta",
-                     "periodo_facturado",
+                     "fecha_factura",
                      "metodos__id",
                      "via_de_pago"] #Crear Objeto Relacional con esto
 

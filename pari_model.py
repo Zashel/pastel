@@ -431,19 +431,20 @@ class Pari(RestfulBaseInterface):
                         id_cuentas = shelf["id_cliente"]["data"][id_cliente][1]
                         for id_cuenta in id_cuentas:
                             print("id_cuenta {}".format(id_cuentas))
-                            for id_factura in shelf["id_cuenta"]["data"][id_cuenta][1]:
-                                total += 1
-                                estado = (shelf["estados"][int.from_bytes(
-                                        shelf["id_factura"]["data"][id_factura][2], "big")])
-                                fecha_factura = int.from_bytes(shelf["id_factura"]["data"][id_factura][0],
-                                                               "big")
-                                fecha_factura = str(fecha_factura)
-                                fecha_factura = "0"*(6-len(fecha_factura))+fecha_factura
-                                fecha_factura = datetime.datetime.strptime(fecha_factura, "%d%m%y")
-                                possibles[id_factura] = {"importe": shelf["id_factura"]["data"][id_factura][1],
-                                                         "id_cuenta": id_cuenta,
-                                                         "fecha_factura": fecha_factura,
-                                                         "estado": estado}
+                            if shelf["id_cuenta"]["data"][id_cuenta][0] != "GRAN CUENTA":
+                                for id_factura in shelf["id_cuenta"]["data"][id_cuenta][1]:
+                                    total += 1
+                                    estado = (shelf["estados"][int.from_bytes(
+                                            shelf["id_factura"]["data"][id_factura][2], "big")])
+                                    fecha_factura = int.from_bytes(shelf["id_factura"]["data"][id_factura][0],
+                                                                   "big")
+                                    fecha_factura = str(fecha_factura)
+                                    fecha_factura = "0"*(6-len(fecha_factura))+fecha_factura
+                                    fecha_factura = datetime.datetime.strptime(fecha_factura, "%d%m%y")
+                                    possibles[id_factura] = {"importe": shelf["id_factura"]["data"][id_factura][1],
+                                                             "id_cuenta": id_cuenta,
+                                                             "fecha_factura": fecha_factura,
+                                                             "estado": estado}
                         election = None
                         if total >= 1:
                             ids_factura = list(possibles.keys())

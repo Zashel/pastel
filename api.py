@@ -68,10 +68,11 @@ class API:
 
     @classmethod
     def set_n43(cls, filename):
-        data = requests.put("http://{}:{}{}/n43".format(local_config.HOST,
-                                                             str(local_config.PORT),
-                                                             BASE_URI[1:-1]),
-                            json={"file": filename})
+        data = requests.request("LOAD", 
+                                "http://{}:{}{}/n43".format(local_config.HOST,
+                                                            str(local_config.PORT),
+                                                            BASE_URI[1:-1]),
+                                json={"file": filename})
         data = json.loads(data.text)
         if "data" in data and "manuals" in data["data"]:
             for payment in data["data"]["manuals"]:

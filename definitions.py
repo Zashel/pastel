@@ -100,9 +100,6 @@ class Path:
                 try:
                     spath = os.path.join(search_win_drive(paths[0]),
                                          *paths)
-                    if "admin" in spath.lower():
-                        os.makedirs(path)
-                        return path
                     return spath
                 except FileNotFoundError:
                     recursive_search(paths[0], sub)
@@ -173,6 +170,9 @@ local_config.set_default("PORT", 44752)
 local_config.set_default("PATH", PATH)
 local_config.set_default("EXPORT_PATH", os.path.join(PATH, "Exportaciones"))
 local_config.set_default("ADMIN_DB", os.path.join(PATH, "DB", "Admin"))
+if not os.path.exists(local_config.ADMIN_DB):
+    os.makedirs(local_config.ADMIN_DB)
+
 
 SHARED = ["PM_CUSTOMER",
           "PM_PAYMENT_METHOD",

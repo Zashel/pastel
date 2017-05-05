@@ -15,12 +15,14 @@ STATIC = ["UUID",
           "PARI_UNIQUE",
           "PAYMENTS_FIELDS",
           "APLICATION_FIELDS",
+          "APLICATION_INDEX",
           "BASE_URI",
           "LOG_ERROR",
           "LOG_ERROR_PARI",
           "LOCAL_PATH",
           "METODOS_FIELDS",
-          "COMMITMENTS_FIELDS"]
+          "COMMITMENTS_FIELDS",
+          "COMMITMENTS_INDEX"]
 
 UUID = uuid.uuid4() #Identifier of session
 
@@ -66,6 +68,13 @@ PAYMENTS_FIELDS = ["fecha",
                    "posibles",
                    "estado"]
 
+PAYMENTS_INDEX = ["fecha",
+                  "importe",
+                  "dni",
+                  "id_cliente",
+                  "oficina",
+                  "estado"]
+
 APLICATION_FIELDS = ["tipo", # Automático o Manual
                      "pagos__id",
                      "clientes_id_factura",
@@ -90,6 +99,16 @@ COMMITMENTS_FIELDS = ["usuario",
                       "canal",
                       "observaciones",
                       "estado"]
+
+COMMITMENTS_INDEX = ["usuario",
+                     "id_cliente",
+                     "id_cuenta",
+                     "id_factura",
+                     "fecha_factura",
+                     "importe",
+                     "fecha",
+                     "canal",
+                     "estado"]
                       
 BASE_URI = "^/pastel/api/v1$"
 

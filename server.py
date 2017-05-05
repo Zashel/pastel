@@ -15,7 +15,7 @@ if __name__ == "__main__":
                               1,
                               index_fields=USERS_FIELDS,
                               headers=USERS_FIELDS,
-                              unique="id")
+                              unique="id"))
     #app.set_model(ShelveModel(os.path.join(LOCAL_PATH, "config"),
     #                          1,
     #                          index_fields=CONFIG_FIELDS),
@@ -32,7 +32,7 @@ if __name__ == "__main__":
                   "^/facturas/<id_factura>$")
     app.set_method("facturas", "^/n43$", LOAD, "new_n43")
     app.set_model(ShelveModel(os.path.join(admin_config.DATABASE_PATH, "pagos"),
-                              index_fields=PAYMENTS_FIELDS,
+                              index_fields=PAYMENTS_INDEX,
                               headers=PAYMENTS_FIELDS),
                   "pagos",
                   "^/pagos/<_id>$")
@@ -45,7 +45,7 @@ if __name__ == "__main__":
                   "^/pagos/aplicados/<tipo>")
     app.set_model(ShelveModel(os.path.join(admin_config.DATANASE_PATH, "compromisos"),
                               index_fields=COMMITMENTS_FIELDS,
-                              headers=COMMITMENTS_FIELDS)
+                              headers=COMMITMENTS_FIELDS),
                   "compromisos",
                   "^/compromisos/<_id>$")
     app.run(local_config.HOST, local_config.PORT)

@@ -75,21 +75,23 @@ class API:
                                 json={"file": filename})
         data = json.loads(data.text)
         if "data" in data and "manuals" in data["data"]:
+            payments = list()
             for payment in data["data"]["manuals"]:
-                requests.request("LOAD", 
-                                 "http://{}:{}{}/pagos".format(local_config.HOST,
-                                                               str(local_config.PORT),
-                                                               BASE_URI[1:-1]),
-                                 json={"fecha": payment["fecha_operacion"],
-                                       "importe": payment["importe"],
-                                       "observaciones": payment["observaciones"],
-                                       "dni": payment["nif"],
-                                       "id_cliente": payment["id_cliente"],
-                                       "tels": payment["telefonos"],
-                                       "oficina": payment["oficina_origen"],
-                                       "posibles": payment["posibles"],
-                                       "estado": "PENDIENTE"
-                                       })
+                payments.append({"fecha": payment["fecha_operacion"],
+                                 "importe": payment["importe"],
+                                 "observaciones": payment["observaciones"],
+                                 "dni": payment["nif"],
+                                 "id_cliente": payment["id_cliente"],
+                                 "tels": payment["telefonos"],
+                                 "oficina": payment["oficina_origen"],
+                                 "posibles": payment["posibles"],
+                                 "estado": "PENDIENTE"
+                                 })
+            requests.request("LOAD",
+                             "http://{}:{}{}/pagos".format(local_config.HOST,
+                                                           str(local_config.PORT),
+                                                           BASE_URI[1:-1]),
+                             json=payments)
         return data
 
     @classmethod

@@ -45,7 +45,7 @@ if __name__ == "__main__":
                                               app.get_model("pagos")]),
                   "aplicados",
                   "^/pagos/aplicados/<tipo>")
-    app.set_model(ShelveModel(os.path.join(admin_config.DATANASE_PATH, "compromisos"),
+    app.set_model(ShelveModel(os.path.join(admin_config.DATABASE_PATH, "compromisos"),
                               index_fields=COMMITMENTS_FIELDS,
                               headers=COMMITMENTS_FIELDS),
                   "compromisos",

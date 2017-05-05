@@ -95,11 +95,13 @@ class API:
         return data
 
     @classmethod
-    def set_pari(cls):
-        files =  glob.glob("{}*.csv".format(os.path.join(admin_config.N43_PATH_INCOMING, "BI_131_FICHERO_PARI_DIARIO")))
-        files.sort()
-        files.reverse()
-        print(files)
+    def set_pari(cls, filename=None):
+        if filename is None:
+            files =  glob.glob("{}*.csv".format(os.path.join(admin_config.N43_PATH_INCOMING, "BI_131_FICHERO_PARI_DIARIO")))
+            files.sort()
+            files.reverse()
+        else:
+            files = [filename]
         if len(files) > 0:
             data = requests.put("http://{}:{}{}/facturas".format(local_config.HOST,
                                                                  str(local_config.PORT),
@@ -121,6 +123,7 @@ class API:
             heads = "segmento;fecha_factura;estado;facturas;importe_devuelto;importe_impagado\n"
             name = os.path.split(files[0])[1].strip("BI_131_FICHERO_PARI_DIARIO")
             name = "report_pari_{}".format(name)
+            '''
             with open(os.path.join(admin_config.REPORT_PATH, "Pari", name), "w") as f:
                 f.write(heads)
                 for segmento in segmentos:
@@ -139,6 +142,7 @@ class API:
                                               importe_devuelto,
                                               importe_impagado
                                               ))+"\n")
+            ''' #Debug!
             return os.path.join(admin_config.REPORT_PATH, "Pari", name)
 
     @classmethod

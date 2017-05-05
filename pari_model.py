@@ -101,8 +101,6 @@ class Pari(RestfulBaseInterface):
         API_id_cliente = {"_heads": ["numdoc",
                                      "id_cuenta"],
                           "data": dict()}
-        #API_numdoc = {"_heads": ["numdoc",
-        #                         "id_cliente"]}
         PARI_FIELDS = admin_config.PARI_FILE_FIELDS
         API_segmentos = list()
         index_segmentos = dict()
@@ -143,6 +141,7 @@ class Pari(RestfulBaseInterface):
             data = row["data"]
             #Exporting daily reports of certain invoices:
             fecha_puesta_cobro = datetime.datetime.strptime(data["fecha_puesta_cobro"], "%d/%m/%y")
+            '''
             if (fecha_puesta_cobro + datetime.timedelta(days=61) >= datetime.datetime.today().replace(hour=0,
                                                                                                       minute=0,
                                                                                                       second=0,
@@ -160,6 +159,7 @@ class Pari(RestfulBaseInterface):
                         item = data[head]
                     final_list.append(item)
                 diario[data["fecha_factura"]].append(";".join(final_list))
+            ''' #Debug!
             for report in (ife, ffe, dfe):
                 if data["segmento"] not in report:
                     report[data["segmento"]] = dict()
@@ -199,7 +199,7 @@ class Pari(RestfulBaseInterface):
                         elif head == "facturas":
                             if api["data"][item][index] is None:
                                 api["data"][item][index] = list()
-                                api["data"][item][index].append(id_factura)
+                            api["data"][item][index].append(id_factura)
                         elif head == "importe_adeudado":
                             importe = float(row["data"][head].replace(",", "."))
                             importe = int(importe*100)
@@ -433,7 +433,9 @@ class Pari(RestfulBaseInterface):
                         for id_cuenta in id_cuentas:
                             #print("id_cuenta {}".format(id_cuentas))
                             if shelf["id_cuenta"]["data"][id_cuenta][0] != "GRAN CUENTA":
-                                for id_factura in shelf["id_cuenta"]["data"][id_cuenta][1]:
+                                facturas = shelf["id_cuenta"]["data"][id_cuenta][1]
+                                facturas.sort()
+                                for id_factura in facturas:
                                     total += 1
                                     estado = (shelf["estados"][int.from_bytes(
                                             shelf["id_factura"]["data"][id_factura][2], "big")])

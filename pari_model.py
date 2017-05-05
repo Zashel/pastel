@@ -180,7 +180,7 @@ class Pari(RestfulBaseInterface):
                                         ("id_cuenta", id_cuenta, API_id_cuenta),
                                         ("id_cliente", id_cliente, API_id_cliente)):
                     heads = api["_heads"]
-                    if item not in api:
+                    if item not in api["data"]:
                         api["data"][item] = [None for item in heads]
                     for index, head in enumerate(heads):
                         if head in ("id_factura",

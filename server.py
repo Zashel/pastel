@@ -15,7 +15,9 @@ if __name__ == "__main__":
                               1,
                               index_fields=USERS_FIELDS,
                               headers=USERS_FIELDS,
-                              unique="id"))
+                              unique="id"),
+                  "usuarios",
+                  "^/usuarios/<id>$")
     #app.set_model(ShelveModel(os.path.join(LOCAL_PATH, "config"),
     #                          1,
     #                          index_fields=CONFIG_FIELDS),

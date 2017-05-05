@@ -191,7 +191,8 @@ class Pari(RestfulBaseInterface):
                             if name == "id_cliente" and head == "id_cuenta":
                                 if api["data"][item][index] is None:
                                     api["data"][item][index] = list()
-                                api["data"][item][index].append(id_cuenta)
+                                if id_cuenta not in api["data"][item][index]:
+                                    api["data"][item][index].append(id_cuenta)
                             else:
                                 api["data"][item][index] = {"id_factura": id_factura,
                                                             "id_cliente": id_cliente,

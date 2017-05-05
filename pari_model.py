@@ -141,7 +141,6 @@ class Pari(RestfulBaseInterface):
             data = row["data"]
             #Exporting daily reports of certain invoices:
             fecha_puesta_cobro = datetime.datetime.strptime(data["fecha_puesta_cobro"], "%d/%m/%y")
-            '''
             if (fecha_puesta_cobro + datetime.timedelta(days=61) >= datetime.datetime.today().replace(hour=0,
                                                                                                       minute=0,
                                                                                                       second=0,
@@ -159,7 +158,6 @@ class Pari(RestfulBaseInterface):
                         item = data[head]
                     final_list.append(item)
                 diario[data["fecha_factura"]].append(";".join(final_list))
-            ''' #Debug!
             for report in (ife, ffe, dfe):
                 if data["segmento"] not in report:
                     report[data["segmento"]] = dict()

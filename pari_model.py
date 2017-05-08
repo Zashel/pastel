@@ -245,7 +245,7 @@ class Pari(RestfulBaseInterface):
         self._loaded_file = name
         self.shelf.close()
         self.set_shelve()
-        if do_report is True:
+        if do_export is True:
             for fecha_factura in diario:
                 str_fecha_factura = datetime.datetime.strptime(fecha_factura, "%d/%m/%y")
                 with open(os.path.join(admin_config.DAILY_EXPORT_PATH,
@@ -602,9 +602,9 @@ class Pari(RestfulBaseInterface):
         if "filter" in kwargs:
             filter = json.loads(kwargs["filter"])
             if "do_export" in filter:
-                do_export = filter["do_export"] == 1
+                do_export = filter["do_export"] == "1"
             if "do_report" in kwargs["filter"]:
-                do_report = filter["do_report"] == 1
+                do_report = filter["do_report"] == "1"
         if self.loaded_file is None and "file" in data and os.path.exists(data["file"]):
             for item in self.set_pari(data["file"], do_export=do_export, do_report=do_report):
                 print("\r{0:{w}}".format(str(item["eta"]), w=79, fill=" "), end="")

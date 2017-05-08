@@ -125,24 +125,25 @@ class API:
             heads = "segmento;fecha_factura;estado;facturas;importe_devuelto;importe_impagado\n"
             name = os.path.split(files[0])[1].strip("BI_131_FICHERO_PARI_DIARIO")
             name = "report_pari_{}".format(name)
-            with open(os.path.join(admin_config.REPORT_PATH, "Pari", name), "w") as f:
-                f.write(heads)
-                for segmento in segmentos:
-                    for fecha in fechas:
-                        for estado in estados:
-                            fecha_str = datetime.datetime.strptime(fecha, "%d/%m/%y").strftime("%d/%m/%Y")
-                            facturas = str(ffe[segmento][fecha][estado])
-                            importe_devuelto = str(dfe[segmento][fecha][estado])
-                            importe_devuelto = "{},{}".format(importe_devuelto[:-2], importe_devuelto[-2:])
-                            importe_impagado = str(ife[segmento][fecha][estado])
-                            importe_impagado = "{},{}".format(importe_impagado[:-2], importe_impagado[-2:])
-                            f.write(";".join((segmento,
-                                              fecha_str,
-                                              estado,
-                                              facturas,
-                                              importe_devuelto,
-                                              importe_impagado
-                                              ))+"\n")
+            if do_report is True:
+                with open(os.path.join(admin_config.REPORT_PATH, "Pari", name), "w") as f:
+                    f.write(heads)
+                    for segmento in segmentos:
+                        for fecha in fechas:
+                            for estado in estados:
+                                fecha_str = datetime.datetime.strptime(fecha, "%d/%m/%y").strftime("%d/%m/%Y")
+                                facturas = str(ffe[segmento][fecha][estado])
+                                importe_devuelto = str(dfe[segmento][fecha][estado])
+                                importe_devuelto = "{},{}".format(importe_devuelto[:-2], importe_devuelto[-2:])
+                                importe_impagado = str(ife[segmento][fecha][estado])
+                                importe_impagado = "{},{}".format(importe_impagado[:-2], importe_impagado[-2:])
+                                f.write(";".join((segmento,
+                                                  fecha_str,
+                                                  estado,
+                                                  facturas,
+                                                  importe_devuelto,
+                                                  importe_impagado
+                                                  ))+"\n")
             return os.path.join(admin_config.REPORT_PATH, "Pari", name)
 
     @classmethod

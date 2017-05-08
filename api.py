@@ -103,10 +103,11 @@ class API:
         else:
             files = [filename]
         if len(files) > 0:
-            data = requests.put("http://{}:{}{}/facturas".format(local_config.HOST,
-                                                                 str(local_config.PORT),
-                                                                 BASE_URI[1:-1]),
-                                json = {"file": files[0]})
+            data = requests.request("LOAD",
+                                    "http://{}:{}{}/facturas".format(local_config.HOST,
+                                                                     str(local_config.PORT),
+                                                                     BASE_URI[1:-1]),
+                                    json = {"file": files[0]})
             data = json.loads(data.text)["data"]
             ife = data["importes por fechas y estados"]
             ffe = data["facturas por fechas y estados"]

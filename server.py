@@ -32,7 +32,7 @@ if __name__ == "__main__":
     app.set_model(Pari(os.path.join(admin_config.DATABASE_PATH, "facturas")),
                   "facturas",
                   "^/facturas/<id_factura>$")
-    app.set_method("facturas", "^/n43$", LOAD, "new_n43")
+    app.set_method("facturas", "^/n43$", LOAD, "load_n43")
     app.set_model(ShelveModel(os.path.join(admin_config.DATABASE_PATH, "pagos"),
                               index_fields=PAYMENTS_INDEX,
                               headers=PAYMENTS_FIELDS),

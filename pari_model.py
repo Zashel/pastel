@@ -555,7 +555,7 @@ class Pari(RestfulBaseInterface):
             path, name = os.path.split(data["file"])
             if ("file" in self.shelf and name > self.shelf["file"]) or "file" not in self.shelf:
                 self.drop(filter, **kwargs)
-                return self.new(data, **kwargs)
+                return self.insert(data, **kwargs)
             else:
                 return self.fetch({}, reportes=True)
         #TODO: Reenviar algo si no hay nada

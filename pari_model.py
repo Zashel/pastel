@@ -604,10 +604,8 @@ class Pari(RestfulBaseInterface):
                 do_export = filter["do_export"] == 1
             if "do_report" in kwargs["filter"]:
                 do_report = filter["do_report"] == 1
-        if self.loaded_file is None and "file" in data and os.path.exists(data["file"],
-                                                                          do_export=do_export,
-                                                                          do_report=do_report):
-            for item in self.set_pari(data["file"]):
+        if self.loaded_file is None and "file" in data and os.path.exists(data["file"]):
+            for item in self.set_pari(data["file"], do_export=do_export, do_report=do_report):
                 print("\r{0:{w}}".format(str(item["eta"]), w=79, fill=" "), end="")
             print()
         return self.fetch({}, reportes=True)

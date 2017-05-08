@@ -1,6 +1,18 @@
 import requests
 import pprint
-from definitions import *
+import time
+from random import randint
+
+for x in range(10):
+    try:
+        from definitions import *
+        time.sleep(x+randint(0, 3))
+        break
+    except (KeyboardInterrupt, SystemExit):
+        raise
+    except:
+        continue
+
 from zashel.utils import log, daemonize
 from zrest.datamodels.shelvemodels import ShelveModel
 
@@ -11,7 +23,7 @@ import glob
 import os
 import re
 import json
-import time
+
 if sys.version_info.minor == 3:
     from contextlib import closing
     shelve_open = lambda file, flag="c", protocol=None, writeback=False: closing(shelve.open(file, flag))

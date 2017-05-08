@@ -494,7 +494,7 @@ class Pari(RestfulBaseInterface):
                                                    str(admin_config.PM_PAYMENT_WAY)
                                                    ]
                                         payments_list.append(";".join(subdata))
-                                        possibles[id_factura]["importe_aplicado"] += to_apply
+                                        applied[id_factura]["importe_aplicado"] += to_apply
                                         applied_flag = True
                                 if pdte == 0:
                                     final.extend(payments_list)

@@ -3,10 +3,10 @@ import pprint
 import time
 from random import randint
 
-for x in range(10):
+for x in range(5):
     try:
         from definitions import *
-        time.sleep(x+randint(0, 3))
+        time.sleep(x+randint(5, 10))
         break
     except (KeyboardInterrupt, SystemExit):
         raise

@@ -172,8 +172,9 @@ class Pari(RestfulBaseInterface):
             dfe[data["segmento"]][data["fecha_factura"]][data["estado_recibo"]] += int(
                     data["importe_devolucion"].replace(",", ""))
             ffe[data["segmento"]][data["fecha_factura"]][data["estado_recibo"]] += 1
-            if (row["data"]["estado_recibo"] == "IMPAGADO" or row["data"]["estado_recibo"] == "PAGO PARCIAL" or
-                        datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
+            #if (row["data"]["estado_recibo"] == "IMPAGADO" or row["data"]["estado_recibo"] == "PAGO PARCIAL" or
+            #            datetime.datetime.strptime(row["data"]["fecha_factura"], "%d/%m/%y").date() >= limit_date):
+            if row["data"]["estado_recibo"] == "IMPAGADO": #Let's play mini, then
                 for name, item, api in (("id_factura", id_factura, API_id_factura),
                                         ("id_cuenta", id_cuenta, API_id_cuenta),
                                         ("id_cliente", id_cliente, API_id_cliente)):
@@ -453,6 +454,7 @@ class Pari(RestfulBaseInterface):
                             ids_factura.sort()
                             pdte = data["importe"]
                             applied_flag = False
+                            payments_list = list()
                             for id_factura in ids_factura:
                                 #print("Posibles :{}".format(pprint.pprint(possibles[id_factura])))
                                 #input("id_factura in applied {}".format(id_factura in applied))
@@ -490,19 +492,18 @@ class Pari(RestfulBaseInterface):
                                                    str(admin_config.PM_PAYMENT_WAY)
                                                    ]
                                         final.append(";".join(subdata))
-                                        applied[id_factura]["importe_aplicado"] += to_apply
+                                        payments_list[id_factura]["importe_aplicado"] += to_apply
                                         applied_flag = True
                                 if pdte == 0:
                                     go_on = False
                                     break
                             if pdte > 0 and applied_flag is True:
+                                '''
                                 id_factura = ids_factura[-1]
                                 try:
                                     code = codes[possibles[id_factura]["fecha_factura"]]
                                 except KeyError:
-                                    #print(possibles)
-                                    #print("Orig: {}".format(int.from_bytes(shelf["id_factura"]["data"][id_factura][0],
-                                    #                                       "big")))
+                                    "big")))
                                     code = 1
                                 subdata = [str(apply_date),
                                            str(code),
@@ -516,8 +517,10 @@ class Pari(RestfulBaseInterface):
                                            str(admin_config.PM_PAYMENT_WAY)
                                            ]
                                 final.append(";".join(subdata))
-                                pdte = 0
                                 go_on = False
+                                pdte = 0
+                                ''' #Do it simple, give people what to work with
+                                go_on = True
                         if pdte > 0 and applied_flag is False:
                             go_on = True
                     else:
@@ -533,7 +536,7 @@ class Pari(RestfulBaseInterface):
                             if isinstance(go_on_final[item], datetime.datetime):
                                 go_on_final[item] = go_on_final[item].strftime("%d/%m/%Y")
                         go_on_final.update({"id_cliente": id_cliente,
-                                            "posibles": poss})
+                                            "posibles": payments_list})
                         manuals.append(go_on_final)
                 self.shelf["aplicados"].update(applied)
                 if "eta" in row:

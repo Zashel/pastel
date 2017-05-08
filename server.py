@@ -1,8 +1,19 @@
 #! Python/pastel.exe
 
+import time
+from random import randint
+
 from zrest.server import App, GET, PUT, LOAD
 from zrest.datamodels.shelvemodels import ShelveModel, ShelveRelational
-from definitions import *
+for x in range(10):
+    try:
+        from definitions import *
+        time.sleep(x+randint(0, 3))
+        break
+    except (KeyboardInterrupt, SystemExit):
+        raise
+    except:
+        continue
 from pari_model import Pari
 
 import os

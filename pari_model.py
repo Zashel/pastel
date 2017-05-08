@@ -421,6 +421,7 @@ class Pari(RestfulBaseInterface):
                 total = int()
                 possibles = dict()
                 go_on = True
+                payments_list = list()
                 if data["cuenta"] in account_number and not data["observaciones"].startswith("ANULACIONES"):
                     if (data["importe"] in anulaciones[data["cuenta"]] and
                             anulaciones[data["cuenta"]][data["importe"]] == data["oficina_origen"]):
@@ -456,7 +457,6 @@ class Pari(RestfulBaseInterface):
                             ids_factura.sort()
                             pdte = data["importe"]
                             applied_flag = False
-                            payments_list = list()
                             for id_factura in ids_factura:
                                 #print("Posibles :{}".format(pprint.pprint(possibles[id_factura])))
                                 #input("id_factura in applied {}".format(id_factura in applied))

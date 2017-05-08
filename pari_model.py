@@ -600,6 +600,7 @@ class Pari(RestfulBaseInterface):
         do_export = False
         do_report = False
         if "filter" in kwargs:
+            filter = kwargs["filter"]
             if "do_export" in filter:
                 do_export = filter["do_export"] == "1"
             if "do_report" in kwargs["filter"]:

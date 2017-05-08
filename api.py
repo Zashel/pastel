@@ -95,7 +95,7 @@ class API:
         return data
 
     @classmethod
-    def set_pari(cls, filename=None):
+    def set_pari(cls, filename=None, *, do_report=True, do_export=True):
         if filename is None:
             files =  glob.glob("{}*.csv".format(os.path.join(admin_config.N43_PATH_INCOMING, "BI_131_FICHERO_PARI_DIARIO")))
             files.sort()
@@ -104,9 +104,11 @@ class API:
             files = [filename]
         if len(files) > 0:
             data = requests.request("LOAD",
-                                    "http://{}:{}{}/facturas".format(local_config.HOST,
-                                                                     str(local_config.PORT),
-                                                                     BASE_URI[1:-1]),
+                                    "http://{}:{}{}/facturas?do_report={}&do_export={}".format(local_config.HOST,
+                                                                                               str(local_config.PORT),
+                                                                                               BASE_URI[1:-1],
+                                                                                               do_report and 1 or 0,
+                                                                                               do_export and 1 or 0),
                                     json = {"file": files[0]})
             data = json.loads(data.text)["data"]
             ife = data["importes por fechas y estados"]

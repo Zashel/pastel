@@ -597,10 +597,10 @@ class Pari(RestfulBaseInterface):
             raise
 
     def insert(self, data, **kwargs): #TODO: Move to Server
+        do_export = False
+        do_report = False
         if "filter" in kwargs:
             filter = json.loads(kwargs["filter"])
-            do_export = False,
-            do_report = False
             if "do_export" in filter:
                 do_export = filter["do_export"] == 1
             if "do_report" in kwargs["filter"]:

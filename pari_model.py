@@ -493,10 +493,11 @@ class Pari(RestfulBaseInterface):
                                                    str(admin_config.PM_PAYMENT_METHOD),
                                                    str(admin_config.PM_PAYMENT_WAY)
                                                    ]
-                                        final.append(";".join(subdata))
-                                        payments_list[id_factura]["importe_aplicado"] += to_apply
+                                        payments_list.append(";".join(subdata))
+                                        possibles[id_factura]["importe_aplicado"] += to_apply
                                         applied_flag = True
                                 if pdte == 0:
+                                    final.extend(payments_list)
                                     go_on = False
                                     break
                             if pdte > 0 and applied_flag is True:
@@ -529,16 +530,16 @@ class Pari(RestfulBaseInterface):
                         go_on = True
                     if go_on is True:
                         go_on_final = row["data"].copy()
-                        poss = possibles.copy()
-                        for id in poss:
-                            for field in poss[id]:
-                                if isinstance(poss[id][field], datetime.datetime):
-                                    poss[id][field] = poss[id][field].strftime("%d/%m/%Y")
+                        poss = payments_list.copy()
+                        #for id in poss:
+                        #    for field in poss[id]:
+                        #        if isinstance(poss[id][field], datetime.datetime):
+                        #            poss[id][field] = poss[id][field].strftime("%d/%m/%Y")
                         for item in go_on_final:
                             if isinstance(go_on_final[item], datetime.datetime):
                                 go_on_final[item] = go_on_final[item].strftime("%d/%m/%Y")
                         go_on_final.update({"id_cliente": id_cliente,
-                                            "posibles": payments_list})
+                                            "posibles": poss})
                         manuals.append(go_on_final)
                 self.shelf["aplicados"].update(applied)
                 if "eta" in row:

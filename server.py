@@ -34,6 +34,10 @@ class PASTELBlocking(ShelveBlocking):
     def unique_id(self):
         return local_config.UUID
 
+    @unique_id.setter
+    def unique_id(self, value):
+        ShelveBlocking.unique_id = value
+
 if __name__ == "__main__":
     app = App()
     app.set_base_uri(BASE_URI)

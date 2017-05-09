@@ -48,13 +48,16 @@ class API:
 
     pagos = {"active": None,
              "cache": None,
-             "page": None,
-             "items_per_page": None,
-             "total": None}
+             "self": None,
+             "next": None,
+             "last": None,
+             "prev": None,
+             "first": None
+             }
 
     @classmethod
     def get_pago(cls, _id):
-        if API.pagos["active"] != _id:
+        if API.pagos["active"]["_id"] != _id:
             request = requests.get("http://{}:{}{}/pagos?_id={}".format(local_config.HOST,
                                                                         str(local_config.PORT),
                                                                         BASE_URI[1:-1],
@@ -78,17 +81,63 @@ class API:
                                                                     str(local_config.PORT),
                                                                     BASE_URI[1:-1],
                                                                     filter))
-        if request == 200:
+        if request.request == 200:
             data = json.loads(request.text)
             API.pagos["cache"] = data["data"]
-            API.pagos["total"] = data["total"]
-            API.pagos["page"] = data["page"]
-            API.pagos["items_per_page"] = data["items_per_page"]
+            if "_links" in data:
+                for link in ("self", "next", "prev", "first", "last"):
+                    if link in data["_links"]:
+                        API.pagos[link] = data["_links"][link]["href"]
+                    else:
+                        API.pagos[link] = None
         else:
-            API.pagos["cache"] = None
-            API.pagos["total"] = None
-            API.pagos["page"] = None
-            API.pagos["items_per_page"] = None
+            pagos = {"active": None,
+                     "cache": None,
+                     "self": None,
+                     "next": None,
+                     "last": None,
+                     "prev": None,
+                     "first": None
+                     }
+
+    @classmethod
+    def next_pagos(cls, **kwargs):
+        filter = list()
+        for item in kwargs:
+            if item in PAYMENTS_INDEX:
+                filter.append("=".join((item, str(kwargs[item]))))
+        filter = "&".join(filter)
+        request = requests.request("NEXT",
+                                   "http://{}:{}{}/pagos?{}".format(local_config.HOST,
+                                                                    str(local_config.PORT),
+                                                                    BASE_URI[1:-1],
+                                                                    filter))
+        if request.request == 200:
+            data = json.loads(request.text)
+            if data["total"] == 1:
+                API.pagos["active"] = data["data"]
+            elif request.request == 404:
+                API.pagos["active"] = None
+        return API.pagos["active"]
+
+    @classmethod
+    def get_pagos_list(cls):
+        return API.pagos["cache"]
+
+    @classmethod
+    def modify_pago(cls, data):
+        if "link" in data:
+            post_data = data.copy()
+            del(post_data["link"])
+            request = requests.put(data["link"], json=post_data)
+            if request.request in (200, 201):
+                data = json.loads(request.text)
+                if data["total"] == 1:
+                    API.pagos["active"] = data["data"]
+                elif request.request == 404:
+                    API.pagos["active"] = None
+            return API.pagos["active"]
+
 
     @classmethod
     @daemonize

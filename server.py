@@ -23,6 +23,7 @@ ALL_NEXT.append(NEXT)
 
 class PASTELBlocking(ShelveBlocking):
     def __init__(self, *args, **kwargs):
+        args = list(args)
         if len(args)==1:
             args.append(None)
         else:

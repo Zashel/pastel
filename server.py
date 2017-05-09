@@ -27,7 +27,7 @@ class PASTELBlocking(ShelveBlocking):
         if len(args)==1:
             args.append(None)
         else:
-            args = args[0]+[None]+args[1:]
+            args = args[:1]+[None]+args[1:]
         PASTELBlocking(*args, **kwargs)
         self.unique_id = local_config.UUID
 

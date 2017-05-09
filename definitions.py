@@ -1,14 +1,14 @@
 import os
 import uuid
 import shelve
+import datetime
 from zrest.datamodels.shelvemodels import ShelveModel
 from zashel.utils import search_win_drive
 
 
 #STATIC Variables, not configurable
 
-STATIC = ["UUID",
-          "USERS_FIELDS",
+STATIC = ["USERS_FIELDS",
           "USERS_UNIQUE",
           "USERS_PERMISSIONS",
           "PARI_FIELDS",
@@ -23,8 +23,6 @@ STATIC = ["UUID",
           "METODOS_FIELDS",
           "COMMITMENTS_FIELDS",
           "COMMITMENTS_INDEX"]
-
-UUID = uuid.uuid4() #Identifier of session
 
 PATH = "PASTEL"
 
@@ -112,10 +110,6 @@ COMMITMENTS_INDEX = ["usuario",
                       
 BASE_URI = "^/pastel/api/v1$"
 
-LOG_ERROR = os.path.join(LOCAL_PATH, "log_error_{}".format(UUID))
-
-LOG_ERROR_PARI = os.path.join(LOCAL_PATH, "log_error_pari_{}".format(UUID))
-
 class Path:
     def __init__(self, path):
         self._path = path
@@ -150,6 +144,7 @@ LOCAL = ["HOST", "PORT",
          "PATH",
          "EXPORT_PATH",
          "ADMIN_DB",
+         "UUID"
          ]
 
 REMOTE_PATHS = ["PATH",
@@ -164,19 +159,13 @@ REMOTE_PATHS = ["PATH",
                 ]
 
 class LocalConfig: #To a dynamic access -> change API
-    def __getattr__(self, attr):
-        shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
-        data = None
-        try:
-            data = shelf[attr]
-        finally:
-            shelf.close()
-            return data
     def __setattr__(self, attr, value):
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         if attr in LOCAL:
             if attr in REMOTE_PATHS:
                 Path(shelf[attr]).path = value
+                if attr == "UUID":
+                    shelf["UUID-timeout"] = datetime.datetime.now() + datetime.timedelta(hours=8)
             else:
                 shelf[attr] = value
         shelf.close()
@@ -186,7 +175,13 @@ class LocalConfig: #To a dynamic access -> change API
             if attr in REMOTE_PATHS:
                 return Path(shelf[attr]).path
             else:
-                return shelf[attr]
+                data = shelf[attr]
+                if attr == "UUID":
+                    timeout = shelf["UUID-timeout"]
+                    if timeout < datetime.datetime.now():
+                        data = uuid.uuid4()
+                        shelf[attr] = data
+                return data
         shelf.close()
     def set_default(self, attr, default):
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
@@ -204,6 +199,10 @@ local_config.set_default("ADMIN_DB", os.path.join(PATH, "DB", "Admin"))
 if not os.path.exists(local_config.ADMIN_DB):
     os.makedirs(local_config.ADMIN_DB)
 
+local_config.set_default("UUID", uuid.uuid4())
+
+LOG_ERROR = os.path.join(LOCAL_PATH, "log_error_{}".format(local_config.UUID))
+LOG_ERROR_PARI = os.path.join(LOCAL_PATH, "log_error_pari_{}".format(local_config.UUID))
 
 SHARED = ["PM_CUSTOMER",
           "PM_PAYMENT_METHOD",
@@ -218,14 +217,6 @@ SHARED = ["PM_CUSTOMER",
           ]
 
 class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated myself!
-    def __getattr__(self, attr):
-        shelf = shelve.open(os.path.join(local_config.ADMIN_DB, "config"))
-        data = None
-        try:
-            data = shelf[attr]
-        finally:
-            shelf.close()
-            return data
     def __setattr__(self, attr, value):
         shelf = shelve.open(os.path.join(local_config.ADMIN_DB, "config"))
         if attr in SHARED:

@@ -3,8 +3,8 @@
 import time
 from random import randint
 
-from zrest.server import App, GET, PUT, LOAD
-from zrest.datamodels.shelvemodels import ShelveModel, ShelveRelational
+from zrest.server import App, GET, PUT, LOAD, NEXT, ALL
+from zrest.datamodels.shelvemodels import ShelveModel, ShelveRelational, ShelveBlocking
 for x in range(5):
     try:
         from definitions import *
@@ -17,6 +17,9 @@ for x in range(5):
 from pari_model import Pari
 
 import os
+
+ALL_NEXT = list(ALL)
+ALL_NEXT.append(NEXT)
 
 if __name__ == "__main__":
     app = App()
@@ -44,11 +47,12 @@ if __name__ == "__main__":
                   "facturas",
                   "^/facturas/<id_factura>$")
     app.set_method("facturas", "^/n43$", LOAD, "load_n43")
-    app.set_model(ShelveModel(os.path.join(admin_config.DATABASE_PATH, "pagos"),
-                              index_fields=PAYMENTS_INDEX,
-                              headers=PAYMENTS_FIELDS),
+    app.set_model(ShelveBlocking(os.path.join(admin_config.DATABASE_PATH, "pagos"),
+                                 index_fields=PAYMENTS_INDEX,
+                                 headers=PAYMENTS_FIELDS),
                   "pagos",
-                  "^/pagos/<_id>$")
+                  "^/pagos/<_id>$",
+                  ALL_NEXT)
     app.set_model(ShelveRelational(os.path.join(admin_config.DATABASE_PATH, "aplicados"),
                                    index_fields=APLICATION_FIELDS,
                                    headers=APLICATION_FIELDS,

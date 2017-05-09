@@ -23,7 +23,10 @@ ALL_NEXT.append(NEXT)
 
 class PASTELBlocking(ShelveBlocking):
     def __init__(self, *args, **kwargs):
-        args.append(None)
+        if len(args)==1:
+            args.append(None)
+        else:
+            args = args[0]+[None]+args[1:]
         PASTELBlocking(*args, **kwargs)
         self.unique_id = local_config.UUID
 

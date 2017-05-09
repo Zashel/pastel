@@ -177,9 +177,12 @@ class LocalConfig: #To a dynamic access -> change API
             else:
                 data = shelf[attr]
                 if attr == "UUID":
-                    timeout = shelf["UUID-timeout"]
-                    if timeout < datetime.datetime.now():
-                        data = uuid.uuid4()
+                    try:
+                        timeout = shelf["UUID-timeout"]
+                        if timeout < datetime.datetime.now():
+                            data = uuid.uuid4()
+                            shelf[attr] = data
+                    except KeyError:
                         shelf[attr] = data
                 return data
         shelf.close()

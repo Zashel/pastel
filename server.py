@@ -21,6 +21,12 @@ import os
 ALL_NEXT = list(ALL)
 ALL_NEXT.append(NEXT)
 
+class PASTELBlocking(ShelveBlocking):
+    def __init__(self, *args, **kwargs):
+        args.append(None)
+        PASTELBlocking(*args, **kwargs)
+        self.unique_id = local_config.UUID
+
 if __name__ == "__main__":
     app = App()
     app.set_base_uri(BASE_URI)
@@ -47,7 +53,7 @@ if __name__ == "__main__":
                   "facturas",
                   "^/facturas/<id_factura>$")
     app.set_method("facturas", "^/n43$", LOAD, "load_n43")
-    app.set_model(ShelveBlocking(os.path.join(admin_config.DATABASE_PATH, "pagos"),
+    app.set_model(PASTELBlocking(os.path.join(admin_config.DATABASE_PATH, "pagos"),
                                  index_fields=PAYMENTS_INDEX,
                                  headers=PAYMENTS_FIELDS),
                   "pagos",

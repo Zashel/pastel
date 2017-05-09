@@ -46,6 +46,50 @@ class API:
     procesos = {}
     procesos_done = list()
 
+    pagos = {"active": None,
+             "cache": None,
+             "page": None,
+             "items_per_page": None,
+             "total": None}
+
+    @classmethod
+    def get_pago(cls, _id):
+        if API.pagos["active"] != _id:
+            request = requests.get("http://{}:{}{}/pagos?_id={}".format(local_config.HOST,
+                                                                        str(local_config.PORT),
+                                                                        BASE_URI[1:-1],
+                                                                        str(_id)))
+            if request.request == 200:
+                data = json.loads(request.text)
+                if data["total"] == 1:
+                    API.pagos["active"] = data["data"]
+            elif request.request == 404:
+                API.pagos["active"] = None
+        return API.pagos["active"]
+
+    @classmethod
+    def filter_pagos(cls, **kwargs):
+        filter = list()
+        for item in kwargs:
+            if item in PAYMENTS_INDEX:
+                filter.append("=".join((item, str(kwargs[item]))))
+        filter = "&".join(filter)
+        request = requests.get("http://{}:{}{}/pagos?{}".format(local_config.HOST,
+                                                                    str(local_config.PORT),
+                                                                    BASE_URI[1:-1],
+                                                                    filter))
+        if request == 200:
+            data = json.loads(request.text)
+            API.pagos["cache"] = data["data"]
+            API.pagos["total"] = data["total"]
+            API.pagos["page"] = data["page"]
+            API.pagos["items_per_page"] = data["items_per_page"]
+        else:
+            API.pagos["cache"] = None
+            API.pagos["total"] = None
+            API.pagos["page"] = None
+            API.pagos["items_per_page"] = None
+
     @classmethod
     @daemonize
     def run(cls):

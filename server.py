@@ -28,7 +28,7 @@ class PASTELBlocking(ShelveBlocking):
             args.append(None)
         else:
             args = args[:1]+[None]+args[1:]
-        ShelveBlocking.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @property
     def unique_id(self):

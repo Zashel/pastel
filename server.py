@@ -29,7 +29,10 @@ class PASTELBlocking(ShelveBlocking):
         else:
             args = args[:1]+[None]+args[1:]
         ShelveBlocking.__init__(self, *args, **kwargs)
-        self.unique_id = local_config.UUID
+
+    @property
+    def unique_id(self):
+        return local_config.UUID
 
 if __name__ == "__main__":
     app = App()

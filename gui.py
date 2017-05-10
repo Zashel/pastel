@@ -50,6 +50,9 @@ class TkVars:
 class App(Frame):
     def __init__(self, master=None):
         super().__init__(master, padding=(3, 3, 3, 3))
+        self.to_save = {"link": None,
+                        "old": dict(),
+                        "new": dict()}
         self.pack()
         self._vars = TkVars("vars", w=self.changed_data)
         self._config = TkVars("config", w=self.changed_data)
@@ -116,9 +119,6 @@ class App(Frame):
         self.rol = "Operador"
         self.vars.nombre_usuario = ""
 
-        self.to_save = {"link": None,
-                        "old": dict(),
-                        "new": dict()}
         self._last_entry = str()
         last_entry_validation = (self.register(self.entered_entry), "%s")
         self.Entry = partial(Entry, validate="focusin" ,validatecommand=last_entry_validation)

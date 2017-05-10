@@ -53,6 +53,9 @@ class App(Frame):
         self.to_save = {"link": None,
                         "old": dict(),
                         "new": dict()}
+        self._last_entry = str()
+        last_entry_validation = (self.register(self.entered_entry), "%s")
+        self.Entry = partial(Entry, validate="focusin", validatecommand=last_entry_validation)
         self.pack()
         self._vars = TkVars("vars", w=self.changed_data)
         self._config = TkVars("config", w=self.changed_data)
@@ -118,10 +121,6 @@ class App(Frame):
         self.usuario =  getpass.getuser()
         self.rol = "Operador"
         self.vars.nombre_usuario = ""
-
-        self._last_entry = str()
-        last_entry_validation = (self.register(self.entered_entry), "%s")
-        self.Entry = partial(Entry, validate="focusin" ,validatecommand=last_entry_validation)
 
         self.widgets()
         self.set_menu()

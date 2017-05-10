@@ -342,7 +342,8 @@ class App(Frame):
     def entered_entry(self, value):
         self._last_entry = value
 
-    def changed_data(self, *, var_name):
+    def changed_data(self, *args, var_name):
+        print(args)
         modules = var_name.split(".")
         link = str()
         field = str()

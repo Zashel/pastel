@@ -39,9 +39,9 @@ class TkVars:
                 print(type(value))
                 raise ValueError
             self._vars[item] = tk_var_class()
-            self._vars[item].trace("r", partial(self.r, var_name="{}.{}".format(item)))
-            self._vars[item].trace("w", partial(self.w, var_name="{}.{}".format(item)))
-            self._vars[item].trace("u", partial(self.u, var_name="{}.{}".format(item)))
+            self._vars[item].trace("r", partial(self.r, var_name="{}.{}".format(self._name, item)))
+            self._vars[item].trace("w", partial(self.w, var_name="{}.{}".format(self._name, item)))
+            self._vars[item].trace("u", partial(self.u, var_name="{}.{}".format(self._name, item)))
             self._vars[item].set(value)
 
     def nothing(self, *args, **kwargs):

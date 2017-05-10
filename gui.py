@@ -9,6 +9,7 @@ import getpass
 class TkVars:
     def __init__(self, name, r=None, w=None, u=None):
         self._vars = dict()
+        self._name = name
         if r is None:
             r = self.nothing
         if w is None:
@@ -24,7 +25,7 @@ class TkVars:
             return self._vars[item]
 
     def __setattr__(self, item, value):
-        if item in ("_vars", "r", "w", "u"):
+        if item in ("_vars", "_name", "r", "w", "u"):
             object.__setattr__(self, item, value)
         else:
             try:
@@ -38,9 +39,9 @@ class TkVars:
                 print(type(value))
                 raise ValueError
             self._vars[item] = tk_var_class()
-            self._vars[item].trace("r", partial(self.r, var_name="name.{}".format(item)))
-            self._vars[item].trace("w", partial(self.w, var_name="name.{}".format(item)))
-            self._vars[item].trace("u", partial(self.u, var_name="name.{}".format(item)))
+            self._vars[item].trace("r", partial(self.r, var_name="{}.{}".format(item)))
+            self._vars[item].trace("w", partial(self.w, var_name="{}.{}".format(item)))
+            self._vars[item].trace("u", partial(self.u, var_name="{}.{}".format(item)))
             self._vars[item].set(value)
 
     def nothing(self, *args, **kwargs):
@@ -343,10 +344,7 @@ class App(Frame):
         self._last_entry = value
 
     def changed_data(self, var, void, action, var_name):
-        print(type(self))
-        print(type(var))
-        print(type(void))
-        print(type(action))
+        print(var)
         modules = var_name.split(".")
         print(modules)
         link = str()

@@ -34,6 +34,8 @@ class TkVars:
                                 type(bool()): BooleanVar
                                 }[type(value)]
             except KeyError:
+                print(value)
+                print(type(value))
                 raise ValueError
             self._vars[item] = tk_var_class()
             self._vars[item].trace("r", partial(self.r, var_name="name.{}".format(item)))

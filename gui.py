@@ -51,8 +51,8 @@ class App(Frame):
     def __init__(self, master=None):
         super().__init__(master, padding=(3, 3, 3, 3))
         self.pack()
-        self._vars = TkVars("vars")
-        self._config = TkVars("config")
+        self._vars = TkVars("vars", w=self.changed_data)
+        self._config = TkVars("config", w=self.changed_data)
         posible = OrderedDict({"index": IntVar(),
                                "fecha_aplicacion": StringVar(),
                                "codigo_ciclo": IntVar(),

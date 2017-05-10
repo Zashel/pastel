@@ -196,7 +196,7 @@ local_config = LocalConfig()
 
 local_config.set_default("HOST", "localhost")
 local_config.set_default("PORT", 44752)
-local_config.set_default("INIT_SERVER_STARTUP", 1)
+local_config.set_default("INIT_SERVER_STARTUP", True)
 local_config.set_default("PATH", PATH)
 local_config.set_default("EXPORT_PATH", os.path.join(PATH, "Exportaciones"))
 local_config.set_default("ADMIN_DB", os.path.join(PATH, "DB", "Admin"))

@@ -274,7 +274,7 @@ class App(Frame):
         self.menu_edit
 
     def win_propiedades(self):
-        #self.set_config()
+        self.set_config()
         dialog = Toplevel(self.master)
         dialog.focus_set()
         dialog.grab_set()

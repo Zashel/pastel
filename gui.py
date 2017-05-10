@@ -55,7 +55,7 @@ class App(Frame):
                         "new": dict()}
         self._last_entry = str()
         last_entry_validation = (self.register(self.entered_entry), "%s")
-        self.Entry = partial(Entry, validate="focusin", validatecommand=last_entry_validation)
+        self.Entry = partial(Entry, validate="key", validatecommand=last_entry_validation)
         self.pack()
         self._vars = TkVars("vars", w=self.changed_data)
         self._config = TkVars("config", w=self.changed_data)
@@ -339,6 +339,7 @@ class App(Frame):
         dialog.wait_window(dialog)
 
     def entered_entry(self, value):
+        print(value)
         self._last_entry = value
 
     def changed_data(self, *args, var_name):
@@ -356,6 +357,7 @@ class App(Frame):
             link = "config"
             field = modules[1]
             value = self.config.__getattr__(field)
+
         if link != self.to_save["link"]:
             self.to_save = {"link": link,
                             "old": {field: self._last_entry},

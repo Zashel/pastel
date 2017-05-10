@@ -316,11 +316,11 @@ class App(Frame):
         Label(rutas, text="Exportaciones: ").grid(column=0, row=2, sticky=(N, W))
         Entry(rutas, textvariable=self.config.EXPORT_PATH).grid(column=1, row=2, sticky=(N, E))
         Label(rutas, text="Exportaciones diarias: ").grid(column=0, row=3, sticky=(N, W))
-        Entry(rutas).grid(column=1, row=3, sticky=(N, E))
+        Entry(rutas, textvariable=self.config.DAILY_EXPORT_PATH).grid(column=1, row=3, sticky=(N, E))
         Label(rutas, text="Reportes: ").grid(column=0, row=4, sticky=(N, W))
-        Entry(rutas).grid(column=1, row=4, sticky=(N, E))
+        Entry(rutas, textvariable=self.config.REPORT_PATH).grid(column=1, row=4, sticky=(N, E))
         Label(rutas, text="Base de Datos: ").grid(column=0, row=5, sticky=(N, W))
-        Entry(rutas).grid(column=1, row=5, sticky=(N, E))
+        Entry(rutas, textvariable=self.config.DATABASE_PATH).grid(column=1, row=5, sticky=(N, E))
         #Datos
 
         notebook.add(usuario, text="Usuario")
@@ -329,47 +329,6 @@ class App(Frame):
         #notebook.add(datos, text="Datos")
 
         dialog.wait_window(dialog)
-        """
-        admin_config.set_default("N43_PATH", os.path.join("INFORMES GESTIÓN DIARIA",
-                                                          "0.REPORTES BBOO",
-                                                          "001 CARPETA DE PAGOS",
-                                                          "040 NORMA43_JAZZTEL"))
-        admin_config.set_default("N43_PATH_INCOMING", os.path.join("INFORMES GESTIÓN DIARIA",
-                                                                   "0.REPORTES BBOO",
-                                                                   "001 CARPETA DE PAGOS",
-                                                                   "040 NORMA43_JAZZTEL",
-                                                                   "041 ENTRADAS"))
-        admin_config.set_default("N43_PATH_OUTGOING", os.path.join("INFORMES GESTIÓN DIARIA",
-                                                                   "0.REPORTES BBOO",
-                                                                   "001 CARPETA DE PAGOS",
-                                                                   "040 NORMA43_JAZZTEL",
-                                                                   "042 SALIDAS"))
-        admin_config.set_default("PARI_FILE_FIELDS", ["id_cliente",
-                                                      "id_cuenta",
-                                                      "numdoc",
-                                                      "tipodoc",
-                                                      "fecha_factura",
-                                                      "fecha_puesta_cobro",
-                                                      "id_factura",
-                                                      "segmento",
-                                                      "importe_adeudado",
-                                                      "metodo_pago",
-                                                      "fecha_devolucion",
-                                                      "importe_devolucion",
-                                                      "fecha_pago",
-                                                      "importe_aplicado",
-                                                      "metodo_recobro",
-                                                      "fecha_entrada_fichero",
-                                                      "fecha_salida_fichero",
-                                                      "estado_recibo",
-                                                      "primera_factura"])
-
-        admin_config.set_default("PM_CUSTOMER", "DEPARTAMENTO DE COBROS")
-
-        admin_config.set_default("PM_PAYMENT_METHOD", "TRANSFERENCIA")
-
-        admin_config.set_default("PM_PAYMENT_WAY", "INTERNA")
-        """
 
     def loaded_data(self, *, var_name):
         pass
@@ -387,6 +346,10 @@ class App(Frame):
         self.config.PATH = local_config.PATH
         self.config.EXPORT_PATH = local_config.EXPORT_PATH
         self.config.ADMIN_DB = local_config.ADMIN_DB
+        self.config.DATABASE_PATH = admin_config.DATABASE_PATH
+        self.config.REPORT_PATH = admin_config.REPORT_PATH
+        self.config.DAILY_EXPORT_PATH = admin_config.DAILY_EXPORT_PATH
+
 
 
 

@@ -349,14 +349,16 @@ class App(Frame):
         print(modules)
         link = str()
         field = str()
-        value = var.get()
+        value = str()
         if modules[0] == "vars":
             if modules[1] == "nombre_usuario":
                 link = "usuarios"
                 field = "nombre"
+                value = self.vars.nombre_usuario.get()
         elif modules[0] == "config":
             link = "config"
             field = modules[1]
+            value = self.config.__getattr__(field).get()
         if link != self.to_save["link"]:
             self.to_save = {"link": link,
                             "old": {field: self._last_entry},

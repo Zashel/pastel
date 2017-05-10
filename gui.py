@@ -343,6 +343,9 @@ class App(Frame):
         self._last_entry = value
 
     def changed_data(self, var, void, action, var_name):
+        print(type(var))
+        print(type(void))
+        print(type(action))
         modules = var_name.split(".")
         link = str()
         field = str()

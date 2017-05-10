@@ -144,7 +144,8 @@ LOCAL = ["HOST", "PORT",
          "PATH",
          "EXPORT_PATH",
          "ADMIN_DB",
-         "UUID"
+         "UUID",
+         "INIT_SERVER_STARTUP"
          ]
 
 REMOTE_PATHS = ["PATH",

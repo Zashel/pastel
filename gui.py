@@ -116,8 +116,17 @@ class App(Frame):
         self.rol = "Operador"
         self.vars.nombre_usuario = ""
 
+        self.to_save = {"link": None,
+                        "old": dict(),
+                        "new": dict()}
+        self._last_entry = str()
+        last_entry_validation = (self.register(self.entered_entry), "%s")
+        self.Entry = partial(Entry, validate="focusin" ,validatecommand=last_entry_validation)
+
         self.widgets()
         self.set_menu()
+
+
 
     @property
     def vars(self):
@@ -296,31 +305,31 @@ class App(Frame):
         Label(usuario, text="Rol: ").grid(column=5, row=1, sticky=(N, E))
         Label(usuario, text=self.rol).grid(column=6, row=1, sticky=(N, E,))
         Label(usuario, text="Nombre: ").grid(column=0, row=2, sticky=(N, W))
-        Entry(usuario, textvariable=self.vars.nombre_usuario).grid(column=1, row=2, columnspan=5, sticky=(N, E))
+        self.Entry(usuario, textvariable=self.vars.nombre_usuario).grid(column=1, row=2, columnspan=5, sticky=(N, E))
 
         #Servidor
         servidor.grid(sticky=(N, S, E, W))
         Checkbutton(servidor, text="Init server at StartUp",
                     variable=self.config.INIT_SERVER_STARTUP).grid(column=0, row=0, columnspan=5)
         Label(servidor, text="Host: ").grid(column=0, row=1)
-        Entry(servidor, textvariable=self.config.HOST).grid(column=1, row=1, columnspan=2)
+        self.Entry(servidor, textvariable=self.config.HOST).grid(column=1, row=1, columnspan=2)
         Label(servidor, text="Port: ").grid(column=3, row=1)
-        Entry(servidor, textvariable=self.config.PORT).grid(column=4, row=1, columnspan=1)
+        self.Entry(servidor, textvariable=self.config.PORT).grid(column=4, row=1, columnspan=1)
 
         #Rutas
         rutas.grid(sticky=(N, S, E, W))
         Label(rutas, text="Admin Local: ").grid(column=0, row=0, sticky=(N, W))
-        Entry(rutas, textvariable=self.config.ADMIN_DB).grid(column=1, row=0, sticky=(N, E))
+        self.Entry(rutas, textvariable=self.config.ADMIN_DB).grid(column=1, row=0, sticky=(N, E))
         Label(rutas, text="Path: ").grid(column=0, row=1, sticky=(N, W))
-        Entry(rutas, textvariable=self.config.PATH).grid(column=1, row=1, sticky=(N, E))
+        self.Entry(rutas, textvariable=self.config.PATH).grid(column=1, row=1, sticky=(N, E))
         Label(rutas, text="Exportaciones: ").grid(column=0, row=2, sticky=(N, W))
-        Entry(rutas, textvariable=self.config.EXPORT_PATH).grid(column=1, row=2, sticky=(N, E))
+        self.Entry(rutas, textvariable=self.config.EXPORT_PATH).grid(column=1, row=2, sticky=(N, E))
         Label(rutas, text="Exportaciones diarias: ").grid(column=0, row=3, sticky=(N, W))
-        Entry(rutas, textvariable=self.config.DAILY_EXPORT_PATH).grid(column=1, row=3, sticky=(N, E))
+        self.Entry(rutas, textvariable=self.config.DAILY_EXPORT_PATH).grid(column=1, row=3, sticky=(N, E))
         Label(rutas, text="Reportes: ").grid(column=0, row=4, sticky=(N, W))
-        Entry(rutas, textvariable=self.config.REPORT_PATH).grid(column=1, row=4, sticky=(N, E))
+        self.Entry(rutas, textvariable=self.config.REPORT_PATH).grid(column=1, row=4, sticky=(N, E))
         Label(rutas, text="Base de Datos: ").grid(column=0, row=5, sticky=(N, W))
-        Entry(rutas, textvariable=self.config.DATABASE_PATH).grid(column=1, row=5, sticky=(N, E))
+        self.Entry(rutas, textvariable=self.config.DATABASE_PATH).grid(column=1, row=5, sticky=(N, E))
         #Datos
 
         notebook.add(usuario, text="Usuario")
@@ -330,14 +339,32 @@ class App(Frame):
 
         dialog.wait_window(dialog)
 
-    def loaded_data(self, *, var_name):
-        pass
-
-    def load_all(self):
-        pass
+    def entered_entry(self, value):
+        self._last_entry = value
 
     def changed_data(self, *, var_name):
-        pass
+        modules = var_name.split(".")
+        link = str()
+        field = str()
+        value = str()
+        if modules[0] == "vars":
+            if modules[1] == "nombre_usuario":
+                link = "usuarios"
+                field = "nombre"
+                value = self.vars.nombre_usuario
+        elif modules[0] == "config":
+            link = "config"
+            field = modules[1]
+            value = self.config.__getattr__(field)
+        if link != self.to_save["link"]:
+            self.to_save = {"link": link,
+                            "old": {field: self._last_entry},
+                            "new": {field: value}}
+        elif field not in self.to_save["old"]:
+            self.to_save["old"].update({field: self._last_entry})
+        self.to_save["new"].update({field: value})
+        print(self.to_save)
+
 
     def set_config(self):
         self.config.HOST = local_config.HOST

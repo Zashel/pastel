@@ -343,14 +343,15 @@ class App(Frame):
         self._last_entry = value
 
     def changed_data(self, var, void, action, var_name):
+        print(type(self))
         print(type(var))
         print(type(void))
         print(type(action))
         modules = var_name.split(".")
+        print(modules)
         link = str()
         field = str()
         value = var.get()
-        print(modules)
         if modules[0] == "vars":
             if modules[1] == "nombre_usuario":
                 link = "usuarios"

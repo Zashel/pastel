@@ -1,17 +1,30 @@
 from tkinter import *
 from tkinter.ttk import *
 from collections import OrderedDict
+from functools import partial
+from zashel.utils import copy, paste
+from definitions import local_config, admin_config
+import getpass
 
 class TkVars:
-    def __init__(self):
+    def __init__(self, name, r=None, w=None, u=None):
         self._vars = dict()
+        if r is None:
+            r = self.nothing
+        if w is None:
+            w = self.nothing
+        if u is None:
+            u = self.nothing
+        self.r = r
+        self.w = w
+        self.u = u
 
     def __getattr__(self, item):
         if item in self._vars:
             return self._vars[item]
 
     def __setattr__(self, item, value):
-        if item == "_vars":
+        if item in ("_vars", "r", "w", "u"):
             object.__setattr__(self, item, value)
         else:
             try:
@@ -23,47 +36,94 @@ class TkVars:
             except KeyError:
                 raise ValueError
             self._vars[item] = tk_var_class()
+            self._vars[item].trace("r", partial(self.r, var_name="name.{}".format(item)))
+            self._vars[item].trace("w", partial(self.w, var_name="name.{}".format(item)))
+            self._vars[item].trace("u", partial(self.u, var_name="name.{}".format(item)))
             self._vars[item].set(value)
+
+    def nothing(self, *args, **kwargs):
+        pass
+
 
 class App(Frame):
     def __init__(self, master=None):
-        super().__init__(master)
+        super().__init__(master, padding=(3, 3, 3, 3))
         self.pack()
-        self._vars = TkVars()
-        posible = {"index": IntVar(),
-                   "fecha_aplicacion": StringVar(),
-                   "codigo_ciclo": IntVar(),
-                   "cliente": StringVar(),
-                   "nif": StringVar(),
-                   "id_factura": IntVar(),
-                   "fecha_operacion": StringVar(),
-                   "importe": IntVar(),
-                   "importe_str": StringVar(),
-                   "periodo_facturado": StringVar(),
-                   "metodo": StringVar(),
-                   "via": StringVar()}
-        self._active_pago = {"link": StringVar(),
-                            "index": IntVar(),
-                            "fecha": StringVar(),
-                            "importe": IntVar(),
-                            "importe_str": StringVar(),
-                            "observaciones": StringVar(),
-                            "dni": StringVar(),
-                            "id_cliente": IntVar(),
-                            "tels": StringVar(),
-                            "oficina": IntVar(),
-                            "posibles": [posible for x in range(50)],
-                            "total_posibles": IntVar(),
-                            "estado": StringVar}
+        self._vars = TkVars("vars")
+        self._config = TkVars("config")
+        posible = OrderedDict({"index": IntVar(),
+                               "fecha_aplicacion": StringVar(),
+                               "codigo_ciclo": IntVar(),
+                               "cliente": StringVar(),
+                               "nif": StringVar(),
+                               "id_factura": IntVar(),
+                               "fecha_operacion": StringVar(),
+                               "importe": IntVar(),
+                               "importe_str": StringVar(),
+                               "periodo_facturado": StringVar(),
+                               "metodo": StringVar(),
+                               "via": StringVar()})
+        self._active_pago = OrderedDict({"link": StringVar(),
+                                         "index": IntVar(),
+                                         "fecha": StringVar(),
+                                         "importe": IntVar(),
+                                         "importe_str": StringVar(),
+                                         "observaciones": StringVar(),
+                                         "dni": StringVar(),
+                                         "id_cliente": IntVar(),
+                                         "tels": StringVar(),
+                                         "oficina": IntVar(),
+                                         "posibles": [dict(posible) for x in range(50)],
+                                         "total_posibles": IntVar(),
+                                         "estado": StringVar()})
+
         self._pagos_list = [dict(self._active_pago) for x in range(50)]
         self._total_pagos_list = int()
         self.none_dict = {type(str()): "",
                           type(int()): 0,
                           type(float()): 0.0,
                           type(bool()): False}
+        for item in self._pagos_list:
+            for field in item:
+                if field in ("estado", "total_posibles"):
+                    item[field].trace("w",
+                                      partial(self.changed_data,
+                                       var_name="pagos.{}.{}".format(str(item["index"]),
+                                                                         item[field])))
+                for posible in item["posibles"]:
+                    for field in posible:
+                        if field != "index":
+                            posible[field].trace("w",
+                                                 partial(self.changed_data,
+                                                          var_name="pagos.{}.posibles.{}.{}".format(str(item["index"]),
+                                                                                                    str(posible["index"]),
+                                                                                                    posible[field])))
+        for field in self._active_pago:
+            if field in ("estado", "total_posibles"):
+                item[field].trace("w",
+                                  partial(self.changed_data,
+                                          var_name="active_pago.{}".format(item[field])))
+            for posible in item["posibles"]:
+                for field in posible:
+                    if field != "index":
+                        posible[field].trace("w",
+                                             partial(self.changed_data,
+                                                     var_name="active_pago.posibles.{}.{}".format(str(posible["index"]),
+                                                                                                  posible[field])))
+        self.usuario =  getpass.getuser()
+        self.rol = "Operador"
+        self.vars.nombre_usuario = ""
 
         self.widgets()
         self.set_menu()
+
+    @property
+    def vars(self):
+        return self._vars
+
+    @property
+    def config(self):
+        return self._config
 
     def clean_pago(self, pago):
         for field in pago:
@@ -196,19 +256,137 @@ class App(Frame):
 
         self.menu_open.add_command(label="Compromisos")
         self.menu_open.add_command(label="Pagos")
+        self.menu_open.add_command(label="Pagos Pendientes")
+        self.menu_open.add_command(label="Pagos Ilocalizables")
         self.menu_open.add_command(label="Usuarios")
 
         self.menu_load.add_command(label="Pagos ISM")
         self.menu_load.add_command(label="PARI...")
         self.menu_load.add_command(label="Último PARI")
 
+        self.menu_edit.add_command(label="Cortar")
+        self.menu_edit.add_command(label="Copiar", command=copy)
+        self.menu_edit.add_command(label="Copiar página")
+        self.menu_edit.add_command(label="Pegar", command=paste)
+        self.menu_edit.add_separator()
+        self.menu_edit.add_command(label="Preferencias", command=self.win_propiedades)
+
         self.menu_edit
 
+    def win_propiedades(self):
+        #self.set_config()
+        dialog = Toplevel(self.master)
+        dialog.focus_set()
+        dialog.grab_set()
+        dialog.transient(master=self.master)
+        notebook = Notebook(dialog)
+        notebook.pack()
+
+        usuario = Frame(notebook)
+        servidor = Frame(notebook)
+        rutas = Frame(notebook)
+        datos = Frame(notebook)
+
+        #Usuario
+        usuario.grid(sticky=(N, S, E, W))
+        Label(usuario, text="Login: ").grid(column=0, row=1, sticky=(N, W))
+        Label(usuario, text=self.usuario).grid(column=1, row=1, sticky=(N, W))
+        Label(usuario, text="Rol: ").grid(column=5, row=1, sticky=(N, E))
+        Label(usuario, text=self.rol).grid(column=6, row=1, sticky=(N, E,))
+        Label(usuario, text="Nombre: ").grid(column=0, row=2, sticky=(N, W))
+        Entry(usuario, textvariable=self.vars.nombre_usuario).grid(column=1, row=2, columnspan=5, sticky=(N, E))
+
+        #Servidor
+        servidor.grid(sticky=(N, S, E, W))
+        Checkbutton(servidor, text="Init server at StartUp",
+                    variable=self.config.INIT_SERVER_STARTUP).grid(column=0, row=0, columnspan=5)
+        Label(servidor, text="Host: ").grid(column=0, row=1)
+        Entry(servidor, textvariable=self.config.HOST).grid(column=1, row=1, columnspan=2)
+        Label(servidor, text="Port: ").grid(column=3, row=1)
+        Entry(servidor, textvariable=self.config.PORT).grid(column=4, row=1, columnspan=1)
+
+        #Rutas
+        rutas.grid(sticky=(N, S, E, W))
+        Label(rutas, text="Admin Local: ").grid(column=0, row=0, sticky=(N, W))
+        Entry(rutas, textvariable=self.config.ADMIN_DB).grid(column=1, row=0, sticky=(N, E))
+        Label(rutas, text="Path: ").grid(column=0, row=1, sticky=(N, W))
+        Entry(rutas, textvariable=self.config.PATH).grid(column=1, row=1, sticky=(N, E))
+        Label(rutas, text="Exportaciones: ").grid(column=0, row=2, sticky=(N, W))
+        Entry(rutas, textvariable=self.config.EXPORT_PATH).grid(column=1, row=2, sticky=(N, E))
+        Label(rutas, text="Exportaciones diarias: ").grid(column=0, row=3, sticky=(N, W))
+        Entry(rutas).grid(column=1, row=3, sticky=(N, E))
+        Label(rutas, text="Reportes: ").grid(column=0, row=4, sticky=(N, W))
+        Entry(rutas).grid(column=1, row=4, sticky=(N, E))
+        Label(rutas, text="Base de Datos: ").grid(column=0, row=5, sticky=(N, W))
+        Entry(rutas).grid(column=1, row=5, sticky=(N, E))
+        #Datos
+
+        notebook.add(usuario, text="Usuario")
+        notebook.add(servidor, text="Servidor")
+        notebook.add(rutas, text="Rutas")
+        #notebook.add(datos, text="Datos")
+
+        dialog.wait_window(dialog)
+        """
+        admin_config.set_default("N43_PATH", os.path.join("INFORMES GESTIÓN DIARIA",
+                                                          "0.REPORTES BBOO",
+                                                          "001 CARPETA DE PAGOS",
+                                                          "040 NORMA43_JAZZTEL"))
+        admin_config.set_default("N43_PATH_INCOMING", os.path.join("INFORMES GESTIÓN DIARIA",
+                                                                   "0.REPORTES BBOO",
+                                                                   "001 CARPETA DE PAGOS",
+                                                                   "040 NORMA43_JAZZTEL",
+                                                                   "041 ENTRADAS"))
+        admin_config.set_default("N43_PATH_OUTGOING", os.path.join("INFORMES GESTIÓN DIARIA",
+                                                                   "0.REPORTES BBOO",
+                                                                   "001 CARPETA DE PAGOS",
+                                                                   "040 NORMA43_JAZZTEL",
+                                                                   "042 SALIDAS"))
+        admin_config.set_default("PARI_FILE_FIELDS", ["id_cliente",
+                                                      "id_cuenta",
+                                                      "numdoc",
+                                                      "tipodoc",
+                                                      "fecha_factura",
+                                                      "fecha_puesta_cobro",
+                                                      "id_factura",
+                                                      "segmento",
+                                                      "importe_adeudado",
+                                                      "metodo_pago",
+                                                      "fecha_devolucion",
+                                                      "importe_devolucion",
+                                                      "fecha_pago",
+                                                      "importe_aplicado",
+                                                      "metodo_recobro",
+                                                      "fecha_entrada_fichero",
+                                                      "fecha_salida_fichero",
+                                                      "estado_recibo",
+                                                      "primera_factura"])
+
+        admin_config.set_default("PM_CUSTOMER", "DEPARTAMENTO DE COBROS")
+
+        admin_config.set_default("PM_PAYMENT_METHOD", "TRANSFERENCIA")
+
+        admin_config.set_default("PM_PAYMENT_WAY", "INTERNA")
+        """
+
+    def loaded_data(self, *, var_name):
+        pass
+
+    def load_all(self):
+        pass
+
+    def changed_data(self, *, var_name):
+        pass
+
+    def set_config(self):
+        self.config.HOST = local_config.HOST
+        self.config.PORT = local_config.PORT
+        self.config.INIT_SERVER_STARTUP = local_config.INIT_SERVER_STARTUP
+        self.config.PATH = local_config.PATH
+        self.config.EXPORT_PATH = local_config.EXPORT_PATH
+        self.config.ADMIN_DB = local_config.ADMIN_DB
 
 
-    @property
-    def vars(self):
-        return self._vars
 
 
 if __name__ == "__main__":

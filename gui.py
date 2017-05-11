@@ -23,8 +23,6 @@ class TkVars:
 
     def __getattr__(self, item):
         if item in self._vars:
-            print("TkVars")
-            print(type(self._vars[item]))
             return self._vars[item]
 
     def __setattr__(self, item, value):
@@ -135,8 +133,6 @@ class App(Frame):
         #Widgets
         self.widgets()
         self.set_menu()
-        #Partials
-        self.save_preferencias = partial(self.save, "preferencias")
 
     @property
     def vars(self):
@@ -147,9 +143,6 @@ class App(Frame):
         return self._config
 
     def Entry(self, route, var, *args, **kwargs):
-        print("Entry")
-        print(type(var))
-        print(var)
         last_entry_validation = (self.register(self.entered_entry), "%P", route, var)
         return Entry(*args, textvariable=var, validate="all", validatecommand=last_entry_validation, **kwargs)
 
@@ -321,8 +314,10 @@ class App(Frame):
         dialog.grab_set()
         dialog.transient(master=self.master)
         notebook = Notebook(dialog)
-        notebook.grid(column=0, row=0, columnspan=2)
-        save_and_close_preferencias = partial(self.save_and_close, "preferencias", dialog)
+        notebook.grid(column=0, row=0, columnspan=4)
+        save_and_close = partial(self.save_and_close, "preferencias", dialog)
+        save = partial(self.save, "preferencias")
+        clean_changes = partial(self.clean_changes, "preferencias")
 
         usuario = Frame(notebook)
         servidor = Frame(notebook)
@@ -336,7 +331,6 @@ class App(Frame):
         Label(usuario, text="Rol: ").grid(column=5, row=1, sticky=(N, E))
         Label(usuario, text=self.rol).grid(column=6, row=1, sticky=(N, E,))
         Label(usuario, text="Nombre: ").grid(column=0, row=2, sticky=(N, W))
-        print(type(self.vars.nombre_usuario))
         self.Entry("preferencias.nombre_usuario",
                    self.vars.nombre_usuario,
                    usuario).grid(column=1, row=2, columnspan=5, sticky=(N, E))
@@ -388,8 +382,10 @@ class App(Frame):
         #notebook.add(datos, text="Datos")
 
         #Botones
-        Button(dialog, text="Aceptar", command=save_and_close_preferencias).grid(column=0, row=1)
-        Button(dialog, text="Cancelar", command=dialog.destroy).grid(column=1, row=1)
+        Button(dialog, text="Aceptar", command=save_and_close).grid(column=0, row=1)
+        Button(dialog, text="Aplicar", command=save).grid(column=1, row=1)
+        Button(dialog, text="Borrar Cambios", command=clean_changes).grid(column=2, row=1)
+        Button(dialog, text="Cancelar", command=dialog.destroy).grid(column=3, row=1)
         dialog.wait_window(dialog)
 
     def save_and_close(self, category, dialog):
@@ -403,9 +399,6 @@ class App(Frame):
         if not item in self.to_save[cat]["old"]:
             self.to_save[cat]["old"][item] = value
         if not item in self.to_save[cat]["var"]:
-            print("entered_entry")
-            print(type(var))
-            print(var)
             self.to_save[cat]["var"][item] = var
         if self._undo["var"] != var:
             self._undo["var"] = var
@@ -419,6 +412,11 @@ class App(Frame):
                 elif item in SHARED:
                     admin_config.set(item, self.to_save[category]["var"][item].get())
         self.clean_to_save("preferencias")
+
+    def clean_changes(self, category):
+        for item in self.to_save[category]["var"]:
+            if item in self.to_save[category]["old"]:
+                self.to_save[category]["var"][item].set(self.to_save[category]["old"][item])
 
     def changed_data(self, var, void, action, var_name): #I don't know if I need it...
         pass
@@ -438,5 +436,4 @@ class App(Frame):
 if __name__ == "__main__":
     root = Tk()
     app = App(root)
-    print(Frame.__module__)
     app.mainloop()

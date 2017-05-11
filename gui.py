@@ -55,7 +55,7 @@ class TkVars:
     @classmethod
     def get(cls, item):
         if item in cls.reference:
-            return[item]
+            return cls.reference[item]
 
     def nothing(self, *args, **kwargs):
         pass

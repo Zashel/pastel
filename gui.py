@@ -124,6 +124,7 @@ class EasyFrame(Frame):
     def entered_entry(self, value, route, var, *args):
         cat, item = route.split(".")
         var = self.getvar(var)
+        print(var)
         if cat not in self.to_save:
             self.clean_to_save(cat)
         if not item in self.to_save[cat]["old"]:

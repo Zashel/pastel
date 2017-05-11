@@ -135,6 +135,8 @@ class EasyFrame(Frame):
             self._undo["last"] = value
 
     def undo(self):
+        print(self._undo["var"])
+        print(self._undo["last"])
         self.getvar(self._undo["var"]).set(self._undo["last"])
 
     def copy(self):

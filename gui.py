@@ -3,7 +3,7 @@ from tkinter.ttk import *
 from collections import OrderedDict
 from functools import partial
 from zashel.utils import copy, paste
-from definitions import local_config, admin_config
+from definitions import local_config, admin_config, LOCAL, SHARED
 import getpass
 
 class TkVars:
@@ -51,7 +51,7 @@ class TkVars:
 class App(Frame):
     def __init__(self, master=None):
         super().__init__(master, padding=(3, 3, 3, 3))
-        self.set_to_save()
+        self.clean_to_save()
         self._undo = {"var": None,
                       "last": None}
         self.pack()
@@ -146,13 +146,17 @@ class App(Frame):
                 none = self.none_dict[type(pago[field])]
                 pago[field].set(none)
 
-    def set_to_save(self):
+    def clean_to_save(self, category=None):
         template = {"old": dict(),
                     "var": dict()}
-        self.to_save = {"preferencias": dict(template),
-                        "pagos": dict(template),
-                        "compromisos": dict(template),
-                        "usuarios": dict(template)}
+        if category is None:
+            self.to_save = {"preferencias": dict(template),
+                            "pagos": dict(template),
+                            "compromisos": dict(template),
+                            "usuarios": dict(template)}
+        else:
+            assert category in self.to_save
+            self.to_save[category] = dict(template)
 
     def clean_pagos_list(self):
         for item in self._pagos_list:
@@ -293,6 +297,7 @@ class App(Frame):
 
     def win_propiedades(self):
         self.set_config()
+        self.clean_to_save("preferencias")
         dialog = Toplevel(self.master)
         dialog.focus_set()
         dialog.grab_set()
@@ -369,39 +374,23 @@ class App(Frame):
         if not item in self.to_save[cat]["old"]:
             self.to_save[cat]["old"][item] = value
         if not item in self.to_save[cat]["var"]:
-            self.to_save[cat]["var"] = var
+            self.to_save[cat]["var"][item] = var
         if self._undo["var"] != var:
             self._undo["var"] = var
             self._undo["last"] = value
             print(self._undo)
         print(self.to_save)
 
-    def changed_data(self, var, void, action, var_name):
-        """
-        print(var)
-        modules = var_name.split(".")
-        print(modules)
-        link = str()
-        field = str()
-        value = str()
-        if modules[0] == "vars":
-            if modules[1] == "nombre_usuario":
-                link = "usuarios"
-                field = "nombre"
-                value = self.vars.nombre_usuario.get()
-        elif modules[0] == "config":
-            link = "config"
-            field = modules[1]
-            value = self.config.__getattr__(field).get()
-        if link != self.to_save["link"]:
-            self.to_save = {"link": link,
-                            "old": {field: self._last_entry},
-                            "new": {field: value}}
-        elif field not in self.to_save["old"]:
-            self.to_save["old"].update({field: self._last_entry})
-        self.to_save["new"].update({field: value})
-        print(self.to_save)
-        """
+    def save(self, category):
+        if category == "preferencias":
+            for item in self.to_save:
+                if item in LOCAL:
+                    local_config.set(item, self.to_save[item]["var"].get())
+                elif item in SHARED:
+                    admin_config.set(item, self.to_save[item]["var"].get())
+        self.clean_to_save("preferencias")
+
+    def changed_data(self, var, void, action, var_name): #I don't know if I need it...
         pass
 
     def set_config(self):

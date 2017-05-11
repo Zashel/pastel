@@ -170,6 +170,7 @@ class LocalConfig: #To a dynamic access -> change API
             else:
                 shelf[attr] = value
         shelf.close()
+
     def __getattr__(self, attr):
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         if attr in LOCAL:
@@ -187,6 +188,10 @@ class LocalConfig: #To a dynamic access -> change API
                         shelf[attr] = data
                 return data
         shelf.close()
+
+    def set(self, attr, value):
+        self.__setattr__(attr, value)
+
     def set_default(self, attr, default):
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         if attr in LOCAL and attr not in shelf:
@@ -230,6 +235,7 @@ class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated mys
             else:
                 shelf[attr] = value
         shelf.close()
+
     def __getattr__(self, attr):
         shelf = shelve.open(os.path.join(local_config.ADMIN_DB, "config"))
         if attr in SHARED:
@@ -238,6 +244,10 @@ class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated mys
             else:
                 return shelf[attr]
         shelf.close()
+
+    def set(self, attr, value):
+        self.__setattr__(attr, value)
+
     def set_default(self, attr, default):
         shelf = shelve.open(os.path.join(local_config.ADMIN_DB, "config"))
         if attr in SHARED and attr not in shelf:
@@ -295,6 +305,8 @@ __all__.extend(STATIC)
 #__all__.extend(LOCAL)
 #__all__.extend(SHARED)
 __all__.extend(["local_config",
-                "admin_config"
+                "admin_config",
+                LOCAL,
+                SHARED
                 ])
 

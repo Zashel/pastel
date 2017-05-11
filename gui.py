@@ -147,7 +147,7 @@ class App(Frame):
         return Entry(*args, textvariable=var, validate="all", validatecommand=last_entry_validation, **kwargs)
 
     def Checkbutton(self, route, var, *args, **kwargs):
-        last_entry_validation = partial(self.entered_entry, not var.get(), route, var)
+        last_entry_validation = partial(self.entered_entry, not var.get(), route, str(var))
         return Checkbutton(*args, variable=var, command=last_entry_validation, **kwargs)
 
     def clean_pago(self, pago):

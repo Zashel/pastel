@@ -308,7 +308,7 @@ class App(Frame):
         self.menu_edit.add_command(label="Cortar", command=self.cut)
         self.menu_edit.add_command(label="Copiar", command=self.copy)
         self.menu_edit.add_command(label="Copiar página")
-        self.menu_edit.add_command(label="Pegar", command=paste)
+        self.menu_edit.add_command(label="Pegar", command=self.paste)
         self.menu_edit.add_separator()
         self.menu_edit.add_command(label="Preferencias", command=self.win_propiedades)
 
@@ -423,6 +423,9 @@ class App(Frame):
     def cut(self):
         self.copy()
         self.master.selection_own_get().delete(SEL_FIRST, SEL_LAST)
+
+    def paste(self):
+        self.master.focus_get().insert(INSERT, paste())
 
     def save(self, category):
         if category == "preferencias":

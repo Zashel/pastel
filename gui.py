@@ -169,7 +169,7 @@ class EasyFrame(Frame):
 
 class App(EasyFrame):
     def __init__(self, master=None):
-        super().__init__(master, padding=(3, 3, 3, 3))
+        super().__init__(master=master, padding=(3, 3, 3, 3))
         self.pack()
 
         posible = OrderedDict({"index": IntVar(),

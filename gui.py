@@ -7,6 +7,7 @@ from definitions import local_config, admin_config, LOCAL, SHARED
 import getpass
 
 class TkVars:
+    reference = dict()
     def __init__(self, name, r=None, w=None, u=None):
         self._vars = dict()
         self._name = name
@@ -40,11 +41,21 @@ class TkVars:
                 print(value)
                 print(type(value))
                 raise ValueError
-            self._vars[item] = tk_var_class()
-            self._vars[item].trace("r", partial(self.r, var_name="{}.{}".format(self._name, item)))
-            self._vars[item].trace("w", partial(self.w, var_name="{}.{}".format(self._name, item)))
-            self._vars[item].trace("u", partial(self.u, var_name="{}.{}".format(self._name, item)))
+            if (item not in self._vars or
+                    (item in self._vars and not isinstance(self._vars[item], tk_var_class))):
+                if item in self._vars and str(self._vars[item]) in TkVars.reference:
+                    del(TkVars.reference[str(self._vars[item])])
+                self._vars[item] = tk_var_class()
+                self._vars[item].trace("r", partial(self.r, var_name="{}.{}".format(self._name, item)))
+                self._vars[item].trace("w", partial(self.w, var_name="{}.{}".format(self._name, item)))
+                self._vars[item].trace("u", partial(self.u, var_name="{}.{}".format(self._name, item)))
             self._vars[item].set(value)
+            TkVars.reference[str(self._vars[item])] = self._vars[item]
+
+    @classmethod
+    def get(cls, item):
+        if item in cls.reference:
+            return[item]
 
     def nothing(self, *args, **kwargs):
         pass
@@ -387,7 +398,7 @@ class App(Frame):
 
     def entered_entry(self, value, route, var, *args):
         cat, item = route.split(".")
-        print(args)
+        var = TkVars.get(var)
         assert cat in self.to_save
         if not item in self.to_save[cat]["old"]:
             self.to_save[cat]["old"][item] = value

@@ -41,34 +41,137 @@ class TkVars:
                 raise ValueError
             if (item not in self._vars or
                     (item in self._vars and not isinstance(self._vars[item], tk_var_class))):
-                if item in self._vars and str(self._vars[item]) in TkVars.reference:
-                    del(TkVars.reference[str(self._vars[item])])
                 self._vars[item] = tk_var_class()
                 self._vars[item].trace("r", partial(self.r, var_name="{}.{}".format(self._name, item)))
                 self._vars[item].trace("w", partial(self.w, var_name="{}.{}".format(self._name, item)))
                 self._vars[item].trace("u", partial(self.u, var_name="{}.{}".format(self._name, item)))
             self._vars[item].set(value)
-            TkVars.reference[str(self._vars[item])] = self._vars[item]
-
-    @classmethod
-    def get(cls, item):
-        if item in cls.reference:
-            return cls.reference[item]
 
     def nothing(self, *args, **kwargs):
         pass
+    
+    def set(self, name, value=None):
+        if value == None:
+            value = str()
+        self.__setattr__(name, value)
+        
+    def get(self, name):
+        return self.__getattr__(name)
 
-
-class App(Frame):
-    def __init__(self, master=None):
-        super().__init__(master, padding=(3, 3, 3, 3))
+def EasyFrame(Frame):
+    def __init__(self, *args, master=None, **kwargs):
+        super().__init__(master, *args, **kwargs)
         self.to_save = dict()
         self.clean_to_save()
         self._undo = {"var": None,
                       "last": None}
+        self._vars = dict()
+        self.set_widgets()
+        self.set_menu()
+
+    @property
+    def vars(self):
+        return self._vars
+
+    def set_widgets(self):
+        pass
+
+    def set_menu(self):
+        pass
+
+    def set_var(self, route, value=None):
+        cat, name = route.split(".")
+        if cat not in self._vars:
+            self._vars[cat] = TkVars(cat)
+        self._vars[cat].set(name, value)
+        return self._vars[cat].get(name)
+
+    def get_var(self, route):
+        cat, name = route.split(".")
+        if cat not in self._vars:
+            raise KeyError()
+        return self._vars[cat].get(name)
+
+    def Entry(self, route, *args, **kwargs):
+        try:
+            var = self.get_var(route)
+        except KeyError:
+            var = self.set_var(route)
+        last_entry_validation = (self.register(self.entered_entry), "%P", route, var)
+        return Entry(*args, textvariable=var, validate="all", validatecommand=last_entry_validation, **kwargs)
+
+    def Checkbutton(self, route, *args, **kwargs):
+        try:
+            var = self.get_var(route)
+        except KeyError:
+            var = self.set_var(route)
+        last_entry_validation = partial(self.entered_entry, not var.get(), route, str(var))
+        return Checkbutton(*args, variable=var, command=last_entry_validation, **kwargs)
+
+    def clean_to_save(self, category=None):
+        template = {"old": dict(),
+                    "var": dict()}
+        if category is None:
+            for category in self.to_save:
+                self.to_save[category] = dict(template)
+        else:
+            self.to_save[category] = dict(template)
+
+    def save_and_close(self, category, dialog):
+        self.save(category)
+        dialog.destroy()
+
+    def entered_entry(self, value, route, var, *args):
+        cat, item = route.split(".")
+        var = self.getvar(var)
+        if cat not in self.to_save:
+            self.clean_to_save(cat)
+        if not item in self.to_save[cat]["old"]:
+            self.to_save[cat]["old"][item] = value
+        if not item in self.to_save[cat]["var"]:
+            self.to_save[cat]["var"][item] = var
+        if self._undo["var"] != var:
+            self._undo["var"] = var
+            self._undo["last"] = value
+
+    def undo(self):
+        self._undo["var"].set(self._undo["last"])
+
+    def copy(self):
+        copy(self.master.selection_get())
+
+    def cut(self):
+        self.copy()
+        self.master.selection_own_get().delete(SEL_FIRST, SEL_LAST)
+
+    def paste(self):
+        self.master.focus_get().insert(INSERT, paste())
+
+    def save(self, category):
+        try:
+            save = self.__getattr__(self, "save_{}".join(category))
+        except AttributeError:
+            raise
+        save()
+        self.clean_to_save(category)
+
+    def category(self, category):
+        return list(self.to_save[category]["var"].keys())
+
+    def get_var_in_category(self, category, name):
+        return self.get_var(".".join((category, name)))
+
+    def clean_changes(self, category):
+        for item in self.to_save[category]["var"]:
+            if item in self.to_save[category]["old"]:
+                self.to_save[category]["var"][item].set(self.to_save[category]["old"][item])
+
+
+class App(EasyFrame):
+    def __init__(self, master=None):
+        super().__init__(master, padding=(3, 3, 3, 3))
         self.pack()
-        self._vars = TkVars("vars", w=self.changed_data)
-        self._config = TkVars("config", w=self.changed_data)
+
         posible = OrderedDict({"index": IntVar(),
                                "fecha_aplicacion": StringVar(),
                                "codigo_ciclo": IntVar(),
@@ -130,28 +233,10 @@ class App(Frame):
                                                                                                   posible[field])))
         self.usuario =  getpass.getuser()
         self.rol = "Operador"
-        self.vars.nombre_usuario = ""
+        self.set_var("config.nombre_usuario", "")
         #Widgets
-        self.widgets()
-        self.set_menu()
-        self.vars.caca = "Hola Caracola"
-        self.Entry("caca.mojón", self.vars.caca, self).pack()
-
-    @property
-    def vars(self):
-        return self._vars
-
-    @property
-    def config(self):
-        return self._config
-
-    def Entry(self, route, var, *args, **kwargs):
-        last_entry_validation = (self.register(self.entered_entry), "%P", route, var)
-        return Entry(*args, textvariable=var, validate="all", validatecommand=last_entry_validation, **kwargs)
-
-    def Checkbutton(self, route, var, *args, **kwargs):
-        last_entry_validation = partial(self.entered_entry, not var.get(), route, str(var))
-        return Checkbutton(*args, variable=var, command=last_entry_validation, **kwargs)
+        self.set_var("test.test", "Hola Caracola")
+        self.Entry("test.test", self).pack()
 
     def clean_pago(self, pago):
         for field in pago:
@@ -163,15 +248,6 @@ class App(Frame):
             else:
                 none = self.none_dict[type(pago[field])]
                 pago[field].set(none)
-
-    def clean_to_save(self, category=None):
-        template = {"old": dict(),
-                    "var": dict()}
-        if category is None:
-            for category in self.to_save:
-                self.to_save[category] = dict(template)
-        else:
-            self.to_save[category] = dict(template)
 
     def clean_pagos_list(self):
         for item in self._pagos_list:
@@ -222,7 +298,7 @@ class App(Frame):
             self.set_pago(self.pagos_list[index], item)
         self._total_pagos_list = len(data)
 
-    def widgets(self):
+    def set_widgets(self):
         #TABS
         self.tabs = {"init": Frame(self),
                      "configuration": Frame(self),
@@ -314,16 +390,16 @@ class App(Frame):
 
     def win_propiedades(self):
         self.set_config()
-        self.clean_to_save("preferencias")
+        self.clean_to_save("config")
         dialog = Toplevel(self.master)
         dialog.focus_set()
         dialog.grab_set()
         dialog.transient(master=self.master)
         notebook = Notebook(dialog)
         notebook.grid(column=0, row=0, columnspan=4)
-        save_and_close = partial(self.save_and_close, "preferencias", dialog)
-        save = partial(self.save, "preferencias")
-        clean_changes = partial(self.clean_changes, "preferencias")
+        save_and_close = partial(self.save_and_close, "config", dialog)
+        save = partial(self.save, "config")
+        clean_changes = partial(self.clean_changes, "config")
 
         usuario = Frame(notebook)
         servidor = Frame(notebook)
@@ -337,50 +413,40 @@ class App(Frame):
         Label(usuario, text="Rol: ").grid(column=5, row=1, sticky=(N, E))
         Label(usuario, text=self.rol).grid(column=6, row=1, sticky=(N, E,))
         Label(usuario, text="Nombre: ").grid(column=0, row=2, sticky=(N, W))
-        self.Entry("preferencias.nombre_usuario",
-                   self.vars.nombre_usuario,
+        self.Entry("config.nombre_usuario",
                    usuario).grid(column=1, row=2, columnspan=5, sticky=(N, E))
 
         #Servidor
         servidor.grid(sticky=(N, S, E, W))
-        self.Checkbutton("preferencias.INIT_SERVER_STARTUP",
-                         self.config.INIT_SERVER_STARTUP,
+        self.Checkbutton("config.INIT_SERVER_STARTUP",
                          servidor,
                          text="Init server at StartUp").grid(column=0, row=0, columnspan=5)
         Label(servidor, text="Host: ").grid(column=0, row=1)
-        self.Entry("preferencias.HOST",
-                   self.config.HOST,
+        self.Entry("config.HOST",
                    servidor).grid(column=1, row=1, columnspan=2)
         Label(servidor, text="Port: ").grid(column=3, row=1)
-        self.Entry("preferencias.PORT",
-                   self.config.PORT,
+        self.Entry("config.PORT",
                    servidor).grid(column=4, row=1, columnspan=1)
 
         #Rutas
         rutas.grid(sticky=(N, S, E, W))
         Label(rutas, text="Admin Local: ").grid(column=0, row=0, sticky=(N, W))
-        self.Entry("preferencias.ADMIN_DB",
-                   self.config.ADMIN_DB,
+        self.Entry("config.ADMIN_DB",
                    rutas).grid(column=1, row=0, sticky=(N, E))
         Label(rutas, text="Path: ").grid(column=0, row=1, sticky=(N, W))
-        self.Entry("preferencias.PATH",
-                   self.config.PATH,
+        self.Entry("config.PATH",
                    rutas).grid(column=1, row=1, sticky=(N, E))
         Label(rutas, text="Exportaciones: ").grid(column=0, row=2, sticky=(N, W))
-        self.Entry("preferencias.EXPORT_PATH",
-                   self.config.EXPORT_PATH,
+        self.Entry("config.EXPORT_PATH",
                    rutas).grid(column=1, row=2, sticky=(N, E))
         Label(rutas, text="Exportaciones diarias: ").grid(column=0, row=3, sticky=(N, W))
-        self.Entry("preferencias.DAILY_EXPORT_PATH",
-                   self.config.DAILY_EXPORT_PATH,
+        self.Entry("config.DAILY_EXPORT_PATH",
                    rutas).grid(column=1, row=3, sticky=(N, E))
         Label(rutas, text="Reportes: ").grid(column=0, row=4, sticky=(N, W))
-        self.Entry("preferencias.REPORT_PATH",
-                   self.config.REPORT_PATH,
+        self.Entry("config.REPORT_PATH",
                    rutas).grid(column=1, row=4, sticky=(N, E))
         Label(rutas, text="Base de Datos: ").grid(column=0, row=5, sticky=(N, W))
-        self.Entry("preferencias.DATABASE_PATH",
-                   self.config.DATABASE_PATH,
+        self.Entry("config.DATABASE_PATH",
                    rutas).grid(column=1, row=5, sticky=(N, E))
         #Datos
 
@@ -396,64 +462,27 @@ class App(Frame):
         Button(dialog, text="Cancelar", command=dialog.destroy).grid(column=3, row=1)
         dialog.wait_window(dialog)
 
-    def save_and_close(self, category, dialog):
-        self.save(category)
-        dialog.destroy()
-
-    def entered_entry(self, value, route, var, *args):
-        cat, item = route.split(".")
-        var = TkVars.get(var)
-        if cat not in self.to_save:
-            self.clean_to_save(cat)
-        if not item in self.to_save[cat]["old"]:
-            self.to_save[cat]["old"][item] = value
-        if not item in self.to_save[cat]["var"]:
-            self.to_save[cat]["var"][item] = var
-        if self._undo["var"] != var:
-            self._undo["var"] = var
-            self._undo["last"] = value
-
-    def undo(self):
-        self._undo["var"].set(self._undo["last"])
-
-    def copy(self):
-        copy(self.master.selection_get())
-
-    def cut(self):
-        self.copy()
-        self.master.selection_own_get().delete(SEL_FIRST, SEL_LAST)
-
-    def paste(self):
-        self.master.focus_get().insert(INSERT, paste())
-
-    def save(self, category):
-        if category == "preferencias":
-            for item in self.to_save[category]["var"]:
-                if item in LOCAL:
-                    local_config.set(item, self.to_save[category]["var"][item].get())
-                elif item in SHARED:
-                    admin_config.set(item, self.to_save[category]["var"][item].get())
-        self.clean_to_save("preferencias")
-
-    def clean_changes(self, category):
-        for item in self.to_save[category]["var"]:
-            if item in self.to_save[category]["old"]:
-                self.to_save[category]["var"][item].set(self.to_save[category]["old"][item])
+    def save_config(self):
+        get_var = partial(self.get_var_in_category, "config")
+        for item in self.category("config"):
+            if item in LOCAL:
+                local_config.set(item, get_var(item).get())
+            elif item in SHARED:
+                admin_config.set(item, get_var(item).get())
 
     def changed_data(self, var, void, action, var_name): #I don't know if I need it...
         pass
 
     def set_config(self):
-        self.config.HOST = local_config.HOST
-        self.config.PORT = local_config.PORT
-        self.config.INIT_SERVER_STARTUP = local_config.INIT_SERVER_STARTUP
-        self.config.PATH = local_config.PATH
-        self.config.EXPORT_PATH = local_config.EXPORT_PATH
-        self.config.ADMIN_DB = local_config.ADMIN_DB
-        self.config.DATABASE_PATH = admin_config.DATABASE_PATH
-        self.config.REPORT_PATH = admin_config.REPORT_PATH
-        self.config.DAILY_EXPORT_PATH = admin_config.DAILY_EXPORT_PATH
-
+        self.set_var("config.HOST", local_config.HOST)
+        self.set_var("config.PORT", local_config.PORT)
+        self.set_var("config.INIT_SERVER_STARTUP", local_config.INIT_SERVER_STARTUP)
+        self.set_var("config.PATH", local_config.PATH)
+        self.set_var("config.EXPORT_PATH",local_config.EXPORT_PATH)
+        self.set_var("config.ADMIN_DB", local_config.ADMIN_DB)
+        self.set_var("config.DATABASE_PATH", admin_config.DATABASE_PATH)
+        self.set_var("config.REPORT_PATH", admin_config.REPORT_PATH)
+        self.set_var("config.DAILY_EXPORT_PATH", admin_config.DAILY_EXPORT_PATH)
 
 if __name__ == "__main__":
     root = Tk()

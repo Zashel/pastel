@@ -97,8 +97,7 @@ class EasyFrame(Frame):
             var = self.get_var(route)
         except KeyError:
             var = self.set_var(route)
-        #last_entry_validation = (self.register(self.entered_entry), "%P", route)
-        last_entry_validation = partial(self.entered_entry, "%P", route)
+        last_entry_validation = (self.register(self.entered_entry), "%P", route)
         return Entry(*args, textvariable=var, validate="all", validatecommand=last_entry_validation, **kwargs)
 
     def Checkbutton(self, route, *args, **kwargs):
@@ -135,6 +134,7 @@ class EasyFrame(Frame):
         if self._undo["var"] != var:
             self._undo["var"] = var
             self._undo["last"] = value
+        return True
 
     def undo(self):
         print(self._undo["var"])

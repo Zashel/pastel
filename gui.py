@@ -97,7 +97,7 @@ class EasyFrame(Frame):
             var = self.get_var(route)
         except KeyError:
             var = self.set_var(route)
-        last_entry_validation = (self.register(self.entered_entry), "%P", route, str(var))
+        last_entry_validation = (self.register(self.entered_entry), "%P", route)
         return Entry(*args, textvariable=var, validate="all", validatecommand=last_entry_validation, **kwargs)
 
     def Checkbutton(self, route, *args, **kwargs):
@@ -105,7 +105,7 @@ class EasyFrame(Frame):
             var = self.get_var(route)
         except KeyError:
             var = self.set_var(route)
-        last_entry_validation = partial(self.entered_entry, not var.get(), route, str(var))
+        last_entry_validation = partial(self.entered_entry, not var.get(), route)
         return Checkbutton(*args, variable=var, command=last_entry_validation, **kwargs)
 
     def clean_to_save(self, category=None):
@@ -121,24 +121,23 @@ class EasyFrame(Frame):
         self.save(category)
         dialog.destroy()
 
-    def entered_entry(self, value, route, var, *args):
+    def entered_entry(self, value, route):
         cat, item = route.split(".")
-        var = self.getvar(var)
-        print(var)
+        var = self.get_var(route)
         if cat not in self.to_save:
             self.clean_to_save(cat)
         if not item in self.to_save[cat]["old"]:
             self.to_save[cat]["old"][item] = value
         if not item in self.to_save[cat]["var"]:
             self.to_save[cat]["var"][item] = var
-        if self._undo["var"] != str(var):
-            self._undo["var"] = str(var)
+        if self._undo["var"] != var:
+            self._undo["var"] = var
             self._undo["last"] = value
 
     def undo(self):
         print(self._undo["var"])
         print(self._undo["last"])
-        self.getvar(self._undo["var"]).set(self._undo["last"])
+        self._undo["var"].set(self._undo["last"])
 
     def copy(self):
         copy(self.master.selection_get())

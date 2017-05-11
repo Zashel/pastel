@@ -130,15 +130,12 @@ class EasyFrame(Frame):
             self.to_save[cat]["old"][item] = value
         if not item in self.to_save[cat]["var"]:
             self.to_save[cat]["var"][item] = var
-        if self._undo["var"] != var:
-            self._undo["var"] = var
+        if self._undo["var"] != str(var):
+            self._undo["var"] = str(var)
             self._undo["last"] = value
 
     def undo(self):
-        try:
-            self._undo["var"].set(self._undo["last"])
-        except AttributeError:
-            self.getvar(self._undo["var"]).set(self._undo["last"])
+        self.getvar(self._undo["var"]).set(self._undo["last"])
 
     def copy(self):
         copy(self.master.selection_get())

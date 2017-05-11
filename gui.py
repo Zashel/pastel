@@ -293,7 +293,6 @@ class App(Frame):
 
     def win_propiedades(self):
         self.set_config()
-        self.set_to_save()
         dialog = Toplevel(self.master)
         dialog.focus_set()
         dialog.grab_set()
@@ -362,12 +361,11 @@ class App(Frame):
         notebook.add(servidor, text="Servidor")
         notebook.add(rutas, text="Rutas")
         #notebook.add(datos, text="Datos")
-
         dialog.wait_window(dialog)
 
     def entered_entry(self, value, route, var):
-        assert route in self.to_save
         cat, item = route.split(".")
+        assert cat in self.to_save
         if not item in self.to_save[cat]["old"]:
             self.to_save[cat]["old"][item] = value
         if not item in self.to_save[cat]["var"]:

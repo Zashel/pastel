@@ -138,7 +138,7 @@ class EasyFrame(Frame):
         try:
             self._undo["var"].set(self._undo["last"])
         except AttributeError:
-            self.get_var(self._undo["var"]).set(self._undo["last"])
+            self.getvar(self._undo["var"]).set(self._undo["last"])
 
     def copy(self):
         copy(self.master.selection_get())

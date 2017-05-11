@@ -58,7 +58,7 @@ class TkVars:
     def get(self, name):
         return self.__getattr__(name)
 
-def EasyFrame(Frame):
+class EasyFrame(Frame):
     def __init__(self, *args, master=None, **kwargs):
         super().__init__(master, *args, **kwargs)
         self.to_save = dict()

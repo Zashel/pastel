@@ -135,7 +135,10 @@ class EasyFrame(Frame):
             self._undo["last"] = value
 
     def undo(self):
-        self._undo["var"].set(self._undo["last"])
+        try:
+            self._undo["var"].set(self._undo["last"])
+        except AttributeError:
+            self.get_var(self._undo["var"]).set(self._undo["last"])
 
     def copy(self):
         copy(self.master.selection_get())
@@ -149,7 +152,7 @@ class EasyFrame(Frame):
 
     def save(self, category):
         try:
-            save = self.__getattribute__("save_{}".join(category))
+            save = self.__getattribute__("save_{}".format(category))
         except AttributeError:
             raise
         save()

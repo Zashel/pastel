@@ -418,11 +418,11 @@ class App(Frame):
         self._undo["var"].set(self._undo["last"])
 
     def copy(self):
-        copy(self.tk.selection_get())
+        copy(self.master.selection_get())
 
     def cut(self):
         self.copy()
-        self.tk.selection_own_get().delete(SEL_FIRST, SEL_LAST)
+        self.master.selection_own_get().delete(SEL_FIRST, SEL_LAST)
 
     def save(self, category):
         if category == "preferencias":

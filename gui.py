@@ -322,8 +322,8 @@ class App(Frame):
                     variable=self.config.INIT_SERVER_STARTUP).grid(column=0, row=0, columnspan=5)
         Label(servidor, text="Host: ").grid(column=0, row=1)
         self.Entry("preferencias.HOST",
-                   servidor,
-                   self.config.HOST).grid(column=1, row=1, columnspan=2)
+                   self.config.HOST,
+                   servidor).grid(column=1, row=1, columnspan=2)
         Label(servidor, text="Port: ").grid(column=3, row=1)
         self.Entry("preferencias.PORT",
                    self.config.PORT,

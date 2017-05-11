@@ -313,7 +313,7 @@ class App(Frame):
         Label(usuario, text="Rol: ").grid(column=5, row=1, sticky=(N, E))
         Label(usuario, text=self.rol).grid(column=6, row=1, sticky=(N, E,))
         Label(usuario, text="Nombre: ").grid(column=0, row=2, sticky=(N, W))
-        self.Entry("preferencias",
+        self.Entry("preferencias.nombre_usuario",
                    self.vars.nombre_usuario,
                    usuario).grid(column=1, row=2, columnspan=5, sticky=(N, E))
 

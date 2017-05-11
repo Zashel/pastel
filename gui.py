@@ -4,6 +4,7 @@ from collections import OrderedDict
 from functools import partial
 from zashel.utils import copy, paste
 from definitions import local_config, admin_config, LOCAL, SHARED
+import gc
 import getpass
 
 class TkVars:
@@ -33,12 +34,14 @@ class TkVars:
                 tk_var_class = {type(str()): StringVar,
                                 type(int()): IntVar,
                                 type(float()): DoubleVar,
-                                type(bool()): BooleanVar
+                                type(bool()): BooleanVar,
+                                #type(dict()): TkVars
                                 }[type(value)]
             except KeyError:
                 print(value)
                 print(type(value))
                 raise ValueError
+            #if not isinstance(tk_var_class, dict):
             if (item not in self._vars or
                     (item in self._vars and not isinstance(self._vars[item], tk_var_class))):
                 self._vars[item] = tk_var_class()
@@ -46,6 +49,11 @@ class TkVars:
                 self._vars[item].trace("w", partial(self.w, var_name="{}.{}".format(self._name, item)))
                 self._vars[item].trace("u", partial(self.u, var_name="{}.{}".format(self._name, item)))
             self._vars[item].set(value)
+            gc.collect()
+            #else:
+            #    self._vars[item] = tk_var_class(item)
+            #    for item in value:
+            #        self._vars[item].set(item, value[item])
 
     def nothing(self, *args, **kwargs):
         pass
@@ -92,6 +100,12 @@ class EasyFrame(Frame):
             raise KeyError()
         return self._vars[cat].get(name)
 
+    def del_category(self, category):
+        if category not in self._vars:
+            raise KeyError()
+        del(self._vars[category])
+        gc.collect
+
     def Entry(self, route, *args, **kwargs):
         try:
             var = self.get_var(route)
@@ -124,7 +138,6 @@ class EasyFrame(Frame):
     def entered_entry(self, value, route):
         cat, item = route.split(".")
         var = self.get_var(route)
-        print(route)
         if cat not in self.to_save:
             self.clean_to_save(cat)
         if not item in self.to_save[cat]["old"]:

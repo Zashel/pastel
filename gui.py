@@ -385,8 +385,9 @@ class App(Frame):
         self.save(category)
         dialog.destroy()
 
-    def entered_entry(self, value, route, var):
+    def entered_entry(self, value, route, var, *args):
         cat, item = route.split(".")
+        print(args)
         assert cat in self.to_save
         if not item in self.to_save[cat]["old"]:
             self.to_save[cat]["old"][item] = value

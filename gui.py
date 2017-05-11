@@ -22,6 +22,8 @@ class TkVars:
 
     def __getattr__(self, item):
         if item in self._vars:
+            print("TkVars")
+            print(type(self._vars[item]))
             return self._vars[item]
 
     def __setattr__(self, item, value):
@@ -134,6 +136,9 @@ class App(Frame):
         return self._config
 
     def Entry(self, route, var, *args, **kwargs):
+        print("Entry")
+        print(type(var))
+        print(var)
         last_entry_validation = (self.register(self.entered_entry), "%P", route, var)
         return Entry(*args, textvariable=var, validate="all", validatecommand=last_entry_validation, **kwargs)
 
@@ -320,6 +325,7 @@ class App(Frame):
         Label(usuario, text="Rol: ").grid(column=5, row=1, sticky=(N, E))
         Label(usuario, text=self.rol).grid(column=6, row=1, sticky=(N, E,))
         Label(usuario, text="Nombre: ").grid(column=0, row=2, sticky=(N, W))
+        print(type(self.vars.nombre_usuario))
         self.Entry("preferencias.nombre_usuario",
                    self.vars.nombre_usuario,
                    usuario).grid(column=1, row=2, columnspan=5, sticky=(N, E))
@@ -385,7 +391,9 @@ class App(Frame):
         if not item in self.to_save[cat]["old"]:
             self.to_save[cat]["old"][item] = value
         if not item in self.to_save[cat]["var"]:
+            print("entered_entry")
             print(type(var))
+            print(var)
             self.to_save[cat]["var"][item] = var
         if self._undo["var"] != var:
             self._undo["var"] = var

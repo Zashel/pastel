@@ -119,9 +119,11 @@ class App(Frame):
         self.usuario =  getpass.getuser()
         self.rol = "Operador"
         self.vars.nombre_usuario = ""
-
+        #Widgets
         self.widgets()
         self.set_menu()
+        #Partials
+        self.save_preferencias = partial(self.save("preferencias"))
 
     @property
     def vars(self):
@@ -303,7 +305,7 @@ class App(Frame):
         dialog.grab_set()
         dialog.transient(master=self.master)
         notebook = Notebook(dialog)
-        notebook.pack()
+        notebook.grid(column=0, row=0, columnspan=2)
 
         usuario = Frame(notebook)
         servidor = Frame(notebook)
@@ -366,7 +368,13 @@ class App(Frame):
         notebook.add(servidor, text="Servidor")
         notebook.add(rutas, text="Rutas")
         #notebook.add(datos, text="Datos")
+
+        #Botones
+        Button(dialog, text="Aceptar", command=self.save_preferencias).grid(column=0, row=0)
+        Button(dialog, text="Cancelar", command=dialog.destroy).grid(column=0, row=1)
         dialog.wait_window(dialog)
+
+
 
     def entered_entry(self, value, route, var):
         cat, item = route.split(".")

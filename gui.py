@@ -371,13 +371,13 @@ class App(Frame):
         #notebook.add(datos, text="Datos")
 
         #Botones
-        Button(dialog, text="Aceptar", command=save_and_close_preferencias).grid(column=0, row=0)
-        Button(dialog, text="Cancelar", command=dialog.destroy).grid(column=0, row=1)
+        Button(dialog, text="Aceptar", command=save_and_close_preferencias).grid(column=0, row=1)
+        Button(dialog, text="Cancelar", command=dialog.destroy).grid(column=1, row=1)
         dialog.wait_window(dialog)
 
     def save_and_close(self, category, dialog):
         self.save(category)
-        dialog.destroy
+        dialog.destroy()
 
     def entered_entry(self, value, route, var):
         cat, item = route.split(".")

@@ -385,6 +385,7 @@ class App(Frame):
         if not item in self.to_save[cat]["old"]:
             self.to_save[cat]["old"][item] = value
         if not item in self.to_save[cat]["var"]:
+            print(type(var))
             self.to_save[cat]["var"][item] = var
         if self._undo["var"] != var:
             self._undo["var"] = var

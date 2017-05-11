@@ -53,7 +53,7 @@ class App(Frame):
         super().__init__(master, padding=(3, 3, 3, 3))
         self.set_to_save()
         self._last_entry = str()
-        last_entry_validation = (self.register(self.entered_entry), "%s")
+        last_entry_validation = (self.register(self.entered_entry), "%P")
         self.Entry = partial(Entry, validate="all", validatecommand=last_entry_validation)
         self.pack()
         self._vars = TkVars("vars", w=self.changed_data)

@@ -146,6 +146,10 @@ class App(Frame):
         last_entry_validation = (self.register(self.entered_entry), "%P", route, var)
         return Entry(*args, textvariable=var, validate="all", validatecommand=last_entry_validation, **kwargs)
 
+    def Checkbutton(self, route, var, *args, **kwargs):
+        last_entry_validation = (self.register(self.entered_entry), "%P", route, var)
+        return Checkbutton(*args, variable=var, validate="all", validatecommand=last_entry_validation, **kwargs)
+
     def clean_pago(self, pago):
         for field in pago:
             if field == "posibles":
@@ -337,8 +341,10 @@ class App(Frame):
 
         #Servidor
         servidor.grid(sticky=(N, S, E, W))
-        Checkbutton(servidor, text="Init server at StartUp",
-                    variable=self.config.INIT_SERVER_STARTUP).grid(column=0, row=0, columnspan=5)
+        self.Checkbutton("preferencias.INIT_SERVER_STARTUP",
+                         self.config.INIT_SERVER_STARTUP,
+                         servidor,
+                         text="Init server at StartUp").grid(column=0, row=0, columnspan=5)
         Label(servidor, text="Host: ").grid(column=0, row=1)
         self.Entry("preferencias.HOST",
                    self.config.HOST,

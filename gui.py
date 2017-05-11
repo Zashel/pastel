@@ -62,8 +62,8 @@ class TkVars:
 class App(Frame):
     def __init__(self, master=None):
         super().__init__(master, padding=(3, 3, 3, 3))
-        self.clean_to_save()
         self.to_save = dict()
+        self.clean_to_save()
         self._undo = {"var": None,
                       "last": None}
         self.pack()

@@ -301,8 +301,10 @@ class App(Frame):
         self.menu_load.add_command(label="PARI...")
         self.menu_load.add_command(label="Último PARI")
 
-        self.menu_edit.add_command(label="Cortar")
-        self.menu_edit.add_command(label="Copiar", command=copy)
+        self.menu_edit.add_command(label="Deshacer", command=self.undo)
+        self.menu_edit.add_separator()
+        self.menu_edit.add_command(label="Cortar", command=self.cut)
+        self.menu_edit.add_command(label="Copiar", command=self.copy)
         self.menu_edit.add_command(label="Copiar página")
         self.menu_edit.add_command(label="Pegar", command=paste)
         self.menu_edit.add_separator()
@@ -409,6 +411,16 @@ class App(Frame):
         if self._undo["var"] != var:
             self._undo["var"] = var
             self._undo["last"] = value
+
+    def undo(self):
+        self._undo["var"].set(self._undo["last"])
+
+    def copy(self):
+        copy(self.tk.selection_get())
+
+    def cut(self):
+        self.copy()
+        self.tk.selection_own_get().delete(SEL_FIRST, SEL_LAST)
 
     def save(self, category):
         if category == "preferencias":

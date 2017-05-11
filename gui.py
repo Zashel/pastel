@@ -53,8 +53,6 @@ class App(Frame):
         super().__init__(master, padding=(3, 3, 3, 3))
         self.set_to_save()
         self._last_entry = str()
-        last_entry_validation = (self.register(self.entered_entry), "%P")
-        self.Entry = partial(Entry, validate="all", validatecommand=last_entry_validation)
         self.pack()
         self._vars = TkVars("vars", w=self.changed_data)
         self._config = TkVars("config", w=self.changed_data)
@@ -134,6 +132,10 @@ class App(Frame):
     def config(self):
         return self._config
 
+    def Entry(self, route, *args, **kwargs):
+        last_entry_validation = (self.register(self.entered_entry), "%P", route)
+        return Entry(*args, validate="all", validatecommand=last_entry_validation, **kwargs)
+
     def clean_pago(self, pago):
         for field in pago:
             if field == "posibles":
@@ -146,9 +148,12 @@ class App(Frame):
                 pago[field].set(none)
 
     def set_to_save(self):
-        self.to_save = {"link": None,
-                        "old": dict(),
-                        "new": dict()}
+        template = {"old": dict(),
+                    "new": dict()}
+        self.to_save = {"preferencias": dict(template),
+                        "pagos": dict(template),
+                        "compromisos": dict(template),
+                        "usuarios": dict(template)}
 
     def clean_pagos_list(self):
         for item in self._pagos_list:
@@ -309,31 +314,49 @@ class App(Frame):
         Label(usuario, text="Rol: ").grid(column=5, row=1, sticky=(N, E))
         Label(usuario, text=self.rol).grid(column=6, row=1, sticky=(N, E,))
         Label(usuario, text="Nombre: ").grid(column=0, row=2, sticky=(N, W))
-        self.Entry(usuario, textvariable=self.vars.nombre_usuario).grid(column=1, row=2, columnspan=5, sticky=(N, E))
+        self.Entry("preferencias",
+                   usuario,
+                   textvariable=self.vars.nombre_usuario).grid(column=1, row=2, columnspan=5, sticky=(N, E))
 
         #Servidor
         servidor.grid(sticky=(N, S, E, W))
         Checkbutton(servidor, text="Init server at StartUp",
                     variable=self.config.INIT_SERVER_STARTUP).grid(column=0, row=0, columnspan=5)
         Label(servidor, text="Host: ").grid(column=0, row=1)
-        self.Entry(servidor, textvariable=self.config.HOST).grid(column=1, row=1, columnspan=2)
+        self.Entry("preferencias",
+                   servidor,
+                   textvariable=self.config.HOST).grid(column=1, row=1, columnspan=2)
         Label(servidor, text="Port: ").grid(column=3, row=1)
-        self.Entry(servidor, textvariable=self.config.PORT).grid(column=4, row=1, columnspan=1)
+        self.Entry("preferencias",
+                   servidor,
+                   textvariable=self.config.PORT).grid(column=4, row=1, columnspan=1)
 
         #Rutas
         rutas.grid(sticky=(N, S, E, W))
         Label(rutas, text="Admin Local: ").grid(column=0, row=0, sticky=(N, W))
-        self.Entry(rutas, textvariable=self.config.ADMIN_DB).grid(column=1, row=0, sticky=(N, E))
+        self.Entry("preferencias",
+                   rutas,
+                   textvariable=self.config.ADMIN_DB).grid(column=1, row=0, sticky=(N, E))
         Label(rutas, text="Path: ").grid(column=0, row=1, sticky=(N, W))
-        self.Entry(rutas, textvariable=self.config.PATH).grid(column=1, row=1, sticky=(N, E))
+        self.Entry("preferencias",
+                   rutas,
+                   textvariable=self.config.PATH).grid(column=1, row=1, sticky=(N, E))
         Label(rutas, text="Exportaciones: ").grid(column=0, row=2, sticky=(N, W))
-        self.Entry(rutas, textvariable=self.config.EXPORT_PATH).grid(column=1, row=2, sticky=(N, E))
+        self.Entry("preferencias",
+                   rutas,
+                   textvariable=self.config.EXPORT_PATH).grid(column=1, row=2, sticky=(N, E))
         Label(rutas, text="Exportaciones diarias: ").grid(column=0, row=3, sticky=(N, W))
-        self.Entry(rutas, textvariable=self.config.DAILY_EXPORT_PATH).grid(column=1, row=3, sticky=(N, E))
+        self.Entry("preferencias",
+                   rutas,
+                   textvariable=self.config.DAILY_EXPORT_PATH).grid(column=1, row=3, sticky=(N, E))
         Label(rutas, text="Reportes: ").grid(column=0, row=4, sticky=(N, W))
-        self.Entry(rutas, textvariable=self.config.REPORT_PATH).grid(column=1, row=4, sticky=(N, E))
+        self.Entry("preferencias",
+                   rutas,
+                   textvariable=self.config.REPORT_PATH).grid(column=1, row=4, sticky=(N, E))
         Label(rutas, text="Base de Datos: ").grid(column=0, row=5, sticky=(N, W))
-        self.Entry(rutas, textvariable=self.config.DATABASE_PATH).grid(column=1, row=5, sticky=(N, E))
+        self.Entry("preferencias",
+                   rutas,
+                   textvariable=self.config.DATABASE_PATH).grid(column=1, row=5, sticky=(N, E))
         #Datos
 
         notebook.add(usuario, text="Usuario")
@@ -343,7 +366,7 @@ class App(Frame):
 
         dialog.wait_window(dialog)
 
-    def entered_entry(self, value):
+    def entered_entry(self, value, route):
         print(value)
         self._last_entry = value
 

@@ -133,6 +133,8 @@ class App(Frame):
         #Widgets
         self.widgets()
         self.set_menu()
+        self.vars.caca = "Hola Caracola"
+        self.Entry("caca.mojón", self.vars.caca, self).pack()
 
     @property
     def vars(self):

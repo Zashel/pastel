@@ -149,7 +149,7 @@ class EasyFrame(Frame):
 
     def save(self, category):
         try:
-            save = self.__getattr__(self, "save_{}".join(category))
+            save = self.__getattribute__("save_{}".join(category))
         except AttributeError:
             raise
         save()

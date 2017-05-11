@@ -306,6 +306,7 @@ class App(Frame):
         dialog.transient(master=self.master)
         notebook = Notebook(dialog)
         notebook.grid(column=0, row=0, columnspan=2)
+        save_and_close_preferencias = partial(self.save_and_close, "preferencias", dialog)
 
         usuario = Frame(notebook)
         servidor = Frame(notebook)
@@ -370,11 +371,13 @@ class App(Frame):
         #notebook.add(datos, text="Datos")
 
         #Botones
-        Button(dialog, text="Aceptar", command=self.save_preferencias).grid(column=0, row=0)
+        Button(dialog, text="Aceptar", command=save_and_close_preferencias).grid(column=0, row=0)
         Button(dialog, text="Cancelar", command=dialog.destroy).grid(column=0, row=1)
         dialog.wait_window(dialog)
 
-
+    def save_and_close(self, category, dialog):
+        self.save(category)
+        dialog.destroy
 
     def entered_entry(self, value, route, var):
         cat, item = route.split(".")
@@ -386,12 +389,11 @@ class App(Frame):
         if self._undo["var"] != var:
             self._undo["var"] = var
             self._undo["last"] = value
-            print(self._undo)
-        print(self.to_save)
 
     def save(self, category):
         if category == "preferencias":
             for item in self.to_save:
+                print(item)
                 if item in LOCAL:
                     local_config.set(item, self.to_save[item]["var"].get())
                 elif item in SHARED:

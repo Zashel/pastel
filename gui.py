@@ -167,12 +167,9 @@ class App(Frame):
         template = {"old": dict(),
                     "var": dict()}
         if category is None:
-            self.to_save = {"preferencias": dict(template),
-                            "pagos": dict(template),
-                            "compromisos": dict(template),
-                            "usuarios": dict(template)}
+            for category in self.to_save:
+                self.to_save[category] = dict(template)
         else:
-            assert category in self.to_save
             self.to_save[category] = dict(template)
 
     def clean_pagos_list(self):
@@ -405,7 +402,8 @@ class App(Frame):
     def entered_entry(self, value, route, var, *args):
         cat, item = route.split(".")
         var = TkVars.get(var)
-        assert cat in self.to_save
+        if cat not in self.to_save:
+            self.clean_to_save(cat)
         if not item in self.to_save[cat]["old"]:
             self.to_save[cat]["old"][item] = value
         if not item in self.to_save[cat]["var"]:

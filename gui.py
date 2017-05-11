@@ -51,12 +51,10 @@ class TkVars:
 class App(Frame):
     def __init__(self, master=None):
         super().__init__(master, padding=(3, 3, 3, 3))
-        self.to_save = {"link": None,
-                        "old": dict(),
-                        "new": dict()}
+        self.set_to_save()
         self._last_entry = str()
         last_entry_validation = (self.register(self.entered_entry), "%s")
-        self.Entry = partial(Entry, validate="key", validatecommand=last_entry_validation)
+        self.Entry = partial(Entry, validate="all", validatecommand=last_entry_validation)
         self.pack()
         self._vars = TkVars("vars", w=self.changed_data)
         self._config = TkVars("config", w=self.changed_data)
@@ -146,6 +144,11 @@ class App(Frame):
             else:
                 none = self.none_dict[type(pago[field])]
                 pago[field].set(none)
+
+    def set_to_save(self):
+        self.to_save = {"link": None,
+                        "old": dict(),
+                        "new": dict()}
 
     def clean_pagos_list(self):
         for item in self._pagos_list:
@@ -286,6 +289,7 @@ class App(Frame):
 
     def win_propiedades(self):
         self.set_config()
+        self.set_to_save()
         dialog = Toplevel(self.master)
         dialog.focus_set()
         dialog.grab_set()
@@ -368,7 +372,6 @@ class App(Frame):
         self.to_save["new"].update({field: value})
         print(self.to_save)
 
-
     def set_config(self):
         self.config.HOST = local_config.HOST
         self.config.PORT = local_config.PORT
@@ -379,9 +382,6 @@ class App(Frame):
         self.config.DATABASE_PATH = admin_config.DATABASE_PATH
         self.config.REPORT_PATH = admin_config.REPORT_PATH
         self.config.DAILY_EXPORT_PATH = admin_config.DAILY_EXPORT_PATH
-
-
-
 
 
 if __name__ == "__main__":

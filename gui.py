@@ -392,11 +392,11 @@ class App(Frame):
 
     def save(self, category):
         if category == "preferencias":
-            for item in self.to_save[category]:
+            for item in self.to_save[category]["var"]:
                 if item in LOCAL:
-                    local_config.set(item, self.to_save[category][item]["var"].get())
+                    local_config.set(item, self.to_save[category]["var"][item].get())
                 elif item in SHARED:
-                    admin_config.set(item, self.to_save[category][item]["var"].get())
+                    admin_config.set(item, self.to_save[category]["var"][item].get())
         self.clean_to_save("preferencias")
 
     def changed_data(self, var, void, action, var_name): #I don't know if I need it...

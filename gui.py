@@ -123,7 +123,7 @@ class App(Frame):
         self.widgets()
         self.set_menu()
         #Partials
-        self.save_preferencias = partial(self.save("preferencias"))
+        self.save_preferencias = partial(self.save, "preferencias")
 
     @property
     def vars(self):

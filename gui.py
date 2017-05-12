@@ -37,6 +37,8 @@ class TkVars:
                 print(type(value))
                 raise ValueError
             if isinstance(tk_var_class, Variable):
+                print(item in self._vars)
+                print(isinstance(self._vars[item], tk_var_class))
                 if (item not in self._vars or
                         (item in self._vars and not isinstance(self._vars[item], tk_var_class))):
                     self._vars[item] = tk_var_class()

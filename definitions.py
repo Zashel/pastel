@@ -306,7 +306,7 @@ __all__.extend(STATIC)
 #__all__.extend(SHARED)
 __all__.extend(["local_config",
                 "admin_config",
-                LOCAL,
-                SHARED
+                "LOCAL",
+                "SHARED"
                 ])
 

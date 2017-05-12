@@ -36,6 +36,7 @@ class TkVars:
                 print(value)
                 print(type(value))
                 raise ValueError
+            print(tk_var_class)
             if isinstance(tk_var_class, Variable):
                 if (item not in self._vars or
                         (item in self._vars and not isinstance(self._vars[item], tk_var_class))):
@@ -56,7 +57,6 @@ class TkVars:
                     final.append(tkvars.set(index, val))
                 if tk_var_class == list:
                     final.append = lambda value, name=self._vars[item]: tkvars.set(len(name), value)
-                self._vars[item] = tk_var_class(final)
 
     def check_type(self, value):
         return {type(str()): StringVar,
@@ -106,14 +106,14 @@ class EasyFrame(Frame):
         pass
 
     def set_var(self, route, value=None):
-        cat, name = route.split(".")
+        cat, name = self.get_category_and_name(route)
         if cat not in self._vars:
             self._vars[cat] = TkVars(cat)
         self._vars[cat].set(name, value)
         return self._vars[cat].get(name)
 
     def get_var(self, route):
-        cat, name = route.split(".")
+        cat, name = self.get_category_and_name(route)
         if cat not in self._vars:
             raise KeyError()
         return self._vars[cat].get(name)

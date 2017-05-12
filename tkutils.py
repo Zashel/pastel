@@ -92,8 +92,6 @@ class EasyFrame(Frame):
         self._undo = {"var": None,
                       "last": None}
         self._vars = dict()
-        self.set_widgets()
-        self.set_menu()
         self._tree = dict()
 
     @property

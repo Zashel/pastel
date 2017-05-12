@@ -76,6 +76,7 @@ class App(EasyFrame):
         self.rol = "Operador"
         self.set_var("config.nombre_usuario", "")
         #Widgets
+        self.set_menu()
         self.set_widgets()
         self.set_var("test.test", "Hola Caracola")
         self.Entry("test.test", self).pack()
@@ -235,8 +236,6 @@ class App(EasyFrame):
         self.menu_edit.add_command(label="Pegar", command=self.paste)
         self.menu_edit.add_separator()
         self.menu_edit.add_command(label="Preferencias", command=self.win_propiedades)
-
-        self.menu_edit
 
     def win_propiedades(self):
         self.set_config()

@@ -91,14 +91,14 @@ class API:
                     else:
                         API.pagos[link] = None
         else:
-            pagos = {"active": None,
-                     "cache": None,
-                     "self": None,
-                     "next": None,
-                     "last": None,
-                     "prev": None,
-                     "first": None
-                     }
+            API.pagos = {"active": None,
+                         "cache": None,
+                         "self": None,
+                         "next": None,
+                         "last": None,
+                         "prev": None,
+                         "first": None
+                         }
 
     @classmethod
     def next_pagos(cls, **kwargs):

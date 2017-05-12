@@ -11,6 +11,7 @@ class App(EasyFrame):
         super().__init__(master=master, padding=(3, 3, 3, 3))
         self.pack()
 
+        """
         posible = OrderedDict({"index": IntVar(),
                                "fecha_aplicacion": StringVar(),
                                "codigo_ciclo": IntVar(),
@@ -70,6 +71,7 @@ class App(EasyFrame):
                                              partial(self.changed_data,
                                                      var_name="active_pago.posibles.{}.{}".format(str(posible["index"]),
                                                                                                   posible[field])))
+        """
         self.usuario =  getpass.getuser()
         self.rol = "Operador"
         self.set_var("config.nombre_usuario", "")
@@ -77,6 +79,7 @@ class App(EasyFrame):
         self.set_var("test.test", "Hola Caracola")
         self.Entry("test.test", self).pack()
 
+    """
     def clean_pago(self, pago):
         for field in pago:
             if field == "posibles":
@@ -136,6 +139,7 @@ class App(EasyFrame):
             self._pagos_list[index]["index"].set(index)
             self.set_pago(self.pagos_list[index], item)
         self._total_pagos_list = len(data)
+    """
 
     def set_widgets(self):
         #TABS
@@ -144,24 +148,30 @@ class App(EasyFrame):
                      "payments": Frame(self)}
 
         #Payments Tree
-        columns = OrderedDict({"estado": [100, "Estado"],
-                               "fecha": [100, "Fecha Pago"],
-                               "importe_str": [100, "Importe"],
-                               "dni": [100, "DNI"],
-                               "id_cliente": [100, "ID Cliente"],
-                               "tels": [100, "Teléfonos"],
-                               "oficina": [100, "Oficina"],
-                               "observaciones": [100, "Observaciones"]})
+        columns = ["estado",
+                   "fecha",
+                   "importe_str",
+                   "dni",
+                   "id_cliente",
+                   "tels",
+                   "oficina",
+                   "observaciones"]
+        default_config = {"columns": {"width": 100},
+                         "heading": {"#0": {"text": "ID"},
+                                     "estado": {"text": "Estado"},
+                                     "fecha": {"text": "Fecha Pago"},
+                                     "importe": {"text": "Importe"},
+                                     "dni": {"text": "DNI"},
+                                     "id_cliente": {"text": "ID Cliente"},
+                                     "tels": {"text": "Teléfonos"},
+                                     "oficina": {"text": "Oficina"},
+                                     "observaciones": {"text": "Observaciones"}},
+                         "show": {"importe": lambda x: str(x)[:-2]+str(x)[-2:]+" €",
+                                  "tels": lambda x: ", ".join(x)},
+                         "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "").replace("€", ""))}}
         self.payments_tree_frame = Frame(self.tabs["payments"])
         self.payments_tree_frame.pack()
-        self.payments_tree = Treeview(self.payments_tree_frame, columns=list(columns.keys()))
-        self.payments_tree.column("#0", width=100)
-        self.payments_tree.heading("#0", text="ID")
-        for column in columns:
-            self.payments_tree.column(column, width=columns[column][0])
-            self.payments_tree.heading(column, text=columns[column][1])
-        self.payments_tree.column("estado", width=100)
-        self.payments_tree.pack()
+        self.TreeView("pagos", columns, self.payments_tree_frame, default_config=default_config).pack()
 
         self.payment_frame = Frame(self.tabs["payments"])
         self.payment_frame.tkraise(self.payments_tree_frame)
@@ -174,10 +184,6 @@ class App(EasyFrame):
     def hide_payment_tree(self):
         self.payments_tree.pack_forget()
         self.payment_frame.pack()
-
-    def update_payments_tree(self):
-        for index in range(self._total_pagos_list):
-            pass
 
     def set_menu(self):
         self.option_add("*tearOff", FALSE)

@@ -145,23 +145,42 @@ class EasyFrame(Frame):
         last_entry_validation = partial(self.entered_entry, not var.get(), route)
         return Checkbutton(*args, variable=var, command=last_entry_validation, **kwargs)
 
-    def TreeView(self, category, columns, template=None, *args, default_config=None, **kwargs):  # Columns -> dictionary
-        if template is None:
-            template = list(columns)
-        else:
-            assert all([column in template for column in columns])
+    def TreeView(self, category, columns,  *args, default_config=None, **kwargs):  # Columns -> dictionary
         options = {"columns": tuple(columns.keys())}
         options.update(kwargs)
         tree = Treeview(*args, **kwargs)
-        self.tree[category] = {"template": template,
+        if "show" not in default_config:
+            show = dict()
+        else:
+            show = default_config["show"]
+        for item in columns:
+            if item not in show:
+                show[item] = lambda dato: dato
+        assert all([item in show for item in columns])
+        if "validate" not in default_config:
+            validate = dict()
+        else:
+            validate = default_config["validate"]
+        for item in columns:
+            if item not in validate:
+                validate[item] = lambda dato: dato
+        assert all([item in validate for item in columns])
+        self.tree[category] = {"template": list(columns),
                                "data": list(),
-                               "tree": tree}
-        for column in columns:
+                               "tree": tree,
+                               "show": show,
+                               "validate": validate}
+        for column in columns+["#0"]:
             self.set_var(".".join((category, str(column))), None, w=self.changed_active_tree_item)
-            if "column" in default_config:
-                tree.column(column, **default_config["column"])
+            if "columns" in default_config:
+                column_config = dict(default_config["columns"])
+            else:
+                column_config = dict()
+            if "column" in default_config and column in default_config["column"][column]:
+                column_config.update(default_config["column"][column])
+            tree.column(column, **column_config)
             if "heading" in default_config:
-                tree.heading(column, **default_config["column"])
+                tree.heading(column, **default_config["heading"])
         if "bind" in default_config:
             for item in default_config["bind"]:
                 tree.bind(item, default_config["bind"][item])
@@ -178,7 +197,7 @@ class EasyFrame(Frame):
         self.tree[category]["data"][name] = self.get_var(var_name).get()
         tree = self.tree[category]["tree"]
         item = tree.selection()[0]
-        tree.set(item, name, self.get_var(var_name).get())
+        tree.set(self.tree[category]["validate"][name](item, name, self.get_var(var_name).get()))
 
     def del_tree_data(self, category):
         for item in self.tree[category]["data"]:
@@ -217,7 +236,7 @@ class EasyFrame(Frame):
         for field in self.tree[category]["template"]:
             if field not in data:
                 data[field] = str()
-            values.append(data[field])
+            values.append(self.tree[category]["show"][field](data[field]))
         self.tree[category]["tree"].insert("", END, name, text=name, values=values)
         if "_details" in data:
             for item in data["_details"]:

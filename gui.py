@@ -80,8 +80,11 @@ class App(EasyFrame):
         self.set_widgets()
         self.set_var("test.test", "Hola Caracola")
         self.Entry("test.test", self).pack()
-        API.filter_pagos()
-        self.set_tree_data("pagos", API.get_pagos_list())
+        pagos = API.filter_pagos()
+        pagos_dict = dict()
+        for pago in pagos:
+            pagos_dict[pago["_id"]] = pago
+        self.set_tree_data("pagos", pagos_dict)
 
     """
     def clean_pago(self, pago):

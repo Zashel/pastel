@@ -84,8 +84,8 @@ class API:
                                                                  filter))
         if request.status_code == 200:
             data = json.loads(request.text)
+            print(data)
             API.pagos["cache"] = data["data"]
-            print(data["data"][0])
             if "_links" in data:
                 for link in ("self", "next", "prev", "first", "last"):
                     if link in data["_links"]:

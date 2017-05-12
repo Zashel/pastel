@@ -31,29 +31,42 @@ class TkVars:
             object.__setattr__(self, item, value)
         else:
             try:
-                tk_var_class = {type(str()): StringVar,
-                                type(int()): IntVar,
-                                type(float()): DoubleVar,
-                                type(bool()): BooleanVar,
-                                #type(dict()): TkVars
-                                }[type(value)]
+                tk_var_class = self.check_type(value)
             except KeyError:
                 print(value)
                 print(type(value))
                 raise ValueError
-            #if not isinstance(tk_var_class, dict):
-            if (item not in self._vars or
-                    (item in self._vars and not isinstance(self._vars[item], tk_var_class))):
-                self._vars[item] = tk_var_class()
-                self._vars[item].trace("r", partial(self.r, var_name="{}.{}".format(self._name, item)))
-                self._vars[item].trace("w", partial(self.w, var_name="{}.{}".format(self._name, item)))
-                self._vars[item].trace("u", partial(self.u, var_name="{}.{}".format(self._name, item)))
-            self._vars[item].set(value)
-            gc.collect()
-            #else:
-            #    self._vars[item] = tk_var_class(item)
-            #    for item in value:
-            #        self._vars[item].set(item, value[item])
+            if isinstance(tk_var_class, Variable):
+                if (item not in self._vars or
+                        (item in self._vars and not isinstance(self._vars[item], tk_var_class))):
+                    self._vars[item] = tk_var_class()
+                    self._vars[item].trace("r", partial(self.r, var_name="{}.{}".format(self._name, item)))
+                    self._vars[item].trace("w", partial(self.w, var_name="{}.{}".format(self._name, item)))
+                    self._vars[item].trace("u", partial(self.u, var_name="{}.{}".format(self._name, item)))
+                    self._vars[item].set(value)
+                    gc.collect()
+            elif tk_var_class == dict:
+                self._vars[item] = TkVars(item)
+                for val in value:
+                    self._vars[item].set(item, value[val])
+            elif tk_var_class in (list, tuple):
+                final = list()
+                tkvars = TkVars(".".join((self._name, item)))
+                for index, val in enumerate(value):
+                    final.append(tkvars.set(index, val))
+                if tk_var_class == list:
+                    final.append = lambda value, name=self._vars[item]: tkvars.set(len(name), value)
+                self._vars[item] = tk_var_class(final)
+
+    def check_type(self, value):
+        return {type(str()): StringVar,
+                type(int()): IntVar,
+                type(float()): DoubleVar,
+                type(bool()): BooleanVar,
+                type(dict()): dict,
+                type(list()): list,
+                type(tuple()): tuple
+                }[type(value)]
 
     def nothing(self, *args, **kwargs):
         pass
@@ -76,10 +89,15 @@ class EasyFrame(Frame):
         self._vars = dict()
         self.set_widgets()
         self.set_menu()
+        self._tree = dict()
 
     @property
     def vars(self):
         return self._vars
+
+    @property
+    def tree(self):
+        return self._tree
 
     def set_widgets(self):
         pass
@@ -135,8 +153,13 @@ class EasyFrame(Frame):
         self.save(category)
         dialog.destroy()
 
+    def get_category_and_name(self, route):
+        route = route.split(".")
+        category, name = ".".join(route[:-1]), route[-1]
+        return (category, name)
+
     def entered_entry(self, value, route):
-        cat, item = route.split(".")
+        cat, item = self.get_category_and_name(route)
         var = self.get_var(route)
         if cat not in self.to_save:
             self.clean_to_save(cat)

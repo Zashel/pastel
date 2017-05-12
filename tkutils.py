@@ -146,7 +146,7 @@ class EasyFrame(Frame):
     def TreeView(self, category, columns, *args, default_config=None, **kwargs):  # Columns -> dictionary
         options = {"columns": tuple(columns)}
         options.update(kwargs)
-        tree = Treeview(*args, **kwargs)
+        tree = Treeview(*args, **options)
         if "show" not in default_config:
             show = dict()
         else:
@@ -182,6 +182,7 @@ class EasyFrame(Frame):
         if "bind" in default_config:
             for item in default_config["bind"]:
                 tree.bind(item, default_config["bind"][item])
+        return tree
 
     def activate_tree_item(self, category, event):
         tree = self.tree[category]["tree"]

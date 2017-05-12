@@ -62,7 +62,7 @@ class API:
                                                                         str(local_config.PORT),
                                                                         BASE_URI[1:-1],
                                                                         str(_id)))
-            if request.request == 200:
+            if request.status_code == 200:
                 data = json.loads(request.text)
                 if data["total"] == 1:
                     API.pagos["active"] = data["data"]
@@ -82,7 +82,7 @@ class API:
                                                                  BASE_URI[1:-1],
                                                                  filter != list() and "?" or str(),
                                                                  filter))
-        if request.request == 200:
+        if request.status_code == 200:
             data = json.loads(request.text)
             API.pagos["cache"] = data["data"]
             if "_links" in data:
@@ -92,7 +92,7 @@ class API:
                     else:
                         API.pagos[link] = None
         else:
-            print(request.request)
+            print(request.status_code)
             API.pagos = {"active": None,
                          "cache": dict(),
                          "self": None,
@@ -114,7 +114,7 @@ class API:
                                                                     str(local_config.PORT),
                                                                     BASE_URI[1:-1],
                                                                     filter))
-        if request.request == 200:
+        if request.status_code == 200:
             data = json.loads(request.text)
             if data["total"] == 1:
                 API.pagos["active"] = data["data"]
@@ -132,11 +132,11 @@ class API:
             post_data = data.copy()
             del(post_data["link"])
             request = requests.put(data["link"], json=post_data)
-            if request.request in (200, 201):
+            if request.status_code in (200, 201):
                 data = json.loads(request.text)
                 if data["total"] == 1:
                     API.pagos["active"] = data["data"]
-                elif request.request == 404:
+                elif request.status_code == 404:
                     API.pagos["active"] = None
             return API.pagos["active"]
 

@@ -112,7 +112,7 @@ class EasyFrame(Frame):
         cat, name = self.get_category_and_name(route)
         if cat not in self._vars:
             self._vars[cat] = TkVars(cat)
-        self._vars[cat].set(name, value, r, w, u)
+        self._vars[cat].set(name, value, r=r, w=w, u=u)
         return self._vars[cat].get(name)
 
     def get_var(self, route):

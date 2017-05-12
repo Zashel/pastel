@@ -80,7 +80,7 @@ class App(EasyFrame):
         self.set_widgets()
         self.set_var("test.test", "Hola Caracola")
         self.Entry("test.test", self).pack()
-        API.filter_pagos({"estado": "PENDIENTE"})
+        API.filter_pagos(estado="PENDIENTE")
         self.set_tree_data("pagos", API.get_pagos_list())
 
     """

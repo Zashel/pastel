@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter.ttk import *
-from collections import OrderedDict
+from api import API
 from functools import partial
 from definitions import local_config, admin_config, LOCAL, SHARED
 from tkutils import *
@@ -80,6 +80,8 @@ class App(EasyFrame):
         self.set_widgets()
         self.set_var("test.test", "Hola Caracola")
         self.Entry("test.test", self).pack()
+        API.filter_pagos({"estado": "PENDIENTE"})
+        self.set_tree_data("pagos", API.get_pagos_list())
 
     """
     def clean_pago(self, pago):

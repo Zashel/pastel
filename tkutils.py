@@ -222,6 +222,7 @@ class EasyFrame(Frame):
 
     def set_tree_data(self, category, data, order=None):
         assert category in self.tree
+        self.del_tree_data(category)
         if order is None:
             order = list(data.keys())
             order.sort()

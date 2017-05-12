@@ -82,8 +82,9 @@ class App(EasyFrame):
         self.Entry("test.test", self).pack()
         pagos = API.filter_pagos()
         pagos_dict = dict()
-        for pago in pagos:
-            pagos_dict[pago["_id"]] = pago
+        if pagos is not None:
+            for pago in pagos:
+                pagos_dict[pago["_id"]] = pago
         self.set_tree_data("pagos", pagos_dict)
 
     """

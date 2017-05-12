@@ -151,7 +151,7 @@ class App(EasyFrame):
         #Payments Tree
         columns = ["estado",
                    "fecha",
-                   "importe_str",
+                   "importe",
                    "dni",
                    "id_cliente",
                    "tels",

@@ -76,6 +76,7 @@ class App(EasyFrame):
         self.rol = "Operador"
         self.set_var("config.nombre_usuario", "")
         #Widgets
+        self.set_widgets()
         self.set_var("test.test", "Hola Caracola")
         self.Entry("test.test", self).pack()
 

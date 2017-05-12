@@ -145,8 +145,8 @@ class EasyFrame(Frame):
         last_entry_validation = partial(self.entered_entry, not var.get(), route)
         return Checkbutton(*args, variable=var, command=last_entry_validation, **kwargs)
 
-    def TreeView(self, category, columns,  *args, default_config=None, **kwargs):  # Columns -> dictionary
-        options = {"columns": tuple(columns.keys())}
+    def TreeView(self, category, columns, *args, default_config=None, **kwargs):  # Columns -> dictionary
+        options = {"columns": tuple(columns)}
         options.update(kwargs)
         tree = Treeview(*args, **kwargs)
         if "show" not in default_config:

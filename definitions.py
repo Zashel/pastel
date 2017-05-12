@@ -160,9 +160,11 @@ REMOTE_PATHS = ["PATH",
                 ]
 
 class LocalConfig: #To a dynamic access -> change API
+    cache = dict()
     def __setattr__(self, attr, value):
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         if attr in LOCAL:
+            LocalConfig.cache[attr] = value
             if attr in REMOTE_PATHS:
                 Path(shelf[attr]).path = value
                 if attr == "UUID":
@@ -174,17 +176,26 @@ class LocalConfig: #To a dynamic access -> change API
     def __getattr__(self, attr):
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         if attr in LOCAL:
-            if attr in REMOTE_PATHS:
-                return Path(shelf[attr]).path
-            else:
+            try:
                 data = shelf[attr]
+            except KeyError:
+                if attr in LocalConfig.cache:
+                    data = LocalConfig.cache[attr]
+                else:
+                    raise
+            if attr in REMOTE_PATHS:
+                return Path(data).path
+            else:
                 if attr == "UUID":
                     try:
                         timeout = shelf["UUID-timeout"]
-                        if timeout < datetime.datetime.now():
-                            data = uuid.uuid4()
-                            shelf[attr] = data
                     except KeyError:
+                        if "UUID-timeout" in LocalConfig.cache:
+                            timeout = LocalConfig.cache["UUID-timeout"]
+                        else:
+                            timeout = None
+                    if timeout is not None and timeout < datetime.datetime.now():
+                        data = uuid.uuid4()
                         shelf[attr] = data
                 return data
         shelf.close()
@@ -196,6 +207,7 @@ class LocalConfig: #To a dynamic access -> change API
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         if attr in LOCAL and attr not in shelf:
             shelf[attr] = default
+        shelf.close()
         return self.__getattr__(attr.lower())
 
 local_config = LocalConfig()
@@ -227,9 +239,11 @@ SHARED = ["PM_CUSTOMER",
           ]
 
 class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated myself!
+    cache = dict()
     def __setattr__(self, attr, value):
         shelf = shelve.open(os.path.join(local_config.ADMIN_DB, "config"))
         if attr in SHARED:
+            AdminConfig.cache[attr] = value
             if attr in REMOTE_PATHS:
                 Path(shelf[attr]).path = value
             else:
@@ -239,10 +253,17 @@ class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated mys
     def __getattr__(self, attr):
         shelf = shelve.open(os.path.join(local_config.ADMIN_DB, "config"))
         if attr in SHARED:
+            try:
+                data = shelf[attr]
+            except KeyError:
+                if attr in AdminConfig.cache:
+                    data = AdminConfig.cache[attr]
+                else:
+                    raise
             if attr in REMOTE_PATHS:
-                return Path(shelf[attr]).path
+                return Path(data).path
             else:
-                return shelf[attr]
+                return data
         shelf.close()
 
     def set(self, attr, value):
@@ -251,7 +272,8 @@ class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated mys
     def set_default(self, attr, default):
         shelf = shelve.open(os.path.join(local_config.ADMIN_DB, "config"))
         if attr in SHARED and attr not in shelf:
-            shelf[attr] = default
+            self.set(attr, default)
+        shelf.close()
         return self.__getattr__(attr.lower())
 
 admin_config = AdminConfig()

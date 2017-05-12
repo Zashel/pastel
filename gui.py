@@ -36,7 +36,6 @@ class TkVars:
                 print(value)
                 print(type(value))
                 raise ValueError
-            print(tk_var_class)
             if isinstance(tk_var_class, Variable):
                 if (item not in self._vars or
                         (item in self._vars and not isinstance(self._vars[item], tk_var_class))):
@@ -45,6 +44,7 @@ class TkVars:
                     self._vars[item].trace("w", partial(self.w, var_name="{}.{}".format(self._name, item)))
                     self._vars[item].trace("u", partial(self.u, var_name="{}.{}".format(self._name, item)))
                     self._vars[item].set(value)
+                    print(".".join((self._name, item))+": "+str(value))
                     gc.collect()
             elif tk_var_class == dict:
                 self._vars[item] = TkVars(item)

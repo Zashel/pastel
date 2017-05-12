@@ -172,11 +172,15 @@ class App(EasyFrame):
                          "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "").replace("€", ""))}}
         self.payments_tree_frame = Frame(self.tabs["payments"])
         self.payments_tree_frame.pack()
-        self.TreeView("pagos", columns, self.payments_tree_frame, default_config=default_config).pack()
+        self.TreeView("pagos",
+                      columns,
+                      self.payments_tree_frame,
+                      default_config=default_config).pack()
 
         self.payment_frame = Frame(self.tabs["payments"])
         self.payment_frame.tkraise(self.payments_tree_frame)
         Button(self.payment_frame, text="Cerrar", command=self.hide_payment).pack()
+        self.tabs["payments"].pack()
 
     def hide_payment(self):
         self.payment_frame.pack_forget()

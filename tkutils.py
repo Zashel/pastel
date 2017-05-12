@@ -169,7 +169,8 @@ class EasyFrame(Frame):
                                "show": show,
                                "validate": validate}
         for column in columns+["#0"]:
-            self.set_var(".".join((category, str(column))), None, w=self.changed_active_tree_item)
+            if column != "#0":
+                self.set_var(".".join((category, str(column))), None, w=self.changed_active_tree_item)
             if "columns" in default_config:
                 column_config = dict(default_config["columns"])
             else:

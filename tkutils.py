@@ -23,7 +23,7 @@ class TkVars:
             return self._vars[item]
 
     def __setattr__(self, item, value):
-        if item in ("_vars", "_name", "r", "w", "u"):
+        if item in ("_vars", "_name", "_bindings", "r", "w", "u"):
             object.__setattr__(self, item, value)
         else:
             if value is None:

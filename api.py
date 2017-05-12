@@ -77,10 +77,11 @@ class API:
             if item in PAYMENTS_INDEX:
                 filter.append("=".join((item, str(kwargs[item]))))
         filter = "&".join(filter)
-        request = requests.get("http://{}:{}{}/pagos?{}".format(local_config.HOST,
-                                                                    str(local_config.PORT),
-                                                                    BASE_URI[1:-1],
-                                                                    filter))
+        request = requests.get("http://{}:{}{}/pagos{}{}".format(local_config.HOST,
+                                                                 str(local_config.PORT),
+                                                                 BASE_URI[1:-1],
+                                                                 filter != list() and "?" or str(),
+                                                                 filter))
         if request.request == 200:
             data = json.loads(request.text)
             API.pagos["cache"] = data["data"]
@@ -91,8 +92,9 @@ class API:
                     else:
                         API.pagos[link] = None
         else:
+            print(request.request)
             API.pagos = {"active": None,
-                         "cache": None,
+                         "cache": dict(),
                          "self": None,
                          "next": None,
                          "last": None,

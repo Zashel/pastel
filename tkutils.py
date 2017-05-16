@@ -226,7 +226,7 @@ class EasyFrame(Frame):
                 del (self.tree[category]["data"][item])
             except TclError:
                 pass
-        if "." in item:
+        if "." in str(item):
             nombre, item = item.split(".")
             if (nombre in self.tree[category]["data"] and
                         "_details" in self.tree[category]["data"][nombre] and

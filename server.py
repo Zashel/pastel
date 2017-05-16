@@ -66,12 +66,12 @@ if __name__ == "__main__":
                   "facturas",
                   "^/facturas/<id_factura>$")
     app.set_method("facturas", "^/n43$", LOAD, "load_n43")
-    app.set_model(PASTELBlocking(os.path.join(admin_config.DATABASE_PATH, "pagos"),
-                                 index_fields=PAYMENTS_INDEX,
-                                 headers=PAYMENTS_FIELDS),
-                  "pagos",
-                  "^/pagos/<_id>$",
-                  ALL_NEXT)
+    #app.set_model(PASTELBlocking(os.path.join(admin_config.DATABASE_PATH, "pagos"),
+    #                             index_fields=PAYMENTS_INDEX,
+    #                             headers=PAYMENTS_FIELDS),
+    #              "pagos",
+    #              "^/pagos/<_id>$",
+    #              ALL_NEXT)
     app.set_model(ShelveRelational(os.path.join(admin_config.DATABASE_PATH, "aplicados"),
                                    index_fields=APLICATION_FIELDS,
                                    headers=APLICATION_FIELDS,

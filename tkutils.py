@@ -130,17 +130,16 @@ class EasyFrame(Frame):
 
     def LinkButton(self, *args, font_size=9, **kwargs):
         font = Font(family = nametofont("TkDefaultFont").cget("family"),
-                    size = font_size)
+                    size = font_size,
+                    underline=True)
         style = Style()
         style.configure("Linked.TLabel",
                         foreground="#0645AD",
                         font=font)
-        config = {"style": "Linked.TLabel",
+        config = {"style": "Linked-{}.TLabel",
                   "cursor": "hand2"}
         config.update(kwargs)
         button = Button(*args, **config)
-        button.bind("<Enter>", lambda event: font.configure(underline=True))
-        button.bind("<Leave>", lambda event: font.configure(underline=False))
         return button
 
     def Entry(self, route, *args, **kwargs):

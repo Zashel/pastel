@@ -61,17 +61,22 @@ class App(EasyFrame):
                       yscrollcommand=treeScroll).grid(column=0, row=0, columnspan=5)
         self.payments_tree_first = self.LinkButton(command=lambda: self.update_pagos_tree(link="first"),
                                                    text="Primero",
-                                                   state="disabled").grid(column=0, row=1)
+                                                   state="disabled")
+        self.payments_tree_first.grid(column=0, row=1)
         self.payments_tree_prev = self.LinkButton(command=lambda: self.update_pagos_tree(link="prev"),
                                                   text="Anterior",
-                                                  state="disabled").grid(column=1, row=1)
-        self.payments_tree_label = Label(text="Página 1 de 1").grid(column=2, row=1)
+                                                  state="disabled")
+        self.payments_tree_prev.grid(column=1, row=1)
+        self.payments_tree_label = Label(text="Página 1 de 1")
+        self.payments_tree_label = Label.grid(column=2, row=1)
         self.payments_tree_next = self.LinkButton(command=lambda: self.update_pagos_tree(link="next"),
                                                   text="Siguiente",
-                                                  state="disabled").grid(column=3, row=1)
+                                                  state="disabled")
+        self.payments_tree_next.grid(column=3, row=1)
         self.payments_tree_last = self.LinkButton(command=lambda: self.update_pagos_tree(link="last"),
                                                   text="Último",
-                                                  state="disabled").grid(column=4, row=1)
+                                                  state="disabled")
+        self.payments_tree_last.grid(column=4, row=1)
         self.payment_frame = Frame(self.tabs["payments"])
         self.payment_frame.tkraise(self.payments_tree_frame)
         Button(self.payment_frame, text="Cerrar", command=self.hide_payment).pack()

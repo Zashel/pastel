@@ -60,12 +60,12 @@ class App(EasyFrame):
                       default_config=default_config,
                       yscrollcommand=treeScroll).grid(column=0, row=0, columnspan=5)
         self.payments_tree_first = self.LinkButton(self.payments_tree_frame,
-                                                   command=lambda: self.update_pagos_tree(link="first"),
+                                                   command=lambda: self.update_pagos_tree("first"),
                                                    text="Primero",
                                                    state="disable")
         self.payments_tree_first.grid(column=0, row=1)
         self.payments_tree_prev = self.LinkButton(self.payments_tree_frame,
-                                                  command=lambda: self.update_pagos_tree(link="prev"),
+                                                  command=lambda: self.update_pagos_tree("prev"),
                                                   text="Anterior",
                                                   state="disable")
         self.payments_tree_prev.grid(column=1, row=1)
@@ -73,12 +73,12 @@ class App(EasyFrame):
                                          text="Página 1 de 1")
         self.payments_tree_label.grid(column=2, row=1)
         self.payments_tree_next = self.LinkButton(self.payments_tree_frame,
-                                                  command=lambda: self.update_pagos_tree(link="next"),
+                                                  command=lambda: self.update_pagos_tree("next"),
                                                   text="Siguiente",
                                                   state="disable")
         self.payments_tree_next.grid(column=3, row=1)
         self.payments_tree_last = self.LinkButton(self.payments_tree_frame,
-                                                  command=lambda: self.update_pagos_tree(link="last"),
+                                                  command=lambda: self.update_pagos_tree("last"),
                                                   text="Último",
                                                   state="disable")
         self.payments_tree_last.grid(column=4, row=1)

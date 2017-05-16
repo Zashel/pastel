@@ -42,9 +42,9 @@ class App(EasyFrame):
                    "oficina",
                    "observaciones"]
         default_config = {"columns": {"width": 75},
-                          "column": {"#0": {"width": 30},
+                          "column": {"#0": {"width": 45},
                                      "oficina": {"width": 30},
-                                     "observaciones": {"width": 300}},
+                                     "observaciones": {"width": 400}},
                           "heading": {"#0": {"text": "ID"},
                                       "estado": {"text": "Estado"},
                                       "fecha": {"text": "Fecha Pago"},

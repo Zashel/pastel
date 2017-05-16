@@ -92,12 +92,12 @@ class App(EasyFrame):
             API.filter_pagos(link, **filter)
             pagos = API.get_pagos_list()
         else:
-            pagos = API.get_pagos_list(link)
-        print pagos#TODO: fix this shit
+            pagos = API.get_pagos_list(link) #TODO: fix this shit
         pagos_dict = dict()
         if pagos is not None:
             for pago in pagos:
                 pagos_dict[pago["_id"]] = pago
+        print(len(pagos_dict))
         self.set_tree_data("pagos", pagos_dict)
         for link in ("first", "prev", "next", "last"):
             self.__getattribute__("payments_tree_"+link)["state"] = "enable"

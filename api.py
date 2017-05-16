@@ -95,7 +95,7 @@ class API:
                                                               ))
         if request.status_code == 200:
             data = json.loads(request.text)
-            API.pagos["cache"] = data["_embedded"]["pagos"]
+            API.pagos["cache"] = data["pagos"]
             if "_links" in data:
                 for link in ("self", "next", "prev", "first", "last"):
                     if link in data["_links"]:

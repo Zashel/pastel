@@ -10,68 +10,6 @@ class App(EasyFrame):
     def __init__(self, master=None):
         super().__init__(master=master, padding=(3, 3, 3, 3))
         self.pack()
-
-        """
-        posible = OrderedDict({"index": IntVar(),
-                               "fecha_aplicacion": StringVar(),
-                               "codigo_ciclo": IntVar(),
-                               "cliente": StringVar(),
-                               "nif": StringVar(),
-                               "id_factura": IntVar(),
-                               "fecha_operacion": StringVar(),
-                               "importe": IntVar(),
-                               "importe_str": StringVar(),
-                               "periodo_facturado": StringVar(),
-                               "metodo": StringVar(),
-                               "via": StringVar()})
-        self._active_pago = OrderedDict({"link": StringVar(),
-                                         "index": IntVar(),
-                                         "fecha": StringVar(),
-                                         "importe": IntVar(),
-                                         "importe_str": StringVar(),
-                                         "observaciones": StringVar(),
-                                         "dni": StringVar(),
-                                         "id_cliente": IntVar(),
-                                         "tels": StringVar(),
-                                         "oficina": IntVar(),
-                                         "posibles": [dict(posible) for x in range(50)],
-                                         "total_posibles": IntVar(),
-                                         "estado": StringVar()})
-
-        self._pagos_list = [dict(self._active_pago) for x in range(50)]
-        self._total_pagos_list = int()
-        self.none_dict = {type(str()): "",
-                          type(int()): 0,
-                          type(float()): 0.0,
-                          type(bool()): False}
-        for item in self._pagos_list:
-            for field in item:
-                if field in ("estado", "total_posibles"):
-                    item[field].trace("w",
-                                      partial(self.changed_data,
-                                       var_name="pagos.{}.{}".format(str(item["index"]),
-                                                                         item[field])))
-                for posible in item["posibles"]:
-                    for field in posible:
-                        if field != "index":
-                            posible[field].trace("w",
-                                                 partial(self.changed_data,
-                                                          var_name="pagos.{}.posibles.{}.{}".format(str(item["index"]),
-                                                                                                    str(posible["index"]),
-                                                                                                    posible[field])))
-        for field in self._active_pago:
-            if field in ("estado", "total_posibles"):
-                item[field].trace("w",
-                                  partial(self.changed_data,
-                                          var_name="active_pago.{}".format(item[field])))
-            for posible in item["posibles"]:
-                for field in posible:
-                    if field != "index":
-                        posible[field].trace("w",
-                                             partial(self.changed_data,
-                                                     var_name="active_pago.posibles.{}.{}".format(str(posible["index"]),
-                                                                                                  posible[field])))
-        """
         self.usuario =  getpass.getuser()
         self.rol = "Operador"
         self.set_var("config.nombre_usuario", "")
@@ -87,68 +25,6 @@ class App(EasyFrame):
             for pago in pagos:
                 pagos_dict[pago["_id"]] = pago
         self.set_tree_data("pagos", pagos_dict)
-
-    """
-    def clean_pago(self, pago):
-        for field in pago:
-            if field == "posibles":
-                for posible in pago[field]:
-                    for posible_field in posible:
-                        none = self.none_dict[type(posible[posible_field])]
-                        posible[posible_field].set(none)
-            else:
-                none = self.none_dict[type(pago[field])]
-                pago[field].set(none)
-
-    def clean_pagos_list(self):
-        for item in self._pagos_list:
-            self.clean_pago(item)
-        self._total_pagos_list = int()
-
-    def set_pago(self, pago, data):
-        pago["link"].set(data["_links"]["self"]["href"])
-        pago["fecha"].set(data["fecha"])
-        pago["importe"].set(int(data["importe"]))
-        importe_str = str(data["importe"])
-        importe_str = "{},{} €".format(importe_str[:-2], importe_str[-2:])
-        pago["importe_str"].set(importe_str)
-        pago["observaciones"].set(data["observaciones"])
-        pago["dni"].set(data["dni"])
-        pago["id_cliente"].set(data["id_cliente"])
-        pago["tels"].set(", ".join(data["tels"]))
-        pago["oficina"].set(data["oficina"])
-        pago["estado"].set(data["estado"])
-        pago["total_posibles"].set(len(data["posibles"]))
-        for s_index, posible in enumerate(data["posibles"]):
-            pago["posible"][s_index]["index"].set(s_index)
-            datos = posible.split(";")
-            heads = ["fecha_aplicacion",
-                     "codigo_ciclo",
-                     "cliente",
-                     "nif",
-                     "id_factura",
-                     "fecha_operacion",
-                     "importe",
-                     "importe_str",
-                     "periodo_facturado",
-                     "metodo",
-                     "via"]
-            for h_index, head in enumerate(heads):
-                dato = datos[h_index]
-                if head in ("importe", "id_factura"):
-                    dato = int(dato)
-                elif head == "importe_str":
-                    dato = str(pago["posible"][s_index][head]["importe"].get())
-                    dato = "{},{} €".format(dato[:-2], dato[-2:])
-                pago["posible"][s_index][head].set(dato)
-
-    def set_pagos_list(self, data):
-        self.clean_pagos_list()
-        for index, item in enumerate(data):
-            self._pagos_list[index]["index"].set(index)
-            self.set_pago(self.pagos_list[index], item)
-        self._total_pagos_list = len(data)
-    """
 
     def set_widgets(self):
         #TABS
@@ -166,18 +42,20 @@ class App(EasyFrame):
                    "oficina",
                    "observaciones"]
         default_config = {"columns": {"width": 100},
-                         "heading": {"#0": {"text": "ID"},
-                                     "estado": {"text": "Estado"},
-                                     "fecha": {"text": "Fecha Pago"},
-                                     "importe": {"text": "Importe"},
-                                     "dni": {"text": "DNI"},
-                                     "id_cliente": {"text": "ID Cliente"},
-                                     "tels": {"text": "Teléfonos"},
-                                     "oficina": {"text": "Oficina"},
-                                     "observaciones": {"text": "Observaciones"}},
-                         "show": {"importe": lambda x: str(x)[:-2]+str(x)[-2:]+" €",
-                                  "tels": lambda x: ", ".join(x)},
-                         "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "").replace("€", ""))}}
+                          "column": {"#0": {"width": 20},
+                                     "estado": {"width": 50}},
+                          "heading": {"#0": {"text": "ID"},
+                                      "estado": {"text": "Estado"},
+                                      "fecha": {"text": "Fecha Pago"},
+                                      "importe": {"text": "Importe"},
+                                      "dni": {"text": "DNI"},
+                                      "id_cliente": {"text": "ID Cliente"},
+                                      "tels": {"text": "Teléfonos"},
+                                      "oficina": {"text": "Oficina"},
+                                      "observaciones": {"text": "Observaciones"}},
+                          "show": {"importe": lambda x: str(x)[:-2]+str(x)[-2:]+" €",
+                                   "tels": lambda x: ", ".join(x)},
+                          "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "").replace("€", ""))}}
         self.payments_tree_frame = Frame(self.tabs["payments"])
         self.payments_tree_frame.pack()
         self.TreeView("pagos",

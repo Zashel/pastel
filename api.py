@@ -89,7 +89,7 @@ class API:
                                                                      filter
                                                                      ))
         else:
-            request = requests.get("http://{}:{}{}/{}".format(local_config.HOST,
+            request = requests.get("http://{}:{}{}{}".format(local_config.HOST,
                                                               str(local_config.PORT),
                                                               BASE_URI[1:-1],
                                                               link

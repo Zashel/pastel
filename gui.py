@@ -116,8 +116,7 @@ class App(EasyFrame):
         self.menu_load.add_command(label="PARI...")
         self.menu_load.add_command(label="Último PARI")
 
-        self.menu_edit.add_command(label="Deshacer", command="<<Undo>>")
-        self.menu_edit.add_command(label="Rehacer", command= "<<Redo>>")
+        self.menu_edit.add_command(label="Deshacer", command=self.undo)
         self.menu_edit.add_separator()
         self.menu_edit.add_command(label="Cortar", command=self.cut)
         self.menu_edit.add_command(label="Copiar", command=self.copy)

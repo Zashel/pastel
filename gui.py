@@ -68,7 +68,7 @@ class App(EasyFrame):
                                                   state="disabled")
         self.payments_tree_prev.grid(column=1, row=1)
         self.payments_tree_label = Label(text="Página 1 de 1")
-        self.payments_tree_label = Label.grid(column=2, row=1)
+        self.payments_tree_label.grid(column=2, row=1)
         self.payments_tree_next = self.LinkButton(command=lambda: self.update_pagos_tree(link="next"),
                                                   text="Siguiente",
                                                   state="disabled")

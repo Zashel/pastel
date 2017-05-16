@@ -52,30 +52,35 @@ class App(EasyFrame):
                                    "tels": lambda x: ", ".join(x)},
                           "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "").replace("€", ""))}}
         self.payments_tree_frame = Frame(self.tabs["payments"])
-        self.payments_tree_frame.pack()
+        self.payments_tree_frame.grid()
         treeScroll = Scrollbar()
         self.TreeView("pagos",
                       columns,
                       self.payments_tree_frame,
                       default_config=default_config,
                       yscrollcommand=treeScroll).grid(column=0, row=0, columnspan=5)
-        self.payments_tree_first = self.LinkButton(command=lambda: self.update_pagos_tree(link="first"),
+        self.payments_tree_first = self.LinkButton(self.payments_tree_frame,
+                                                   command=lambda: self.update_pagos_tree(link="first"),
                                                    text="Primero",
-                                                   state="disabled")
+                                                   state="disable")
         self.payments_tree_first.grid(column=0, row=1)
-        self.payments_tree_prev = self.LinkButton(command=lambda: self.update_pagos_tree(link="prev"),
+        self.payments_tree_prev = self.LinkButton(self.payments_tree_frame,
+                                                  command=lambda: self.update_pagos_tree(link="prev"),
                                                   text="Anterior",
-                                                  state="disabled")
+                                                  state="disable")
         self.payments_tree_prev.grid(column=1, row=1)
-        self.payments_tree_label = Label(text="Página 1 de 1")
+        self.payments_tree_label = Label(self.payments_tree_frame,
+                                         text="Página 1 de 1")
         self.payments_tree_label.grid(column=2, row=1)
-        self.payments_tree_next = self.LinkButton(command=lambda: self.update_pagos_tree(link="next"),
+        self.payments_tree_next = self.LinkButton(self.payments_tree_frame,
+                                                  command=lambda: self.update_pagos_tree(link="next"),
                                                   text="Siguiente",
-                                                  state="disabled")
+                                                  state="disable")
         self.payments_tree_next.grid(column=3, row=1)
-        self.payments_tree_last = self.LinkButton(command=lambda: self.update_pagos_tree(link="last"),
+        self.payments_tree_last = self.LinkButton(self.payments_tree_frame,
+                                                  command=lambda: self.update_pagos_tree(link="last"),
                                                   text="Último",
-                                                  state="disabled")
+                                                  state="disable")
         self.payments_tree_last.grid(column=4, row=1)
         self.payment_frame = Frame(self.tabs["payments"])
         self.payment_frame.tkraise(self.payments_tree_frame)
@@ -91,15 +96,15 @@ class App(EasyFrame):
                 pagos_dict[pago["_id"]] = pago
         self.set_tree_data("pagos", pagos_dict)
         for link in ("first", "prev", "next", "last"):
-            self.__getattribute__("payments_tree_"+link)["state"] = "enabled"
+            self.__getattribute__("payments_tree_"+link)["state"] = "enable"
         page = API.get_this_pagos_page()
         last = API.get_total_pagos_page()
         if page == 1:
-            self.payments_tree_first["state"] = "disabled"
-            self.payments_tree_prev["state"] = "disabled"
+            self.payments_tree_first["state"] = "disable"
+            self.payments_tree_prev["state"] = "disable"
         if page == last:
-            self.payments_tree_next["state"] = "disabled"
-            self.payments_tree_last["state"] = "disabled"
+            self.payments_tree_next["state"] = "disable"
+            self.payments_tree_last["state"] = "disable"
         self.payments_tree_label["text"] = "Página {} de {}".format(str(page), str(last))
 
     def hide_payment(self):

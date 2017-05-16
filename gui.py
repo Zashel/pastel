@@ -18,13 +18,7 @@ class App(EasyFrame):
         self.set_widgets()
         self.set_var("test.test", "Hola Caracola")
         self.Entry("test.test", self).pack()
-        API.filter_pagos()
-        pagos = API.get_pagos_list()
-        pagos_dict = dict()
-        if pagos is not None:
-            for pago in pagos:
-                pagos_dict[pago["_id"]] = pago
-        self.set_tree_data("pagos", pagos_dict)
+        self.update_pagos_tree(estado="PENDIENTE")
 
     def set_widgets(self):
         #TABS
@@ -64,12 +58,44 @@ class App(EasyFrame):
                       columns,
                       self.payments_tree_frame,
                       default_config=default_config,
-                      yscrollcommand=treeScroll).pack()
-
+                      yscrollcommand=treeScroll).grid(column=0, row=0, columnspan=5)
+        self.payments_tree_first = self.LinkButton(command=lambda: self.update_pagos_tree(link="first"),
+                                                   text="Primero",
+                                                   state="disabled").grid(column=0, row=1)
+        self.payments_tree_prev = self.LinkButton(command=lambda: self.update_pagos_tree(link="prev"),
+                                                  text="Anterior",
+                                                  state="disabled").grid(column=1, row=1)
+        self.payments_tree_label = Label(text="Página 1 de 1").grid(column=2, row=1)
+        self.payments_tree_next = self.LinkButton(command=lambda: self.update_pagos_tree(link="next"),
+                                                  text="Siguiente",
+                                                  state="disabled").grid(column=3, row=1)
+        self.payments_tree_last = self.LinkButton(command=lambda: self.update_pagos_tree(link="last"),
+                                                  text="Último",
+                                                  state="disabled").grid(column=4, row=1)
         self.payment_frame = Frame(self.tabs["payments"])
         self.payment_frame.tkraise(self.payments_tree_frame)
         Button(self.payment_frame, text="Cerrar", command=self.hide_payment).pack()
         self.tabs["payments"].pack()
+
+    def update_pagos_tree(self, link=None, **filter):
+        API.filter_pagos(link, **filter)
+        pagos = API.get_pagos_list()
+        pagos_dict = dict()
+        if pagos is not None:
+            for pago in pagos:
+                pagos_dict[pago["_id"]] = pago
+        self.set_tree_data("pagos", pagos_dict)
+        for link in ("first", "prev", "next", "last"):
+            self.__getattribute__("payments_tree_"+link)["state"] = "enabled"
+        page = API.get_this_pagos_page()
+        last = API.get_total_pagos_page()
+        if page == 1:
+            self.payments_tree_first["state"] = "disabled"
+            self.payments_tree_prev["state"] = "disabled"
+        if page == last:
+            self.payments_tree_next["state"] = "disabled"
+            self.payments_tree_last["state"] = "disabled"
+        self.payments_tree_label["text"] = "Página {} de {}".format(str(page), str(last))
 
     def hide_payment(self):
         self.payment_frame.pack_forget()

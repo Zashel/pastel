@@ -54,7 +54,9 @@ class API:
              "next": None,
              "last": None,
              "prev": None,
-             "first": None
+             "first": None,
+             "page": None,
+             "total_pages": None
              }
 
     @classmethod
@@ -99,6 +101,13 @@ class API:
                 for link in ("self", "next", "prev", "first", "last"):
                     if link in data["_links"]:
                         API.pagos[link] = data["_links"][link]["href"]
+                        page = re.findall(r"page=([0-9]{1,20})", data["_links"][link]["href"])
+                        if len(page) > 0:
+                            page = int(page[0])
+                            if link == "self":
+                                API.pagos["page"] = page
+                            if link == "last":
+                                API.pagos["total_pages"] = page
                     else:
                         API.pagos[link] = None
         else:
@@ -109,8 +118,18 @@ class API:
                          "next": None,
                          "last": None,
                          "prev": None,
-                         "first": None
+                         "first": None,
+                         "page": None,
+                         "total_pages": None
                          }
+
+    @classmethod
+    def get_this_pagos_page(cls):
+        return API.pagos["page"]
+
+    @classmethod
+    def get_total_pagos_page(cls):
+        return API.pagos["total_pages"]
 
     @classmethod
     def next_pagos(cls, **kwargs):

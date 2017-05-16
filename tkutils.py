@@ -138,7 +138,7 @@ class EasyFrame(Frame):
         config = {"style": "Linked.TLabel",
                   "cursor": "hand2"}
         config.update(kwargs)
-        button = Button(*args, **kwargs)
+        button = Button(*args, **config)
         button.bind("<Enter>", lambda event: font.configure(underline=True))
         button.bind("<Leave>", lambda event: font.configure(underline=False))
         return button
@@ -217,7 +217,7 @@ class EasyFrame(Frame):
 
     def del_tree_data(self, category):
         for item in self.tree[category]["data"]:
-            self.del_item_in_tree_data(self, category, item)
+            self.del_item_in_tree_data(category, item)
 
     def del_item_in_tree_data(self, category, item):
         self.tree[category]["tree"].delete(item)

@@ -125,7 +125,10 @@ class API:
 
     @classmethod
     def get_this_pagos_page(cls):
-        return API.pagos["page"]
+        page = API.pagos["page"]
+        if page is None:
+            page = 1
+        return page
 
     @classmethod
     def get_total_pagos_page(cls):

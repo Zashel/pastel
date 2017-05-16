@@ -73,17 +73,25 @@ class API:
         return API.pagos["active"]
 
     @classmethod
-    def filter_pagos(cls, **kwargs):
+    def filter_pagos(cls, link=None, **kwargs):
         filter = list()
         for item in kwargs:
             if item in PAYMENTS_INDEX:
                 filter.append("=".join((item, str(kwargs[item]))))
         filter = "&".join(filter)
-        request = requests.get("http://{}:{}{}/pagos{}{}".format(local_config.HOST,
-                                                                 str(local_config.PORT),
-                                                                 BASE_URI[1:-1],
-                                                                 filter != list() and "?" or str(),
-                                                                 filter))
+        if link is None:
+            request = requests.get("http://{}:{}{}/pagos{}{}".format(local_config.HOST,
+                                                                     str(local_config.PORT),
+                                                                     BASE_URI[1:-1],
+                                                                     filter != list() and "?" or str(),
+                                                                     filter
+                                                                     ))
+        else:
+            request = requests.get("http://{}:{}{}/{}".format(local_config.HOST,
+                                                              str(local_config.PORT),
+                                                              BASE_URI[1:-1],
+                                                              link
+                                                              ))
         if request.status_code == 200:
             data = json.loads(request.text)
             API.pagos["cache"] = data["_embedded"]["pagos"]
@@ -118,15 +126,19 @@ class API:
                                                                     filter))
         if request.status_code == 200:
             data = json.loads(request.text)
-            if data["total"] == 1:
-                API.pagos["active"] = data["data"]
-            elif request.request == 404:
+            if request.status_code == 404:
                 API.pagos["active"] = None
+            else:
+                API.pagos["active"] = data
         return API.pagos["active"]
 
     @classmethod
-    def get_pagos_list(cls):
-        return API.pagos["cache"]
+    def get_pagos_list(cls, link=None):
+        if link not in API.pagos:
+            return API.pagos["cache"]
+        else:
+            API.filter_pagos(API.pagos[link])
+            return API.get_pagos_list()
 
     @classmethod
     def modify_pago(cls, data):

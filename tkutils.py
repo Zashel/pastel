@@ -216,8 +216,10 @@ class EasyFrame(Frame):
         tree.set(self.tree[category]["validate"][name](item, name, self.get_var(var_name).get()))
 
     def del_tree_data(self, category):
+        all = list()
         for item in self.tree[category]["data"]:
-            self.del_item_in_tree_data(category, item)
+            all.append(item)
+        [self.del_item_in_tree_data(category, item) for item in all]
 
     def del_item_in_tree_data(self, category, item):
         self.tree[category]["tree"].delete(item)

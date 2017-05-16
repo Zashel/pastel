@@ -59,10 +59,12 @@ class App(EasyFrame):
                           "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "").replace("€", ""))}}
         self.payments_tree_frame = Frame(self.tabs["payments"])
         self.payments_tree_frame.pack()
+        treeScroll = Scrollbar()
         self.TreeView("pagos",
                       columns,
                       self.payments_tree_frame,
-                      default_config=default_config).pack()
+                      default_config=default_config,
+                      yscrollcommand=treeScroll).pack()
 
         self.payment_frame = Frame(self.tabs["payments"])
         self.payment_frame.tkraise(self.payments_tree_frame)
@@ -114,7 +116,8 @@ class App(EasyFrame):
         self.menu_load.add_command(label="PARI...")
         self.menu_load.add_command(label="Último PARI")
 
-        self.menu_edit.add_command(label="Deshacer", command=self.undo)
+        self.menu_edit.add_command(label="Deshacer", command="<<Undo>>")
+        self.menu_edit.add_command(label="Rehacer", command= "<<Redo>>")
         self.menu_edit.add_separator()
         self.menu_edit.add_command(label="Cortar", command=self.cut)
         self.menu_edit.add_command(label="Copiar", command=self.copy)

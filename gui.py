@@ -80,7 +80,8 @@ class App(EasyFrame):
         self.set_widgets()
         self.set_var("test.test", "Hola Caracola")
         self.Entry("test.test", self).pack()
-        pagos = API.filter_pagos()
+        API.filter_pagos()
+        pagos = API.get_pagos_list()
         pagos_dict = dict()
         if pagos is not None:
             for pago in pagos:

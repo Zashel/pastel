@@ -88,8 +88,11 @@ class App(EasyFrame):
         self.tabs["payments"].pack()
 
     def update_pagos_tree(self, link=None, **filter):
-        API.filter_pagos(link, **filter)
-        pagos = API.get_pagos_list()
+        if link is None:
+            API.filter_pagos(link, **filter)
+            pagos = API.get_pagos_list()
+        else:
+            pagos = API.get_pagos_list(link) #TODO: fix this shit
         pagos_dict = dict()
         if pagos is not None:
             for pago in pagos:

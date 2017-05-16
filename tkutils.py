@@ -175,7 +175,7 @@ class EasyFrame(Frame):
                 column_config = dict(default_config["columns"])
             else:
                 column_config = dict()
-            if "column" in default_config and column in default_config["column"][column]:
+            if "column" in default_config and column in default_config["column"]:
                 column_config.update(default_config["column"][column])
             tree.column(column, **column_config)
             if "heading" in default_config:

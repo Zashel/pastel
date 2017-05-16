@@ -165,10 +165,8 @@ class LocalConfig: #To a dynamic access -> change API
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         if attr in LOCAL:
             LocalConfig.cache[attr] = value
-            if attr in REMOTE_PATHS:
-                Path(shelf[attr]).path = value
-                if attr == "UUID":
-                    shelf["UUID-timeout"] = datetime.datetime.now() + datetime.timedelta(hours=8)
+            if attr == "UUID":
+                shelf["UUID-timeout"] = datetime.datetime.now() + datetime.timedelta(hours=8)
             else:
                 shelf[attr] = value
         shelf.close()
@@ -244,10 +242,7 @@ class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated mys
         shelf = shelve.open(os.path.join(local_config.ADMIN_DB, "config"))
         if attr in SHARED:
             AdminConfig.cache[attr] = value
-            if attr in REMOTE_PATHS:
-                Path(shelf[attr]).path = value
-            else:
-                shelf[attr] = value
+            shelf[attr] = value
         shelf.close()
 
     def __getattr__(self, attr):

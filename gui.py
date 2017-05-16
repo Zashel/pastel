@@ -42,8 +42,9 @@ class App(EasyFrame):
                    "oficina",
                    "observaciones"]
         default_config = {"columns": {"width": 100},
-                          "column": {"#0": {"width": 20},
-                                     "estado": {"width": 50}},
+                          "column": {"#0": {"width": 30},
+                                     "estado": {"width": 75},
+                                     "observaciones": {"width": 200}},
                           "heading": {"#0": {"text": "ID"},
                                       "estado": {"text": "Estado"},
                                       "fecha": {"text": "Fecha Pago"},

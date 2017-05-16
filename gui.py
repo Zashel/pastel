@@ -92,7 +92,8 @@ class App(EasyFrame):
             API.filter_pagos(link, **filter)
             pagos = API.get_pagos_list()
         else:
-            pagos = API.get_pagos_list(link) #TODO: fix this shit
+            pagos = API.get_pagos_list(link)
+        print pagos#TODO: fix this shit
         pagos_dict = dict()
         if pagos is not None:
             for pago in pagos:

@@ -28,6 +28,7 @@ class PASTELBlocking(ShelveBlocking):
             args.append(None)
         else:
             args = args[:1]+[None]+args[1:]
+        print(kwargs)
         super().__init__(*args, **kwargs)
         print(self.index_fields)
 

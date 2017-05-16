@@ -129,7 +129,7 @@ class EasyFrame(Frame):
         gc.collect
 
     def LinkButton(self, *args, font_size=9, **kwargs):
-        font = Font(familiy = nametofont("TkDefaultFont").cget("family"),
+        font = Font(family = nametofont("TkDefaultFont").cget("family"),
                     size = font_size)
         style = Style()
         style.configure("Linked.TLabel",

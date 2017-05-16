@@ -72,13 +72,13 @@ if __name__ == "__main__":
     #              "pagos",
     #              "^/pagos/<_id>$",
     #              ALL_NEXT)
-    app.set_model(ShelveRelational(os.path.join(admin_config.DATABASE_PATH, "aplicados"),
-                                   index_fields=APLICATION_FIELDS,
-                                   headers=APLICATION_FIELDS,
-                                   relations=[app.get_model("facturas"),
-                                              app.get_model("pagos")]),
-                  "aplicados",
-                  "^/pagos/aplicados/<tipo>")
+    #app.set_model(ShelveRelational(os.path.join(admin_config.DATABASE_PATH, "aplicados"),
+    #                               index_fields=APLICATION_FIELDS,
+    #                               headers=APLICATION_FIELDS,
+    #                               relations=[app.get_model("facturas"),
+    #                                          app.get_model("pagos")]),
+    #              "aplicados",
+    #              "^/pagos/aplicados/<tipo>")
     app.set_model(ShelveModel(os.path.join(admin_config.DATABASE_PATH, "compromisos"),
                               index_fields=COMMITMENTS_FIELDS,
                               headers=COMMITMENTS_FIELDS),

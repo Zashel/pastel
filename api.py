@@ -2,6 +2,7 @@ import requests
 import pprint
 import time
 from random import randint
+from zashel.utils import threadize
 
 for x in range(5):
     try:
@@ -45,6 +46,7 @@ class API:
     estados = list()
     procesos = {}
     procesos_done = list()
+    server = False
 
     pagos = {"active": None,
              "cache": None,
@@ -284,5 +286,24 @@ class API:
                                                                                                             BASE_URI[1:-1],
                                                                                                             finaldates),
                             headers = {"Content-Type": "text/csv; charset=utf-8"}).text
+
+    @classmethod
+    def shutdown_server(cls):
+        request = requests.get("http://{}:{}{}/shutdown".format(local_config.HOST,
+                                                                str(local_config.PORT),
+                                                                BASE_URI[1:-1]
+                                                                ))
+
+    @classmethod
+    @threadize
+    def init_server(cls):
+        API.server = True
+        os.system("server.cmd")
+        API.server = False
+
+
+    @classmethod
+    def is_server_on(cls):
+        return API.server
 
 

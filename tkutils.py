@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter.ttk import *
+from tkinter.font import Font, nametofont
 from functools import partial
 from zashel.utils import copy, paste
 import gc
@@ -126,6 +127,21 @@ class EasyFrame(Frame):
             raise KeyError()
         del (self._vars[category])
         gc.collect
+
+    def LinkButton(self, *args, font_size=9, **kwargs):
+        font = Font(familiy = nametofont("TkDefaultFont").cget("family"),
+                    size = font_size)
+        style = Style()
+        style.configure("Linked.TLabel",
+                        foreground="#0645AD",
+                        font=font)
+        config = {"style": "Linked.TLabel",
+                  "cursor": "hand2"}
+        config.update(kwargs)
+        button = Button(*args, **kwargs)
+        button.bind("<Enter>", lambda event: font.configure(underline=True))
+        button.bind("<Leave>", lambda event: font.configure(underline=False))
+        return button
 
     def Entry(self, route, *args, **kwargs):
         try:

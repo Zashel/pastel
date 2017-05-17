@@ -7,7 +7,7 @@ def calcular_letra_dni(nif):
     try:
         int_nif = int(nif)
     except ValueError as e:
-        raise ValueError("Error con formato de DNI")
+        raise ValueError("Error con formato de DNI "+dni)
     if isinstance(int_nif, int):
         return str(nif)+letras[int_nif%23]
 

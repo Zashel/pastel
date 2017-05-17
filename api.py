@@ -100,7 +100,7 @@ class API:
             if "_embedded" in data:
                 API.pagos["cache"] = data["_embedded"]["pagos"]
             else:
-                API.pagos["cache"] = data
+                API.pagos["cache"] = [data]
             if "_links" in data:
                 for link in ("self", "next", "prev", "first", "last"):
                     if link in data["_links"]:

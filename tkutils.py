@@ -276,7 +276,8 @@ class EasyFrame(Frame):
             assert all([item in data for item in order])
         self.tree[category]["data"] = data
         for item in order:
-            self.append_to_tree_data(category, item, data[item])
+            if item in data:
+                self.append_to_tree_data(category, item, data[item])
 
     def append_to_tree_data(self, category, name, data):  # _details in data creates a shitty subitem
         values = list()

@@ -149,7 +149,6 @@ class App(EasyFrame):
         if pagos is not None:
             for pago in pagos:
                 pagos_dict[pago["_id"]] = pago
-        print(len(pagos_dict))
         self.set_tree_data("pagos", pagos_dict)
         for link in ("first", "prev", "next", "last"):
             self.__getattribute__("payments_tree_"+link)["state"] = "enable"

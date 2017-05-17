@@ -84,7 +84,11 @@ class TkVars:
             value = str()
         self.__setattr__(name, value)
         for method in "rwu":
-            if self.__getattr__(method) is not None:
+            try:
+                data = self.__getattr__(method)
+            except KeyError:
+                data = None
+            if data is not None:
                 self._vars[name].trace(method, partial(self.__getattr__(method), var_name=".".join((self._name, name))))
 
     def get(self, name):

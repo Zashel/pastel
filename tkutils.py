@@ -165,7 +165,8 @@ class EasyFrame(Frame):
         except KeyError:
             var = self.set_var(route)
         last_entry_validation = partial(self.entered_entry, var.get(), route)
-        cb = Combobox(*args, textvariable=var, values=values, command=last_entry_validation, **kwargs)
+        cb = Combobox(*args, textvariable=var, values=values, **kwargs)
+        cb.bind("<<ComboboxSelected>>", last_entry_validation)
         self._comboboxes[route] = cb
         return cb
 
@@ -304,7 +305,7 @@ class EasyFrame(Frame):
         category, name = ".".join(route[:-1]), route[-1]
         return (category, name)
 
-    def entered_entry(self, value, route):
+    def entered_entry(self, value, route, *args, **kwargs):
         cat, item = self.get_category_and_name(route)
         var = self.get_var(route)
         if cat not in self.to_save:

@@ -94,6 +94,7 @@ class EasyFrame(Frame):
                       "last": None}
         self._vars = dict()
         self._tree = dict()
+        self._comboboxes = dict()
 
     @property
     def vars(self):
@@ -164,7 +165,9 @@ class EasyFrame(Frame):
         except KeyError:
             var = self.set_var(route)
         last_entry_validation = partial(self.entered_entry, var.get(), route)
-        return Combobox(*args, textvariable=var, values=values, command=last_entry_validation, **kwargs)
+        cb = Combobox(*args, textvariable=var, values=values, command=last_entry_validation, **kwargs)
+        self._comboboxes[route] = cb
+        return cb
 
     def TreeView(self, category, columns, *args, default_config=None, **kwargs):  # Columns -> dictionary
         options = {"columns": tuple(columns)}
@@ -207,6 +210,13 @@ class EasyFrame(Frame):
             for item in default_config["bind"]:
                 tree.bind(item, default_config["bind"][item])
         return tree
+
+    def set_combobox_values(self, route, values):
+        assert type(values) in (list, tuple)
+        self._comboboxes[route]["values"] = values
+
+    def get_combobox_values(self, route):
+        return self._comboboxes[route]["values"]
 
     def activate_tree_item(self, category, event):
         tree = self.tree[category]["tree"]

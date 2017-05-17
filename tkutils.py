@@ -38,25 +38,25 @@ class TkVars:
                 print(type(value))
                 raise ValueError
             if issubclass(tk_var_class, Variable):
-                if item not in self._vars:
-                    if item in self._vars and not isinstance(self._vars[item], tk_var_class):
-                        self._vars[item] = tk_var_class()
-                    for method in "rwu":
-                        try:
-                            data = self.__getattr__(method)
-                        except KeyError:
-                            data = None
-                        if data is not None:
-                            self._vars[item].trace(method,
-                                                   partial(self.__getattr__(method),
-                                                           var_name=".".join((self._name, item))))
-                        if item in self._bindings and method in self._bindings[item]:
-                            self._vars[item].trace(method,
-                                                   partial(self._bindings[item][method],
-                                                           var_name=".".join((self._name, item))))
-                    self._vars[item].set(value)
-                    print(".".join((self._name, item)) + ": " + str(value))
-                    gc.collect()
+                if (item not in self._vars or
+                        (item in self._vars and not isinstance(self._vars[item], tk_var_class))):
+                    self._vars[item] = tk_var_class()
+                for method in "rwu":
+                    try:
+                        data = self.__getattr__(method)
+                    except KeyError:
+                        data = None
+                    if data is not None:
+                        self._vars[item].trace(method,
+                                               partial(self.__getattr__(method),
+                                                       var_name=".".join((self._name, item))))
+                    if item in self._bindings and method in self._bindings[item]:
+                        self._vars[item].trace(method,
+                                               partial(self._bindings[item][method],
+                                                       var_name=".".join((self._name, item))))
+                self._vars[item].set(value)
+                print(".".join((self._name, item)) + ": " + str(value))
+                gc.collect()
             elif tk_var_class == dict:
                 self._vars[item] = TkVars(item)
                 for val in value:

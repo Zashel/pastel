@@ -147,7 +147,7 @@ class EasyFrame(Frame):
         try:
             var = self.get_var(route)
         except KeyError:
-            var = self.set_var(route)
+            var = self.set_var(route, "")
         last_entry_validation = (self.register(self.entered_entry), "%P", route)
         return Entry(*args, textvariable=var, validate="all", validatecommand=last_entry_validation, **kwargs)
 
@@ -155,7 +155,7 @@ class EasyFrame(Frame):
         try:
             var = self.get_var(route)
         except KeyError:
-            var = self.set_var(route)
+            var = self.set_var(route, "")
         last_entry_validation = partial(self.entered_entry, not var.get(), route)
         return Checkbutton(*args, variable=var, command=last_entry_validation, **kwargs)
 
@@ -163,7 +163,7 @@ class EasyFrame(Frame):
         try:
             var = self.get_var(route)
         except KeyError:
-            var = self.set_var(route)
+            var = self.set_var(route, "")
         last_entry_validation = partial(self.entered_entry, var.get(), route)
         cb = Combobox(*args, textvariable=var, values=values, **kwargs)
         cb.bind("<<ComboboxSelected>>", last_entry_validation)

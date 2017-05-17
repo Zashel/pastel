@@ -77,6 +77,8 @@ class API:
     @classmethod
     def filter_pagos(cls, link=None, **kwargs):
         filter = list()
+        if "items_per_page" not in kwargs:
+            kwargs["items_per_page"] = local_config.ITEMS_PER_PAGE
         for item in kwargs:
             if item in PAYMENTS_INDEX:
                 filter.append("=".join((item, str(kwargs[item]))))

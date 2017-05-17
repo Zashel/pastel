@@ -169,11 +169,11 @@ class App(EasyFrame):
             self.payments_tree_last["state"] = "disable"
         self.payments_tree_label["text"] = "Página {} de {}".format(str(page), str(last))
 
-    def hide_payment(self):
+    def hide_payment(self, *args, **kwargs):
         self.payment_frame.pack_forget()
         self.payments_tree.pack()
 
-    def hide_payment_tree(self):
+    def hide_payment_tree(self, *args, **kwargs):
         self.payments_tree.pack_forget()
         self.payment_frame.pack()
 

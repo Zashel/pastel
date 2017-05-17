@@ -236,7 +236,7 @@ class EasyFrame(Frame):
         item = tree.selection()[0]
         template = self.tree[category]["template"]
         for field in template:
-            self.set_var(".".join((category, str(field))), self.tree[category]["tree"][item][field])
+            self.set_var(".".join((category, str(field))), self.tree[category]["data"][item][field])
 
     def changed_active_tree_item(self, variable, void, method, *, var_name):
         category, name = self.get_category_and_name(var_name)

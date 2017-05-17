@@ -49,10 +49,10 @@ class App(EasyFrame):
                                       "tels": {"text": "Teléfonos"},
                                       "oficina": {"text": "Oficina"},
                                       "observaciones": {"text": "Observaciones"}},
-                          "show": {"importe": lambda x: str(x)[:-2]+str(x)[-2:]+" €",
+                          "show": {"importe": lambda x: str(x)[:-2]+","+str(x)[-2:]+" €",
                                    "tels": lambda x: ", ".join(x)},
                           "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "").replace("€", ""))},
-                          "bind": {"<Double-1>": self.hide_payment_tree}}
+                          "bind": {"<Double-1>": partial(self.hide_payment_tree)}}
         self.payments_tree_frame = Frame(self.tabs["payments"])
         self.payments_tree_frame.pack()
         row = 0
@@ -108,6 +108,8 @@ class App(EasyFrame):
                                                   text="Último",
                                                   state="disable")
         self.payments_tree_last.grid(column=4, row=row)
+        row += 1
+        self.Entry("pagos.dni", self.payments_tree_frame).grid(column=0, row=row)
 
         self.payment_frame = Frame(self.tabs["payments"])
         self.payment_frame.tkraise(self.payments_tree_frame)

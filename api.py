@@ -75,6 +75,18 @@ class API:
         return API.pagos["active"]
 
     @classmethod
+    def get_link(self, link, *, var=None):
+        request = requests.get("http://{}:{}{}{}".format(local_config.HOST,
+                                                                    str(local_config.PORT),
+                                                                    link))
+        if request.status_code == 200:
+            data = json.loads(request.text)
+        if var is not None:
+            if var == "pagos":
+                API.pagos["active"] = data
+        return data
+
+    @classmethod
     def filter_pagos(cls, link=None, **kwargs):
         filter = list()
         if "items_per_page" not in kwargs:

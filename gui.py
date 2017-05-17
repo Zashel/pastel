@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter.ttk import *
 from api import API
 from functools import partial
-from definitions import local_config, admin_config, LOCAL, SHARED
+from definitions import local_config, admin_config, LOCAL, SHARED, PAYMENTS_FIELDS
 from tkutils import *
 from utils import *
 import getpass
@@ -52,7 +52,7 @@ class App(EasyFrame):
                           "show": {"importe": lambda x: str(x)[:-2]+","+str(x)[-2:]+" €",
                                    "tels": lambda x: ", ".join(x)},
                           "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "").replace("€", ""))},
-                          "bind": {"<Double-1>": partial(self.hide_payment_tree)}}
+                          "bind": {"<Double-1>": partial(self.load_payment_from_tree())}}
         self.payments_tree_frame = Frame(self.tabs["payments"])
         self.payments_tree_frame.pack()
         row = 0
@@ -120,6 +120,17 @@ class App(EasyFrame):
         dni = self.get_var("paysearch.customer_id").get()
         dni = calcular_y_formatear_letra_dni(dni)
         self.set_var("paysearch.customer_id", dni)
+
+    def load_payment_from_tree(self):
+        category = "pagos"
+        tree = self.tree[category]["tree"]
+        item = tree.selection()[0]
+        data = API.get_link(self.tree[category]["data"][item]["_links"]["self"]["href"], var="pagos")
+        for column in PAYMENTS_FIELDS:
+            if column in data:
+                name = "pagos.{}".format(column)
+                self.set_var(name, data[column],
+                             w=lambda *args: API.pagos["active"].__setitem__(column, self.get_var(name).get()))
 
     def search_payment(self, *args, **kwargs):
         estado = self.get_var("paysearch.state").get()

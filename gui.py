@@ -55,12 +55,14 @@ class App(EasyFrame):
                           "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "").replace("€", ""))}}
         self.payments_tree_frame = Frame(self.tabs["payments"])
         self.payments_tree_frame.grid()
-        treeScroll = Scrollbar(self.payments_tree_frame)
-        self.TreeView("pagos",
-                      columns,
-                      self.payments_tree_frame,
-                      default_config=default_config,
-                      yscrollcommand=treeScroll.set).grid(column=0, row=0, columnspan=5)
+        self.payments_tree = self.TreeView("pagos",
+                                           columns,
+                                           self.payments_tree_frame,
+                                           default_config=default_config).grid(column=0, row=0, columnspan=5)
+        treeScroll = Scrollbar(self.payments_tree_frame,
+                               orient=VERTICAL,
+                               command=self.payments_tree.yview)
+        self.payments_tree["yscrollcommand"] = treeScroll.set
         self.payments_tree_first = self.LinkButton(self.payments_tree_frame,
                                                    command=lambda: self.update_pagos_tree("first"),
                                                    text="Primero",
@@ -208,7 +210,7 @@ class App(EasyFrame):
                    servidor).grid(column=4, row=1, columnspan=1)
         Label(servidor, text="Filas por página: ").grid(column=0, row=2, columnspan=2)
         self.Entry("config.ITEMS_PER_PAGE",
-                   servidor).grid(column=4, row=1, columnspan=1)
+                   servidor).grid(column=4, row=2, columnspan=1)
 
         #Rutas
         rutas.grid(sticky=(N, S, E, W))

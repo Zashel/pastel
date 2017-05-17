@@ -244,7 +244,7 @@ class EasyFrame(Frame):
         data = self.get_var(var_name).get()
         print(data)
         self.tree[category]["data"][item][name] = self.tree[category]["validate"][name](data)
-        tree.set(self.tree[category]["show"][name](data))
+        tree.set(item, name, self.tree[category]["show"][name](data))
 
     def del_tree_data(self, category):
         all = list()

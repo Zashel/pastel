@@ -58,7 +58,8 @@ class App(EasyFrame):
         self.payments_tree = self.TreeView("pagos",
                                            columns,
                                            self.payments_tree_frame,
-                                           default_config=default_config).grid(column=0, row=0, columnspan=5)
+                                           default_config=default_config)
+        self.payments_tree.grid(column=0, row=0, columnspan=5)
         treeScroll = Scrollbar(self.payments_tree_frame,
                                orient=VERTICAL,
                                command=self.payments_tree.yview)

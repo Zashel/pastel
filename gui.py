@@ -155,7 +155,7 @@ class App(EasyFrame):
         if pagos:
             for pago in pagos:
                 if "_id" in pago:
-                    pagos_dict[pago["_id"]] = pago
+                    pagos_dict[str(pago["_id"])] = pago
         self.set_tree_data("pagos", pagos_dict)
         for link in ("first", "prev", "next", "last"):
             self.__getattribute__("payments_tree_"+link)["state"] = "enable"
@@ -171,10 +171,10 @@ class App(EasyFrame):
 
     def hide_payment(self, *args, **kwargs):
         self.payment_frame.pack_forget()
-        self.payments_tree.pack()
+        self.payments_tree_frame.pack()
 
     def hide_payment_tree(self, *args, **kwargs):
-        self.payments_tree.pack_forget()
+        self.payments_tree_frame.pack_forget()
         self.payment_frame.pack()
 
     def set_menu(self):

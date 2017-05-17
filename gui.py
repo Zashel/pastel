@@ -62,11 +62,7 @@ class App(EasyFrame):
         self.Entry("paysearch.customer_id", self.payments_tree_frame).grid(column=3, row=row)
         Button(self.payments_tree_frame,
                text="CalcularDNI",
-               command=lambda: self.set_var("paysearch.customer_id",
-                                            calcular_y_formatear_letra_dni(
-                                                self.get_var("paysearch.customer_id").get()
-                                                )
-                                            )
+               command=self.validate_dni,
                ).grid(column=4, row=row)
         row += 1
         Label(self.payments_tree_frame, text="Fecha: ").grid(column=0, row=row)
@@ -116,6 +112,11 @@ class App(EasyFrame):
         Button(self.payment_frame, text="Cerrar", command=self.hide_payment).pack()
         self.tabs["payments"].pack()
 
+    def validate_dni(self):
+        dni = self.get_var("paysearch.customer_id").get()
+        dni = calcular_y_formatear_letra_dni(dni)
+        self.set_var("paysearch.customer_id", dni)
+
     def search_payment(self, *args, **kwargs):
         estado = self.get_var("paysearch.state").get()
         dni = self.get_var("paysearch.customer_id").get()
@@ -125,7 +126,10 @@ class App(EasyFrame):
         if estado != "" and estado in admin_config.PAYMENTS_STATES:
             kwargs["estado"] = estado
         if dni != "":
-            kwargs["dni"] = calcular_y_formatear_letra_dni(dni)
+            try:
+                kwargs["dni"] = calcular_y_formatear_letra_dni(dni)
+            except ValueError:
+                kwargs["dni"] = dni
         if oficina != "":
             try:
                 int(oficina)

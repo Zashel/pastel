@@ -22,8 +22,6 @@ def formatear_letra_dni(nif):
     return nif
 
 def calcular_y_formatear_letra_dni(nif):
-    nif = nif.replace(" ", "")
-    nif = nif.replace("-", "")
     print(calcular_letra_dni(nif))
     print(formatear_letra_dni(calcular_letra_dni(nif)))
     return formatear_letra_dni(calcular_letra_dni(nif))

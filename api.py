@@ -136,6 +136,8 @@ class API:
 
     @classmethod
     def get_total_pagos_page(cls):
+        if API.pagos["total_pages"] is None:
+            return 1
         return API.pagos["total_pages"]
 
     @classmethod

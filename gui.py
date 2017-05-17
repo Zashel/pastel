@@ -63,7 +63,11 @@ class App(EasyFrame):
         Button(self.payments_tree_frame,
                text="CalcularDNI",
                command=lambda: self.set_var("paysearch.customer_id",
-                                            calcular_y_formatear_letra_dni(self.get_var("paysearch.customer_id").get()))
+                                            self.set_var("paysearch.customer_id",
+                                                         calcular_y_formatear_letra_dni(
+                                                             self.get_var("paysearch.customer_id").get()
+                                                             )
+                                                         )
                ).grid(column=4, row=row)
         row += 1
         Label(self.payments_tree_frame, text="Fecha: ").grid(column=0, row=row)

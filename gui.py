@@ -119,10 +119,10 @@ class App(EasyFrame):
         self.tabs["payments"].pack()
 
     def search_payment(self, *args, **kwargs):
-        estado = self.get_var("payseach.state").get()
-        dni = self.get_var("payseach.customer_id").get()
-        oficina = self.get_var("payseach.office").get()
-        fecha = self.get_var("payseach.pay_date").get()
+        estado = self.get_var("paysearch.state").get()
+        dni = self.get_var("paysearch.customer_id").get()
+        oficina = self.get_var("paysearch.office").get()
+        fecha = self.get_var("paysearch.pay_date").get()
         kwargs = dict()
         if estado != "" and estado in admin_config.PAYMENTS_STATES:
             kwargs["estado"] = estado

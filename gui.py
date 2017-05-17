@@ -63,11 +63,9 @@ class App(EasyFrame):
         Button(self.payments_tree_frame,
                text="CalcularDNI",
                command=lambda: self.set_var("paysearch.customer_id",
-                                            self.set_var("paysearch.customer_id",
-                                                         calcular_y_formatear_letra_dni(
-                                                             self.get_var("paysearch.customer_id").get()
-                                                             )
-                                                         )
+                                            calcular_y_formatear_letra_dni(
+                                                self.get_var("paysearch.customer_id").get()
+                                                )
                                             )
                ).grid(column=4, row=row)
         row += 1
@@ -146,9 +144,10 @@ class App(EasyFrame):
         else:
             pagos = API.get_pagos_list(link) #TODO: fix this shit
         pagos_dict = dict()
-        if pagos is not None:
+        if pagos:
             for pago in pagos:
-                pagos_dict[pago["_id"]] = pago
+                if "_id" in pago:
+                    pagos_dict[pago["_id"]] = pago
         self.set_tree_data("pagos", pagos_dict)
         for link in ("first", "prev", "next", "last"):
             self.__getattribute__("payments_tree_"+link)["state"] = "enable"

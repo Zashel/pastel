@@ -318,12 +318,7 @@ class Pari(RestfulBaseInterface):
                                             break
                                 else:
                                     nif = ""
-                            nif = nif.replace("-", "")
-                            if len(nif) > 0:
-                                if nif[0] in "ABCDEFGHJNPQRUVW":
-                                    nif = "{}-{}".format(nif[0], nif[1:])
-                                elif nif[-1] in "TRWAGMYFPDXBNJZSQVHLCKE":
-                                    nif = "{}-{}".format(nif[:-1], nif[-1])
+                            nif = formatear_letra_dni(nif)
                             final = {"cuenta": account,
                                      "fecha_operacion": f_oper,
                                      "fecha_valor": f_valor,

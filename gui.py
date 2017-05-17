@@ -4,7 +4,9 @@ from api import API
 from functools import partial
 from definitions import local_config, admin_config, LOCAL, SHARED
 from tkutils import *
+from utils import *
 import getpass
+import datetime
 
 class App(EasyFrame):
     def __init__(self, master=None):
@@ -16,9 +18,6 @@ class App(EasyFrame):
         #Widgets
         self.set_menu()
         self.set_widgets()
-        self.set_var("test.test", "Hola Caracola")
-        self.Entry("test.test", self).pack()
-        self.update_pagos_tree(estado="PENDIENTE")
 
     def set_widgets(self):
         self.tabs = {"init": Frame(self),
@@ -54,43 +53,86 @@ class App(EasyFrame):
                                    "tels": lambda x: ", ".join(x)},
                           "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "").replace("€", ""))}}
         self.payments_tree_frame = Frame(self.tabs["payments"])
-        self.payments_tree_frame.grid()
+        self.payments_tree_frame.pack()
+        row = 0
+        # Payment search
+        Label(self.payments_tree_frame, text="Estado: ").grid(column=0, row=row)
+        self.Combobox("paysearch.state", local_config.PAYMENTS_STATES, self.payments_tree_frame).grid(column=1, row=row)
+        Label(self.payments_tree_frame, text="DNI: ").grid(column=2, row=row) #TODO: Do a phone searching
+        self.Entry("paysearch.customer_id", self.payments_tree_frame).grid(column=3, row=row)
+        Button(self.payments_tree_frame,
+               text="CalcularDNI",
+               command=lambda: self.set_var("paysearch.customer_id",
+                                            calcular_y_formatear_letra_dni(self.get_var("paysearch.customer_id")).get())
+               ).grid(column=4, row=row)
+        row += 1
+        Label(self.payments_tree_frame, text="Fecha: ").grid(column=0, row=row)
+        self.Entry("paysearch.pay_date", self.payments_tree_frame).grid(column=1, row=row)
+        Label(self.payments_tree_frame, text="Oficina: ").grid(column=2, row=row)
+        self.Entry("paysearch.office", self.payments_tree_frame).grid(column=3, row=row)
+        Button(self.payments_tree_frame,
+               text="Buscar",
+               command=self.search_payment,
+               ).grid(column=4, row=row)
+        row += 1
+        self.payments_tree.grid(column=0, row=row, columnspan=5)
+        treeScroll = Scrollbar(self.payments_tree_frame,
+                               orient=VERTICAL,
+                               command=self.payments_tree.yview)
         self.payments_tree = self.TreeView("pagos",
                                            columns,
                                            self.payments_tree_frame,
                                            default_config=default_config)
-        self.payments_tree.grid(column=0, row=0, columnspan=5)
-        treeScroll = Scrollbar(self.payments_tree_frame,
-                               orient=VERTICAL,
-                               command=self.payments_tree.yview)
         self.payments_tree["yscrollcommand"] = treeScroll.set
         self.payments_tree_first = self.LinkButton(self.payments_tree_frame,
                                                    command=lambda: self.update_pagos_tree("first"),
                                                    text="Primero",
                                                    state="disable")
-        self.payments_tree_first.grid(column=0, row=1)
+        row += 1
+        self.payments_tree_first.grid(column=0, row=row)
         self.payments_tree_prev = self.LinkButton(self.payments_tree_frame,
                                                   command=lambda: self.update_pagos_tree("prev"),
                                                   text="Anterior",
                                                   state="disable")
-        self.payments_tree_prev.grid(column=1, row=1)
+        self.payments_tree_prev.grid(column=1, row=row)
         self.payments_tree_label = Label(self.payments_tree_frame,
                                          text="Página 1 de 1")
-        self.payments_tree_label.grid(column=2, row=1)
+        self.payments_tree_label.grid(column=2, row=row)
         self.payments_tree_next = self.LinkButton(self.payments_tree_frame,
                                                   command=lambda: self.update_pagos_tree("next"),
                                                   text="Siguiente",
                                                   state="disable")
-        self.payments_tree_next.grid(column=3, row=1)
+        self.payments_tree_next.grid(column=3, row=row)
         self.payments_tree_last = self.LinkButton(self.payments_tree_frame,
                                                   command=lambda: self.update_pagos_tree("last"),
                                                   text="Último",
                                                   state="disable")
-        self.payments_tree_last.grid(column=4, row=1)
+        self.payments_tree_last.grid(column=4, row=row)
         self.payment_frame = Frame(self.tabs["payments"])
         self.payment_frame.tkraise(self.payments_tree_frame)
         Button(self.payment_frame, text="Cerrar", command=self.hide_payment).pack()
         self.tabs["payments"].pack()
+
+    def search_payment(self, *args, **kwargs):
+        estado = self.get_var("payseach.state").get()
+        dni = self.get_var("payseach.customer_id").get()
+        oficina = self.get_var("payseach.office").get()
+        fecha = self.get_var("payseach.pay_date").get()
+        kwargs = dict()
+        if estado != "" and estado in admin_config.PAYMENTS_STATES:
+            kwargs["estado"] = estado
+        if dni != "":
+            kwargs["dni"] = calcular_y_formatear_letra_dni(dni)
+        if oficina != "":
+            try:
+                int(oficina)
+            except ValueError:
+                pass #TODO: Actualizar NADA
+            else:
+                kwargs["oficina"] = oficina
+        if fecha != "":
+            kwargs["fecha"] = fecha #TODO: Validate
+        self.update_pagos_tree(**kwargs)
 
     def update_pagos_tree(self, link=None, **filter):
         if link is None:

@@ -145,7 +145,8 @@ LOCAL = ["HOST", "PORT",
          "EXPORT_PATH",
          "ADMIN_DB",
          "UUID",
-         "INIT_SERVER_STARTUP"
+         "INIT_SERVER_STARTUP",
+         "ITEMS_PER_PAGE"
          ]
 
 REMOTE_PATHS = ["PATH",
@@ -234,7 +235,8 @@ SHARED = ["PM_CUSTOMER",
           "N43_PATH",
           "N43_PATH_INCOMING",
           "N43_PATH_OUTGOING",
-          "REPORT_PATH"
+          "REPORT_PATH",
+          "PAYMENTS_STATES"
           ]
 
 class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated myself!
@@ -316,6 +318,9 @@ admin_config.set_default("PM_CUSTOMER", "DEPARTAMENTO DE COBROS")
 admin_config.set_default("PM_PAYMENT_METHOD", "TRANSFERENCIA")
 
 admin_config.set_default("PM_PAYMENT_WAY", "INTERNA")
+
+admin_config.set_default("PAYMENTS_STATES",
+                         ["", "PENDIENTE", "APLICADO", "ILOCALIZABLE", "GRAN CUENTA", "DEUDA VENDIDA"])
 
 
 __all__ = list()

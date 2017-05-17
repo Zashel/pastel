@@ -21,11 +21,13 @@ class App(EasyFrame):
         self.update_pagos_tree(estado="PENDIENTE")
 
     def set_widgets(self):
-        #TABS
         self.tabs = {"init": Frame(self),
                      "configuration": Frame(self),
                      "payments": Frame(self)}
+        self.set_payments_tree_frame()
+        #TABS
 
+    def set_payments_tree_frame(self):
         #Payments Tree
         columns = ["estado",
                    "fecha",
@@ -53,7 +55,7 @@ class App(EasyFrame):
                           "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "").replace("€", ""))}}
         self.payments_tree_frame = Frame(self.tabs["payments"])
         self.payments_tree_frame.grid()
-        treeScroll = Scrollbar()
+        treeScroll = Scrollbar(self.payments_tree_frame)
         self.TreeView("pagos",
                       columns,
                       self.payments_tree_frame,

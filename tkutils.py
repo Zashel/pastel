@@ -42,7 +42,11 @@ class TkVars:
                         (item in self._vars and not isinstance(self._vars[item], tk_var_class))):
                     self._vars[item] = tk_var_class()
                     for method in "rwu":
-                        if self.__getattr__(method) is not None:
+                        try:
+                            data = self.__getattr__(method)
+                        except KeyError:
+                            data = None
+                        if data is not None:
                             self._vars[item].trace(method,
                                                    partial(self.__getattr__(method),
                                                            var_name=".".join((self._name, item))))

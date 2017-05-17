@@ -71,7 +71,7 @@ class App(EasyFrame):
         self.Entry("paysearch.office", self.payments_tree_frame).grid(column=3, row=row)
         Button(self.payments_tree_frame,
                text="Buscar",
-               command=self.search_payment,
+               command=self.validate_dni,
                ).grid(column=4, row=row)
         row += 1
         self.payments_tree = self.TreeView("pagos",

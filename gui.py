@@ -51,7 +51,8 @@ class App(EasyFrame):
                                       "observaciones": {"text": "Observaciones"}},
                           "show": {"importe": lambda x: str(x)[:-2]+str(x)[-2:]+" €",
                                    "tels": lambda x: ", ".join(x)},
-                          "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "").replace("€", ""))}}
+                          "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "").replace("€", ""))},
+                          "bind": {"<Double-1>": self.hide_payment_tree}}
         self.payments_tree_frame = Frame(self.tabs["payments"])
         self.payments_tree_frame.pack()
         row = 0
@@ -107,6 +108,7 @@ class App(EasyFrame):
                                                   text="Último",
                                                   state="disable")
         self.payments_tree_last.grid(column=4, row=row)
+
         self.payment_frame = Frame(self.tabs["payments"])
         self.payment_frame.tkraise(self.payments_tree_frame)
         Button(self.payment_frame, text="Cerrar", command=self.hide_payment).pack()

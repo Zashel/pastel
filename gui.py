@@ -75,13 +75,13 @@ class App(EasyFrame):
                command=self.search_payment,
                ).grid(column=4, row=row)
         row += 1
-        treeScroll = Scrollbar(self.payments_tree_frame,
-                               orient=VERTICAL,
-                               command=self.payments_tree.yview)
         self.payments_tree = self.TreeView("pagos",
                                            columns,
                                            self.payments_tree_frame,
                                            default_config=default_config)
+        treeScroll = Scrollbar(self.payments_tree_frame,
+                               orient=VERTICAL,
+                               command=self.payments_tree.yview)
         self.payments_tree["yscrollcommand"] = treeScroll.set
         self.payments_tree.grid(column=0, row=row, columnspan=5)
         self.payments_tree_first = self.LinkButton(self.payments_tree_frame,

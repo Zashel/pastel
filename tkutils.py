@@ -38,9 +38,9 @@ class TkVars:
                 print(type(value))
                 raise ValueError
             if issubclass(tk_var_class, Variable):
-                if (item not in self._vars or
-                        (item in self._vars and not isinstance(self._vars[item], tk_var_class))):
-                    self._vars[item] = tk_var_class()
+                if item not in self._vars:
+                    if item in self._vars and not isinstance(self._vars[item], tk_var_class):
+                        self._vars[item] = tk_var_class()
                     for method in "rwu":
                         try:
                             data = self.__getattr__(method)

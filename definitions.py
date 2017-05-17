@@ -216,6 +216,7 @@ local_config.set_default("INIT_SERVER_STARTUP", True)
 local_config.set_default("PATH", PATH)
 local_config.set_default("EXPORT_PATH", os.path.join(PATH, "Exportaciones"))
 local_config.set_default("ADMIN_DB", os.path.join(PATH, "DB", "Admin"))
+local_config.set_default("ITEMS_PER_PAGE", 50)
 if not os.path.exists(local_config.ADMIN_DB):
     os.makedirs(local_config.ADMIN_DB)
 

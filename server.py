@@ -5,6 +5,7 @@ from random import randint
 
 from zrest.server import App, GET, PUT, LOAD, NEXT, ALL
 from zrest.datamodels.shelvemodels import ShelveModel, ShelveRelational, ShelveBlocking
+from definitions import local_config
 for x in range(5):
     try:
         from definitions import *
@@ -68,7 +69,8 @@ if __name__ == "__main__":
     app.set_method("facturas", "^/n43$", LOAD, "load_n43")
     app.set_model(PASTELBlocking(os.path.join(admin_config.DATABASE_PATH, "pagos"),
                                  index_fields=PAYMENTS_INDEX,
-                                 headers=PAYMENTS_FIELDS),
+                                 headers=PAYMENTS_FIELDS,
+                                 items_per_page=local_config.ITEMS_PER_PAGE),
                   "pagos",
                   "^/pagos/<_id>$",
                   ALL_NEXT)

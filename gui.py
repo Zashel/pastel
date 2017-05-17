@@ -206,6 +206,9 @@ class App(EasyFrame):
         Label(servidor, text="Port: ").grid(column=3, row=1)
         self.Entry("config.PORT",
                    servidor).grid(column=4, row=1, columnspan=1)
+        Label(servidor, text="Filas por página: ").grid(column=0, row=2, columnspan=2)
+        self.Entry("config.ITEMS_PER_PAGE",
+                   servidor).grid(column=4, row=1, columnspan=1)
 
         #Rutas
         rutas.grid(sticky=(N, S, E, W))
@@ -262,6 +265,7 @@ class App(EasyFrame):
         self.set_var("config.DATABASE_PATH", admin_config.DATABASE_PATH)
         self.set_var("config.REPORT_PATH", admin_config.REPORT_PATH)
         self.set_var("config.DAILY_EXPORT_PATH", admin_config.DAILY_EXPORT_PATH)
+        self.set_var("config.ITEMS_PER_PAGE", local_config.ITEMS_PER_PAGE)
 
 if __name__ == "__main__":
     root = Tk()

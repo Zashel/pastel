@@ -241,10 +241,12 @@ class EasyFrame(Frame):
 
     def changed_active_tree_item(self, variable, void, method, *, var_name):
         category, name = self.get_category_and_name(var_name)
-        self.tree[category]["data"][name] = self.get_var(var_name).get()
         tree = self.tree[category]["tree"]
         item = tree.selection()[0]
-        tree.set(self.tree[category]["validate"][name](item, name, self.get_var(var_name).get()))
+        data = self.get_var(var_name).get()
+        print(data)
+        self.tree[category]["data"][item][name] = self.tree[category]["validate"][name](data)
+        tree.set(self.tree[category]["show"][name](data))
 
     def del_tree_data(self, category):
         all = list()

@@ -60,7 +60,7 @@ class App(EasyFrame):
                       columns,
                       self.payments_tree_frame,
                       default_config=default_config,
-                      yscrollcommand=treeScroll).grid(column=0, row=0, columnspan=5)
+                      yscrollcommand=treeScroll.set).grid(column=0, row=0, columnspan=5)
         self.payments_tree_first = self.LinkButton(self.payments_tree_frame,
                                                    command=lambda: self.update_pagos_tree("first"),
                                                    text="Primero",

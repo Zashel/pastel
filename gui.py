@@ -57,13 +57,13 @@ class App(EasyFrame):
         row = 0
         # Payment search
         Label(self.payments_tree_frame, text="Estado: ").grid(column=0, row=row)
-        self.Combobox("paysearch.state", local_config.PAYMENTS_STATES, self.payments_tree_frame).grid(column=1, row=row)
+        self.Combobox("paysearch.state", admin_config.PAYMENTS_STATES, self.payments_tree_frame).grid(column=1, row=row)
         Label(self.payments_tree_frame, text="DNI: ").grid(column=2, row=row) #TODO: Do a phone searching
         self.Entry("paysearch.customer_id", self.payments_tree_frame).grid(column=3, row=row)
         Button(self.payments_tree_frame,
                text="CalcularDNI",
                command=lambda: self.set_var("paysearch.customer_id",
-                                            calcular_y_formatear_letra_dni(self.get_var("paysearch.customer_id")).get())
+                                            calcular_y_formatear_letra_dni(self.get_var("paysearch.customer_id").get()))
                ).grid(column=4, row=row)
         row += 1
         Label(self.payments_tree_frame, text="Fecha: ").grid(column=0, row=row)

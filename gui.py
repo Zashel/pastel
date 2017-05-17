@@ -68,6 +68,7 @@ class App(EasyFrame):
                                                              self.get_var("paysearch.customer_id").get()
                                                              )
                                                          )
+                                            )
                ).grid(column=4, row=row)
         row += 1
         Label(self.payments_tree_frame, text="Fecha: ").grid(column=0, row=row)

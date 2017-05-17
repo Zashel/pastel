@@ -22,6 +22,8 @@ class TkVars:
     def __getattr__(self, item):
         if item in self._vars:
             return self._vars[item]
+        else:
+            raise KeyError()
 
     def __setattr__(self, item, value):
         if item in ("_vars", "_name", "_bindings", "r", "w", "u"):
@@ -147,7 +149,7 @@ class EasyFrame(Frame):
         try:
             var = self.get_var(route)
         except KeyError:
-            var = self.set_var(route, "")
+            var = self.set_var(route)
         last_entry_validation = (self.register(self.entered_entry), "%P", route)
         return Entry(*args, textvariable=var, validate="all", validatecommand=last_entry_validation, **kwargs)
 
@@ -155,7 +157,7 @@ class EasyFrame(Frame):
         try:
             var = self.get_var(route)
         except KeyError:
-            var = self.set_var(route, "")
+            var = self.set_var(route)
         last_entry_validation = partial(self.entered_entry, not var.get(), route)
         return Checkbutton(*args, variable=var, command=last_entry_validation, **kwargs)
 
@@ -163,7 +165,7 @@ class EasyFrame(Frame):
         try:
             var = self.get_var(route)
         except KeyError:
-            var = self.set_var(route, "")
+            var = self.set_var(route)
         last_entry_validation = partial(self.entered_entry, var.get(), route)
         cb = Combobox(*args, textvariable=var, values=values, **kwargs)
         cb.bind("<<ComboboxSelected>>", last_entry_validation)
@@ -320,8 +322,6 @@ class EasyFrame(Frame):
         return True
 
     def undo(self):
-        print(self._undo["var"])
-        print(self._undo["last"])
         self._undo["var"].set(self._undo["last"])
 
     def copy(self):

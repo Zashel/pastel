@@ -26,7 +26,6 @@ class App(EasyFrame):
                      "configuration": Frame(self),
                      "payments": Frame(self)}
         self.set_payments_tree_frame()
-        self.LabelEntry("test.test", "Test", self.tabs["payments"]).pack()
         #TABS
 
     def payment_data_frame(self, parent):
@@ -42,7 +41,7 @@ class App(EasyFrame):
         self.LabelEntry("pagos.id_cliente", "Id_Cliente: ", frame).grid(column=1, row=row)
         self.LabelEntry("pagos.tels", "Teléfonos", frame).grid(column=2, row=row)
         row += 1
-        self.payment_data_frame_text[parent] = Text(frame, width=800, height=400)
+        self.payment_data_frame_text[parent] = Text(frame, width=200, height=50)
         self.payment_data_frame_text[parent].grid(column=0, row=row, columnspan=3)
         row += 1
         self.Combobox("pagos.estado", admin_config.PAYMENTS_STATES, frame).grid(column=2, row=row) #frame is the name of the bunny
@@ -142,7 +141,7 @@ class App(EasyFrame):
 
         #Pending Peyment Frame
         self.pending_payment_frame = Frame(self.tabs["payments"])
-        #self.payment_data_frame(self.pending_payment_frame).pack()
+        self.payment_data_frame(self.pending_payment_frame).pack()
         Button(self.pending_payment_frame, text="Cerrar", command=self.show_payments_tree).pack()
 
         self.tabs["payments"].pack()

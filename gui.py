@@ -171,11 +171,15 @@ class App(EasyFrame):
         if len(selection) > 0:
             item = tree.selection()[0]
             data = API.get_link(self.tree[category]["data"][item]["_links"]["self"]["href"], var="pagos")
+            print(data)
             for column in PAYMENTS_FIELDS:
                 if column in data:
+                    print(column)
                     name = "pagos.{}".format(column)
+                    if column == "tels":
+                        data[column] = ", ".join(data[column])
                     self.set_var(name, data[column],
-                                 w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, self.get_var(name).get()))
+                                 w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, data[column]))
             for parent in (self.payment_frame, self.pending_payment_frame):
                 self.payment_data_frame_text[parent].delete("1.0", END)
                 self.payment_data_frame_text[parent].insert("1.0", self.get_var("pagos.observaciones").get())

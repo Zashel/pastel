@@ -25,6 +25,7 @@ class App(EasyFrame):
                      "configuration": Frame(self),
                      "payments": Frame(self)}
         self.set_payments_tree_frame()
+        self.LabelEntry("test.test", "Test", self.tabs["payments"]).pack()
         #TABS
 
     def payment_data_frame(self, parent):

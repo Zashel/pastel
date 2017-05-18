@@ -159,7 +159,7 @@ class App(EasyFrame):
     def load_payment_from_tree(self):
         category = "pagos"
         tree = self.tree[category]["tree"]
-        selection = tree.selection
+        selection = tree.selection()
         if len(selection) > 0:
             item = tree.selection()[0]
             data = API.get_link(self.tree[category]["data"][item]["_links"]["self"]["href"], var="pagos")

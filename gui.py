@@ -41,8 +41,7 @@ class App(EasyFrame):
         self.LabelEntry("pagos.id_cliente", "Id_Cliente: ", frame).grid(column=1, row=row)
         self.LabelEntry("pagos.tels", "Teléfonos", frame).grid(column=2, row=row)
         row += 1
-        if self.payment_data_frame_text is None:
-            self.payment_data_frame_text = Text(frame, width=800, height=400)
+        self.payment_data_frame_text = Text(frame, width=800, height=400)
         self.payment_data_frame_text.grid(column=0, row=row, columnspan=3)
         row += 1
         self.Combobox("pagos.estado", admin_config.PAYMENTS_STATES).grid(column=2, row=row)
@@ -50,6 +49,7 @@ class App(EasyFrame):
         PAYMENTS_FIELDS = ["observaciones",
                            "posibles",
                            "estado"]
+        print("Only a bunny")
         return frame
 
 

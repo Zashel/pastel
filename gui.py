@@ -147,7 +147,7 @@ class App(EasyFrame):
 
         self.tabs["payments"].pack()
 
-    def open_payment_data_frame(self):
+    def open_payment_data_frame(self, event):
         self.load_payment_from_tree()
         if self.search_payments_estado == "PENDIENTE":
             self.show_pending_payment()

@@ -44,7 +44,7 @@ class App(EasyFrame):
         self.payment_data_frame_text[parent] = Text(frame, width=800, height=400)
         self.payment_data_frame_text[parent].grid(column=0, row=row, columnspan=3)
         row += 1
-        self.Combobox("pagos.estado", admin_config.PAYMENTS_STATES).grid(column=0, row=row, columnspan=3, sticky="e")
+        self.Combobox("pagos.estado", admin_config.PAYMENTS_STATES, frame).grid(column=2, row=row) #frame is the name of the bunny
         return frame
 
 

@@ -48,6 +48,27 @@ class App(EasyFrame):
         self.Combobox("pagos.estado", admin_config.PAYMENTS_STATES, frame).grid(column=2, row=row) #frame is the name of the bunny
         return frame
 
+    def payment_posibles_frame(self, parent, name):
+        frame = Frame(parent)
+        row = 0
+        columnspan = 1
+        tree = self.TreeView(name, self.posibles_columns, frame)
+        tree.grid(column=0, row=row, columnspan=columnspan)
+
+    def payment_posibles_load(self, name):
+        posibles = self.get_var("pagos.posibles").get()
+        final = dict()
+        order = list()
+        for index, item in enumerate(posibles):
+            posible = posibles[item].get().split(";")
+            final[item] = dict()
+            order.append(int(item))
+            for header in self.posibles_headers:
+                if header in self.posibles_columns:
+                    final[item][header] = posible[self.posibles_columns.index(index)]
+        order.sort()
+        self.set_tree_data("name", final, order=[str(key) for key in order])
+
 
     def set_payments_tree_frame(self):
         #Payments Tree
@@ -404,6 +425,22 @@ class App(EasyFrame):
 
     def set_variables(self):
         self.search_payments_estado = str()
+        self.posibles_headers = ["fecha_aplicacion",
+                                 "codigo",
+                                 "nombre",
+                                 "dni",
+                                 "id_factura",
+                                 "fecha_operacion",
+                                 "importe",
+                                 "periodo_facturado",
+                                 "metodo",
+                                 "via"]
+        self.posibles_columns = ["dni",
+                                 "nombre",
+                                 "id_factura",
+                                 "fecha_operacion",
+                                 "importe",
+                                 "periodo_facturado"]
         for item in PAYMENTS_FIELDS:
             self.set_var(".".join(("pagos", item)))
 

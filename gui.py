@@ -72,7 +72,7 @@ class App(EasyFrame):
                                       "tels": {"text": "Teléfonos"},
                                       "oficina": {"text": "Oficina"},
                                       "observaciones": {"text": "Observaciones"}},
-                          "show": {"importe": lambda x: str(x)[:-2]+","+str(x)[-2:] #+" \u20ac", Euro OUT
+                          "show": {"importe": lambda x: str(x)[:-2]+","+str(x)[-2:], #+" \u20ac", Euro OUT
                                    "tels": lambda x: ", ".join(x)},
                           "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "")
                                                                 .replace("€", "").replace(".", "".replace(",", "")))},

@@ -72,7 +72,7 @@ class App(EasyFrame):
                                       "tels": {"text": "Teléfonos"},
                                       "oficina": {"text": "Oficina"},
                                       "observaciones": {"text": "Observaciones"}},
-                          "show": {"importe": lambda x: str(x)[:-2]+","+str(x)[-2:]+" €",
+                          "show": {"importe": lambda x: str(x)[:-2]+","+str(x)[-2:]+" \u20ac",
                                    "tels": lambda x: ", ".join(x)},
                           "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "")
                                                                 .replace("€", "").replace(".", "".replace(",", "")))},
@@ -192,7 +192,7 @@ class App(EasyFrame):
         oficina = self.get_var("paysearch.office").get()
         fecha = self.get_var("paysearch.pay_date").get()
         importe = self.get_var("paysearch.amount").get().replace(" ",
-                                                                   "").replace(".", "").replace(",", "").replace("€", "")
+                                                                   "").replace(".", "").replace(",", "").replace("\u20ac", "")
         kwargs = dict()
         if estado != "" and estado in admin_config.PAYMENTS_STATES:
             kwargs["estado"] = estado

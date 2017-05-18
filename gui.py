@@ -80,12 +80,12 @@ class App(EasyFrame):
         self.payments_tree_frame.pack()
         row = 0
         # Payment search
-        Label(self.payments_tree_frame, text="Estado: ").grid(column=0, row=row)
+        Label(self.payments_tree_frame, text="Estado: ").grid(column=0, row=row, sticky="e")
         self.Combobox("paysearch.state", admin_config.PAYMENTS_STATES, self.payments_tree_frame).grid(column=1,
-                                                                                                      row=row)
+                                                                                                      row=row,
+                                                                                                      sticky="w")
         self.LabelEntry("paysearch.customer_id", "DNI: ", self.payments_tree_frame).grid(column=2,
-                                                                                         row=row,
-                                                                                         columnspan=2) #TODO: Do a phone searching
+                                                                                         row=row) #TODO: Do a phone searching
         Button(self.payments_tree_frame,
                text="Buscar",
                command=self.search_payment,

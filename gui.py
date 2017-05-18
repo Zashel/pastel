@@ -135,7 +135,7 @@ class App(EasyFrame):
                                                   state="disable")
         self.payments_tree_last.grid(column=4, row=row)
         row += 1
-        self.Entry("pagos.dni", self.payments_tree_frame).grid(column=0, row=row)
+        self.Entry("pagos.importe", self.payments_tree_frame).grid(column=0, row=row)
 
         #Payment Frame
         self.payment_frame = Frame(self.tabs["payments"])

@@ -16,6 +16,7 @@ class App(EasyFrame):
         self.rol = "Operador"
         self.set_var("config.nombre_usuario", "")
         #Widgets
+        self.set_variables()
         self.set_menu()
         self.set_widgets()
 
@@ -376,6 +377,11 @@ class App(EasyFrame):
         self.set_var("config.REPORT_PATH", admin_config.REPORT_PATH)
         self.set_var("config.DAILY_EXPORT_PATH", admin_config.DAILY_EXPORT_PATH)
         self.set_var("config.ITEMS_PER_PAGE", local_config.ITEMS_PER_PAGE)
+
+    def set_variables(self):
+        for item in PAYMENTS_FIELDS:
+            self.set_var(".".join("pagos", item))
+
 
 if __name__ == "__main__":
     root = Tk()

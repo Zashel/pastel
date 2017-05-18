@@ -380,7 +380,7 @@ class App(EasyFrame):
 
     def set_variables(self):
         for item in PAYMENTS_FIELDS:
-            self.set_var(".".join("pagos", item))
+            self.set_var(".".join(("pagos", item)))
 
 
 if __name__ == "__main__":

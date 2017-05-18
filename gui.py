@@ -33,13 +33,14 @@ class App(EasyFrame):
         # Frame
         frame = Frame(parent)
         #Objects:
-        self.LabelEntry("pagos.fecha", "Fecha Pago: ", frame).grid(column=0, row=row)
-        self.LabelEntry("pagos.oficina", "Oficina: ", frame).grid(column=1, row=row)
-        self.LabelEntry("pagos.importe", "Importe: ", frame).grid(column=2, row=row)
+        LabelEntry = partial(self.LabelEntry, entrykwargs={"state": "readonly"})
+        LabelEntry("pagos.fecha", "Fecha Pago: ", frame, ).grid(column=0, row=row)
+        LabelEntry("pagos.oficina", "Oficina: ", frame).grid(column=1, row=row)
+        LabelEntry("pagos.importe", "Importe: ", frame).grid(column=2, row=row)
         row += 1
-        self.LabelEntry("pagos.dni", "DNI: ", frame).grid(column=0, row=row)
-        self.LabelEntry("pagos.id_cliente", "Id_Cliente: ", frame).grid(column=1, row=row)
-        self.LabelEntry("pagos.tels", "Teléfonos", frame).grid(column=2, row=row)
+        LabelEntry("pagos.dni", "DNI: ", frame).grid(column=0, row=row)
+        LabelEntry("pagos.id_cliente", "Id_Cliente: ", frame).grid(column=1, row=row)
+        LabelEntry("pagos.tels", "Teléfonos", frame).grid(column=2, row=row)
         row += 1
         self.payment_data_frame_text[parent] = Text(frame, width=80, height=5)
         self.payment_data_frame_text[parent].grid(column=0, row=row, columnspan=3)
@@ -170,6 +171,8 @@ class App(EasyFrame):
                     name = "pagos.{}".format(column)
                     self.set_var(name, data[column],
                                  w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, self.get_var(name).get()))
+            for parent in (self.payment_frame, self.pending_payment_frame):
+                self.payment_data_frame_text[parent].insert("1.0", self.get_var("pagos.observaciones"))
 
     def search_payment(self, *args, **kwargs):
         estado = self.get_var("paysearch.state").get()

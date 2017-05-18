@@ -72,9 +72,12 @@ class TkVars:
 
     def check_type(self, value):
         return {type(str()): StringVar,
-                type(int()): IntVar,
-                type(float()): DoubleVar,
-                type(bool()): BooleanVar,
+                #type(int()): IntVar,
+                #type(float()): DoubleVar,
+                #type(bool()): BooleanVar,
+                type(int()): StringVar, #This is going to be the problem!
+                type(float()): StringVar,
+                type(bool()): StringVar,
                 type(dict()): dict,
                 type(list()): list,
                 type(tuple()): tuple

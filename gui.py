@@ -187,9 +187,9 @@ class App(EasyFrame):
                 self.payment_data_frame_text[parent].insert("1.0", self.get_var("pagos.observaciones").get())
                 self.payment_data_frame_text[parent]["state"] = "disable"
 
-            print(self.get_var("pagos.observaciones"))
-            print(self.get_var("pagos.id_cliente"))
-            print(self.get_var("pagos.importe"))
+            print(self.get_var("pagos.observaciones").get())
+            print(self.get_var("pagos.id_cliente").get())
+            print(self.get_var("pagos.importe").get())
 
     def search_payment(self, *args, **kwargs):
         estado = self.get_var("paysearch.state").get()

@@ -26,6 +26,30 @@ class App(EasyFrame):
         self.set_payments_tree_frame()
         #TABS
 
+    def payment_data_frame(self, parent):
+        row = 0
+        # Frame
+        frame = Frame(parent)
+        frame.pack()
+        #Objects:
+        self.LabelEntry("pagos.fecha", "Fecha Pago: ", frame).grid(column=0, row=row)
+        self.LabelEntry("pagos.oficina", "Oficina: ", frame).grid(column=1, row=row)
+        self.LabelEntry("pagos.importe", "Importe: ", frame).grid(column=2, row=row)
+        row += 1
+        self.LabelEntry("pagos.dni", "DNI: ", frame).grid(column=0, row=row)
+        self.LabelEntry("pagos.id_cliente", "Id_Cliente: ", frame).grid(column=1, row=row)
+        self.LabelEntry("pagos.tels", "Teléfonos", frame).grid(column=2, row=row)
+        row += 1
+        self.payment_data_frame.text = Text(frame, width=800, height=400).grid(column=0, row=row, columnspan=3)
+        row += 1
+        self.Combobox("pagos.estado", admin_config.PAYMENTS_STATES).grid(column=2, row=row)
+
+        PAYMENTS_FIELDS = ["observaciones",
+                           "posibles",
+                           "estado"]
+        return frame
+
+
     def set_payments_tree_frame(self):
         #Payments Tree
         columns = ["estado",
@@ -111,9 +135,19 @@ class App(EasyFrame):
         row += 1
         self.Entry("pagos.dni", self.payments_tree_frame).grid(column=0, row=row)
 
+
+
+
+        #Payment Frame
         self.payment_frame = Frame(self.tabs["payments"])
-        self.payment_frame.tkraise(self.payments_tree_frame)
-        Button(self.payment_frame, text="Cerrar", command=self.hide_payment).pack()
+        self.payment_data_frame(self.payment_frame).pack()
+        Button(self.payment_frame, text="Cerrar", command=self.show_payments_tree).pack()
+
+        #Pending Peyment Frame
+        self.pending_payment_frame = Frame(self.tabs["payments"])
+        self.payment_data_frame(self.payment_frame).pack()
+        Button(self.pending_payment_frame, text="Cerrar", command=self.show_payments_tree).pack()
+
         self.tabs["payments"].pack()
 
     def validate_dni(self):
@@ -180,13 +214,18 @@ class App(EasyFrame):
             self.payments_tree_last["state"] = "disable"
         self.payments_tree_label["text"] = "Página {} de {}".format(str(page), str(last))
 
-    def hide_payment(self, *args, **kwargs):
+    def show_payments_tree(self, *args, **kwargs):
+        self.pending_payment_frame.pack_forget()
         self.payment_frame.pack_forget()
         self.payments_tree_frame.pack()
 
-    def hide_payment_tree(self, *args, **kwargs):
+    def show_payment(self, *args, **kwargs):
         self.payments_tree_frame.pack_forget()
         self.payment_frame.pack()
+
+    def show_pending_payment(self, *args, **kwargs):
+        self.payments_tree_frame.pack_forget()
+        self.pending_payment_frame.pack()
 
     def set_menu(self):
         self.option_add("*tearOff", FALSE)

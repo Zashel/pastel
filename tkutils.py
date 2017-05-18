@@ -160,6 +160,27 @@ class EasyFrame(Frame):
         last_entry_validation = (self.register(self.entered_entry), "%P", route)
         return Entry(*args, textvariable=var, validate="all", validatecommand=last_entry_validation, **kwargs)
 
+    def LabelEntry(self, route, text, labelargs=None, labelkwargs=None, entryargs=None, entrykwargs=None,
+                   *args, **kwargs):
+        if labelargs is None:
+            labelargs = list()
+        if labelkwargs is None:
+            labelkwargs = dict()
+        if entryargs is None:
+            entryargs = list()
+        if entrykwargs is None:
+            entrykwargs = dict()
+        last_entry_validation = (self.register(self.entered_entry), "%P", route)
+        frame = Frame(args, borderwidth=0, **kwargs)
+        if not "anchor" in labelkwargs:
+            labelkwargs["anchor"] = "e"
+        labelkwargs.update({"text": text})
+        Label(frame, *labelargs, **labelkwargs).grid(column=0, row=0, sticky="e")
+        self.Entry(route, frame, *entryargs, **entrykwargs).grid(column=1, row=0, sticky="w")
+        frame.columnconfigure(0, weight=1)
+        frame.columnconfigure(1, weight=2)
+        return frame
+
     def Checkbutton(self, route, *args, **kwargs):
         try:
             var = self.get_var(route)

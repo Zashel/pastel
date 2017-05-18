@@ -100,7 +100,7 @@ class App(EasyFrame):
         self.LabelEntry("paysearch.pay_date", "Fecha: ", self.payments_tree_frame).grid(column=0, row=row, columnspan=2)
         self.LabelEntry("paysearch.office", "Oficina: ", self.payments_tree_frame).grid(column=2, row=row, columnspan=2)
         self.LabelEntry("paysearch.amount", "Importe: ", self.payments_tree_frame).grid(column=4, row=row)
-
+        row += 1
         self.payments_tree = self.TreeView("pagos",
                                            columns,
                                            self.payments_tree_frame,

@@ -72,7 +72,7 @@ class App(EasyFrame):
                                       "tels": {"text": "Teléfonos"},
                                       "oficina": {"text": "Oficina"},
                                       "observaciones": {"text": "Observaciones"}},
-                          "show": {"importe": lambda x: str(x)[:-2]+","+str(x)[-2:]+" \u20ac",
+                          "show": {"importe": lambda x: str(x)[:-2]+","+str(x)[-2:] #+" \u20ac", Euro OUT
                                    "tels": lambda x: ", ".join(x)},
                           "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "")
                                                                 .replace("€", "").replace(".", "".replace(",", "")))},
@@ -186,10 +186,6 @@ class App(EasyFrame):
                 self.payment_data_frame_text[parent].delete("1.0", END)
                 self.payment_data_frame_text[parent].insert("1.0", self.get_var("pagos.observaciones").get())
                 self.payment_data_frame_text[parent]["state"] = "disable"
-
-            print(self.get_var("pagos.observaciones").get())
-            print(self.get_var("pagos.id_cliente").get())
-            print(self.get_var("pagos.importe").get())
 
     def search_payment(self, *args, **kwargs):
         estado = self.get_var("paysearch.state").get()

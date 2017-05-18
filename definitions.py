@@ -320,7 +320,7 @@ admin_config.set_default("PM_PAYMENT_METHOD", "TRANSFERENCIA")
 admin_config.set_default("PM_PAYMENT_WAY", "INTERNA")
 
 admin_config.set_default("PAYMENTS_STATES",
-                         ["", "PENDIENTE", "APLICADO", "ILOCALIZABLE", "GRAN CUENTA", "DEUDA VENDIDA"])
+                         ["", "PENDIENTE", "APLICADO", "ILOCALIZABLE", "GRAN CUENTA", "DEUDA VENDIDA", "PAGO ORANGE"])
 
 
 __all__ = list()

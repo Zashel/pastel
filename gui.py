@@ -172,7 +172,8 @@ class App(EasyFrame):
                     self.set_var(name, data[column],
                                  w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, self.get_var(name).get()))
             for parent in (self.payment_frame, self.pending_payment_frame):
-                self.payment_data_frame_text[parent].insert("1.0", self.get_var("pagos.observaciones"))
+                self.payment_data_frame_text[parent].delete("1.0", END)
+                self.payment_data_frame_text[parent].insert("1.0", self.get_var("pagos.observaciones").get())
 
     def search_payment(self, *args, **kwargs):
         estado = self.get_var("paysearch.state").get()

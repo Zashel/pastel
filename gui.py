@@ -168,7 +168,7 @@ class App(EasyFrame):
                     name = "pagos.{}".format(column)
                     print(column)
                     self.set_var(name, data[column],
-                                 w=lambda *args: API.pagos["active"].__setitem__(column, self.get_var(name).get()))
+                                 w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, self.get_var(name).get()))
 
     def search_payment(self, *args, **kwargs):
         estado = self.get_var("paysearch.state").get()

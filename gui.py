@@ -20,7 +20,7 @@ class App(EasyFrame):
         self.set_widgets()
 
     def set_widgets(self):
-        self.payment_data_frame_text = None
+        self.payment_data_frame_text = dict()
         self.tabs = {"init": Frame(self),
                      "configuration": Frame(self),
                      "payments": Frame(self)}
@@ -32,7 +32,6 @@ class App(EasyFrame):
         row = 0
         # Frame
         frame = Frame(parent)
-        frame.pack()
         #Objects:
         self.LabelEntry("pagos.fecha", "Fecha Pago: ", frame).grid(column=0, row=row)
         self.LabelEntry("pagos.oficina", "Oficina: ", frame).grid(column=1, row=row)
@@ -42,8 +41,8 @@ class App(EasyFrame):
         self.LabelEntry("pagos.id_cliente", "Id_Cliente: ", frame).grid(column=1, row=row)
         self.LabelEntry("pagos.tels", "Teléfonos", frame).grid(column=2, row=row)
         row += 1
-        self.payment_data_frame_text = Text(frame, width=800, height=400)
-        self.payment_data_frame_text.grid(column=0, row=row, columnspan=3)
+        self.payment_data_frame_text[parent] = Text(frame, width=800, height=400)
+        self.payment_data_frame_text[parent].grid(column=0, row=row, columnspan=3)
         row += 1
         self.Combobox("pagos.estado", admin_config.PAYMENTS_STATES).grid(column=2, row=row)
 
@@ -144,7 +143,7 @@ class App(EasyFrame):
 
         #Payment Frame
         self.payment_frame = Frame(self.tabs["payments"])
-        #self.payment_data_frame(self.payment_frame).pack()
+        self.payment_data_frame(self.payment_frame).pack()
         Button(self.payment_frame, text="Cerrar", command=self.show_payments_tree).pack()
 
         #Pending Peyment Frame

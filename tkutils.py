@@ -171,7 +171,7 @@ class EasyFrame(Frame):
         if entrykwargs is None:
             entrykwargs = dict()
         last_entry_validation = (self.register(self.entered_entry), "%P", route)
-        frame = Frame(args, borderwidth=0, **kwargs)
+        frame = Frame(*args, borderwidth=0, **kwargs)
         if not "anchor" in labelkwargs:
             labelkwargs["anchor"] = "e"
         labelkwargs.update({"text": text})

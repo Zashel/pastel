@@ -74,7 +74,8 @@ class App(EasyFrame):
                                       "observaciones": {"text": "Observaciones"}},
                           "show": {"importe": lambda x: str(x)[:-2]+","+str(x)[-2:]+" €",
                                    "tels": lambda x: ", ".join(x)},
-                          "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "").replace("€", ""))},
+                          "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "")
+                                                                .replace("€", "").replace(".", "".replace(",", "")))},
                           "bind": {}}
         self.payments_tree_frame = Frame(self.tabs["payments"])
         self.payments_tree_frame.pack()
@@ -176,8 +177,7 @@ class App(EasyFrame):
                 if column in data:
                     print(column)
                     name = "pagos.{}".format(column)
-                    if column == "tels":
-                        data[column] = ", ".join(data[column])
+                    self.tree["pagos"]["show"][column](data[column])
                     self.set_var(name, data[column],
                                  w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, data[column]))
             for parent in (self.payment_frame, self.pending_payment_frame):
@@ -190,7 +190,7 @@ class App(EasyFrame):
         dni = self.get_var("paysearch.customer_id").get()
         oficina = self.get_var("paysearch.office").get()
         fecha = self.get_var("paysearch.pay_date").get()
-        importe = self.get_var("paysearch.pay_date").get().replace(" ",
+        importe = self.get_var("paysearch.amount").get().replace(" ",
                                                                    "").replace(".", "").replace(",", "").replace("€", "")
         kwargs = dict()
         if estado != "" and estado in admin_config.PAYMENTS_STATES:

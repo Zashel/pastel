@@ -148,7 +148,7 @@ class App(EasyFrame):
 
         #Pending Peyment Frame
         self.pending_payment_frame = Frame(self.tabs["payments"])
-        self.payment_data_frame(self.pending_payment_frame).pack()
+        #self.payment_data_frame(self.pending_payment_frame).pack()
         Button(self.pending_payment_frame, text="Cerrar", command=self.show_payments_tree).pack()
 
         self.tabs["payments"].pack()

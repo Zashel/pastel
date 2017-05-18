@@ -81,23 +81,26 @@ class App(EasyFrame):
         row = 0
         # Payment search
         Label(self.payments_tree_frame, text="Estado: ").grid(column=0, row=row)
-        self.Combobox("paysearch.state", admin_config.PAYMENTS_STATES, self.payments_tree_frame).grid(column=1, row=row)
-        Label(self.payments_tree_frame, text="DNI: ").grid(column=2, row=row) #TODO: Do a phone searching
-        self.Entry("paysearch.customer_id", self.payments_tree_frame).grid(column=3, row=row)
-        Button(self.payments_tree_frame,
-               text="CalcularDNI",
-               command=self.validate_dni,
-               ).grid(column=4, row=row)
-        row += 1
-        Label(self.payments_tree_frame, text="Fecha: ").grid(column=0, row=row)
-        self.Entry("paysearch.pay_date", self.payments_tree_frame).grid(column=1, row=row)
-        Label(self.payments_tree_frame, text="Oficina: ").grid(column=2, row=row)
-        self.Entry("paysearch.office", self.payments_tree_frame).grid(column=3, row=row)
+        self.Combobox("paysearch.state", admin_config.PAYMENTS_STATES, self.payments_tree_frame).grid(column=1,
+                                                                                                      row=row,
+                                                                                                      columnspan=2)
+        self.LabelEntry("paysearch.customer_id", "DNI: ", self.payments_tree_frame).grid(column=3,
+                                                                                         row=row,
+                                                                                         columnspan=2) #TODO: Do a phone searching
         Button(self.payments_tree_frame,
                text="Buscar",
                command=self.search_payment,
                ).grid(column=4, row=row)
         row += 1
+        #Button(self.payments_tree_frame,
+        #       text="CalcularDNI",
+        #       command=self.validate_dni,
+        #       ).grid(column=4, row=row)
+        row += 1
+        self.LabelEntry("paysearch.pay_date", "Fecha: ", self.payments_tree_frame).grid(column=0, row=row, columnspan=2)
+        self.LabelEntry("paysearch.office", "Oficina: ", self.payments_tree_frame).grid(column=2, row=row, columnspan=2)
+        self.LabelEntry("paysearch.amount", "Importe: ", self.payments_tree_frame).grid(column=4, row=row)
+
         self.payments_tree = self.TreeView("pagos",
                                            columns,
                                            self.payments_tree_frame,
@@ -156,7 +159,10 @@ class App(EasyFrame):
 
     def validate_dni(self):
         dni = self.get_var("paysearch.customer_id").get()
-        dni = calcular_y_formatear_letra_dni(dni)
+        try:
+            dni = calcular_y_formatear_letra_dni(dni)
+        except ValueError:
+            dni = formatear_letra_dni(dni)
         self.set_var("paysearch.customer_id", dni)
 
     def load_payment_from_tree(self, *args, **kwargs):
@@ -181,6 +187,8 @@ class App(EasyFrame):
         dni = self.get_var("paysearch.customer_id").get()
         oficina = self.get_var("paysearch.office").get()
         fecha = self.get_var("paysearch.pay_date").get()
+        importe = self.get_var("paysearch.pay_date").get().replace(" ",
+                                                                   "").replace(".", "").replace(",", "").replace("€", "")
         kwargs = dict()
         if estado != "" and estado in admin_config.PAYMENTS_STATES:
             kwargs["estado"] = estado
@@ -188,7 +196,7 @@ class App(EasyFrame):
             try:
                 kwargs["dni"] = calcular_y_formatear_letra_dni(dni)
             except ValueError:
-                kwargs["dni"] = dni
+                kwargs["dni"] = formatear_letra_dni(dni)
         if oficina != "":
             try:
                 int(oficina)
@@ -198,6 +206,8 @@ class App(EasyFrame):
                 kwargs["oficina"] = oficina
         if fecha != "":
             kwargs["fecha"] = fecha #TODO: Validate
+        if importe != "":
+            kwargs["importe"] = importe
         self.update_pagos_tree(**kwargs)
 
     def update_pagos_tree(self, link=None, **filter):

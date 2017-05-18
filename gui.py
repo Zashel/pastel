@@ -46,9 +46,6 @@ class App(EasyFrame):
         row += 1
         self.Combobox("pagos.estado", admin_config.PAYMENTS_STATES).grid(column=2, row=row)
 
-        PAYMENTS_FIELDS = ["observaciones",
-                           "posibles",
-                           "estado"]
         return frame
 
 

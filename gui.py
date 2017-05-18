@@ -207,7 +207,9 @@ class App(EasyFrame):
             for pago in pagos:
                 if "_id" in pago:
                     pagos_dict[str(pago["_id"])] = pago
-        self.set_tree_data("pagos", pagos_dict, order=[int(key) for key in pagos_dict.keys()])
+        order = [int(key) for key in pagos_dict.keys()]
+        order.sort()
+        self.set_tree_data("pagos", pagos_dict, order=[str(key) for key in order])
         for link in ("first", "prev", "next", "last"):
             self.__getattribute__("payments_tree_"+link)["state"] = "enable"
         page = API.get_this_pagos_page()

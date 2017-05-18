@@ -75,7 +75,7 @@ class TkVars:
                 #type(int()): IntVar,
                 #type(float()): DoubleVar,
                 #type(bool()): BooleanVar,
-                type(int()): StringVar, #This is going to be the problem!
+                type(int()): StringVar, #This is going to be the problem!2
                 type(float()): StringVar,
                 type(bool()): StringVar,
                 type(dict()): dict,

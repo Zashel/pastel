@@ -41,7 +41,7 @@ class App(EasyFrame):
         self.LabelEntry("pagos.id_cliente", "Id_Cliente: ", frame).grid(column=1, row=row)
         self.LabelEntry("pagos.tels", "Teléfonos", frame).grid(column=2, row=row)
         row += 1
-        self.payment_data_frame_text[parent] = Text(frame, width=200, height=50)
+        self.payment_data_frame_text[parent] = Text(frame, width=50, height=15)
         self.payment_data_frame_text[parent].grid(column=0, row=row, columnspan=3)
         row += 1
         self.Combobox("pagos.estado", admin_config.PAYMENTS_STATES, frame).grid(column=2, row=row) #frame is the name of the bunny
@@ -207,7 +207,7 @@ class App(EasyFrame):
             for pago in pagos:
                 if "_id" in pago:
                     pagos_dict[str(pago["_id"])] = pago
-        self.set_tree_data("pagos", pagos_dict)
+        self.set_tree_data("pagos", pagos_dict, order=[int(key) for key in pagos_dict.keys()])
         for link in ("first", "prev", "next", "last"):
             self.__getattribute__("payments_tree_"+link)["state"] = "enable"
         page = API.get_this_pagos_page()

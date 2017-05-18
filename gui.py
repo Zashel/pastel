@@ -159,13 +159,15 @@ class App(EasyFrame):
     def load_payment_from_tree(self):
         category = "pagos"
         tree = self.tree[category]["tree"]
-        item = tree.selection()[0]
-        data = API.get_link(self.tree[category]["data"][item]["_links"]["self"]["href"], var="pagos")
-        for column in PAYMENTS_FIELDS:
-            if column in data:
-                name = "pagos.{}".format(column)
-                self.set_var(name, data[column],
-                             w=lambda *args: API.pagos["active"].__setitem__(column, self.get_var(name).get()))
+        selection = tree.selection
+        if len(selection) > 0:
+            item = tree.selection()[0]
+            data = API.get_link(self.tree[category]["data"][item]["_links"]["self"]["href"], var="pagos")
+            for column in PAYMENTS_FIELDS:
+                if column in data:
+                    name = "pagos.{}".format(column)
+                    self.set_var(name, data[column],
+                                 w=lambda *args: API.pagos["active"].__setitem__(column, self.get_var(name).get()))
 
     def search_payment(self, *args, **kwargs):
         estado = self.get_var("paysearch.state").get()

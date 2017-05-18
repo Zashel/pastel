@@ -263,7 +263,6 @@ class EasyFrame(Frame):
         tree = self.tree[category]["tree"]
         item = tree.selection()[0]
         data = self.get_var(var_name).get()
-        print(data)
         self.tree[category]["data"][item][name] = self.tree[category]["validate"][name](data)
         tree.set(item, name, self.tree[category]["show"][name](data))
 

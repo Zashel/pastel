@@ -102,7 +102,7 @@ class App(EasyFrame):
                                            columns,
                                            self.payments_tree_frame,
                                            default_config=default_config)
-        self.payments_tree.bind("<Double-1>", self.load_payment_from_tree)
+        self.payments_tree.bind("<Double-1>", self.open_payment_data_frame)
         treeScroll = Scrollbar(self.payments_tree_frame,
                                orient=VERTICAL,
                                command=self.payments_tree.yview)
@@ -135,9 +135,6 @@ class App(EasyFrame):
         row += 1
         self.Entry("pagos.dni", self.payments_tree_frame).grid(column=0, row=row)
 
-
-
-
         #Payment Frame
         self.payment_frame = Frame(self.tabs["payments"])
         self.payment_data_frame(self.payment_frame).pack()
@@ -150,7 +147,12 @@ class App(EasyFrame):
 
         self.tabs["payments"].pack()
 
-        print("What about this bunny?")
+    def open_payment_data_frame(self):
+        self.load_payment_from_tree()
+        if self.search_payments_estado == "PENDIENTE":
+            self.show_pending_payment()
+        else:
+            self.show_payment()
 
     def validate_dni(self):
         dni = self.get_var("paysearch.customer_id").get()
@@ -167,12 +169,12 @@ class App(EasyFrame):
             for column in PAYMENTS_FIELDS:
                 if column in data:
                     name = "pagos.{}".format(column)
-                    print("Name: ", name)
                     self.set_var(name, data[column],
                                  w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, self.get_var(name).get()))
 
     def search_payment(self, *args, **kwargs):
         estado = self.get_var("paysearch.state").get()
+        self.search_payments_estado = estado
         dni = self.get_var("paysearch.customer_id").get()
         oficina = self.get_var("paysearch.office").get()
         fecha = self.get_var("paysearch.pay_date").get()
@@ -379,6 +381,7 @@ class App(EasyFrame):
         self.set_var("config.ITEMS_PER_PAGE", local_config.ITEMS_PER_PAGE)
 
     def set_variables(self):
+        self.search_payments_estado = str()
         for item in PAYMENTS_FIELDS:
             self.set_var(".".join(("pagos", item)))
 

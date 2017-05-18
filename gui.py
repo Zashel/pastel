@@ -42,7 +42,7 @@ class App(EasyFrame):
         LabelEntry("pagos.id_cliente", "Id_Cliente: ", frame).grid(column=1, row=row)
         LabelEntry("pagos.tels", "Teléfonos", frame).grid(column=2, row=row)
         row += 1
-        self.payment_data_frame_text[parent] = Text(frame, width=80, height=5, state="readonly")
+        self.payment_data_frame_text[parent] = Text(frame, width=80, height=5, state="disable")
         self.payment_data_frame_text[parent].grid(column=0, row=row, columnspan=3)
         row += 1
         self.Combobox("pagos.estado", admin_config.PAYMENTS_STATES, frame).grid(column=2, row=row) #frame is the name of the bunny

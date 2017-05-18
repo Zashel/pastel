@@ -161,7 +161,7 @@ class App(EasyFrame):
         dni = calcular_y_formatear_letra_dni(dni)
         self.set_var("paysearch.customer_id", dni)
 
-    def load_payment_from_tree(self):
+    def load_payment_from_tree(self, *args, **kwargs):
         category = "pagos"
         tree = self.tree[category]["tree"]
         selection = tree.selection()

@@ -294,7 +294,6 @@ class EasyFrame(Frame):
         self.del_tree_data(category)
         if order is None:
             order = list(data.keys())
-            order.sort()
         else:
             assert all([item in data for item in order])
         self.tree[category]["data"] = data

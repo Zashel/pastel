@@ -160,8 +160,8 @@ class EasyFrame(Frame):
         last_entry_validation = (self.register(self.entered_entry), "%P", route)
         return Entry(*args, textvariable=var, validate="all", validatecommand=last_entry_validation, **kwargs)
 
-    def LabelEntry(self, route, text, labelargs=None, labelkwargs=None, entryargs=None, entrykwargs=None,
-                   *args, **kwargs):
+    def LabelEntry(self, route, text, *args, labelargs=None, labelkwargs=None, entryargs=None, entrykwargs=None,
+                   **kwargs):
         if labelargs is None:
             labelargs = list()
         if labelkwargs is None:

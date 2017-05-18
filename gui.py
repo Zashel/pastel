@@ -33,19 +33,18 @@ class App(EasyFrame):
         # Frame
         frame = Frame(parent)
         #Objects:
-        self.LabelEntry("pagos.fecha", "Fecha Pago: ", frame).grid(column=0, row=row)
-        self.LabelEntry("pagos.oficina", "Oficina: ", frame).grid(column=1, row=row)
-        self.LabelEntry("pagos.importe", "Importe: ", frame).grid(column=2, row=row)
+        #self.LabelEntry("pagos.fecha", "Fecha Pago: ", frame).grid(column=0, row=row)
+        #self.LabelEntry("pagos.oficina", "Oficina: ", frame).grid(column=1, row=row)
+        #self.LabelEntry("pagos.importe", "Importe: ", frame).grid(column=2, row=row)
         row += 1
-        self.LabelEntry("pagos.dni", "DNI: ", frame).grid(column=0, row=row)
-        self.LabelEntry("pagos.id_cliente", "Id_Cliente: ", frame).grid(column=1, row=row)
-        self.LabelEntry("pagos.tels", "Teléfonos", frame).grid(column=2, row=row)
+        #self.LabelEntry("pagos.dni", "DNI: ", frame).grid(column=0, row=row)
+        #self.LabelEntry("pagos.id_cliente", "Id_Cliente: ", frame).grid(column=1, row=row)
+        #self.LabelEntry("pagos.tels", "Teléfonos", frame).grid(column=2, row=row)
         row += 1
-        self.payment_data_frame_text[parent] = Text(frame, width=800, height=400)
-        self.payment_data_frame_text[parent].grid(column=0, row=row, columnspan=3)
+        #self.payment_data_frame_text[parent] = Text(frame, width=800, height=400)
+        #self.payment_data_frame_text[parent].grid(column=0, row=row, columnspan=3)
         row += 1
-        self.Combobox("pagos.estado", admin_config.PAYMENTS_STATES).grid(column=2, row=row)
-
+        #self.Combobox("pagos.estado", admin_config.PAYMENTS_STATES).grid(column=2, row=row)
         return frame
 
 

@@ -55,7 +55,7 @@ class TkVars:
                                                partial(self._bindings[item][method],
                                                        var_name=".".join((self._name, item))))
                 self._vars[item].set(value)
-                print(".".join((self._name, item)) + ": " + str(value))
+                print(".".join((str(self._name), str(item))) + ": " + str(value))
                 gc.collect()
             elif tk_var_class == dict:
                 self._vars[item] = TkVars(item)

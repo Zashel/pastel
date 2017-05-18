@@ -54,6 +54,7 @@ class App(EasyFrame):
         columnspan = 1
         tree = self.TreeView(name, self.posibles_columns, frame)
         tree.grid(column=0, row=row, columnspan=columnspan)
+        return tree
 
     def payment_posibles_load(self, name):
         posibles = self.get_var("pagos.posibles").get()
@@ -67,8 +68,11 @@ class App(EasyFrame):
                 if header in self.posibles_columns:
                     final[item][header] = posible[self.posibles_columns.index(index)]
         order.sort()
-        self.set_tree_data("name", final, order=[str(key) for key in order])
-
+        if self.search_payments_estado == "PENDIENTE":
+            self.set_tree_data("editable_posibles", final, order=[str(key) for key in order])
+        else:
+            self.set_tree_data("posibles", final, order=[str(key) for key in order])
+        
 
     def set_payments_tree_frame(self):
         #Payments Tree
@@ -162,11 +166,13 @@ class App(EasyFrame):
         #Payment Frame
         self.payment_frame = Frame(self.tabs["payments"])
         self.payment_data_frame(self.payment_frame).pack()
+        self.payment_posibles_frame(self.payment_data_frame, "posibles").pack()
         Button(self.payment_frame, text="Cerrar", command=self.show_payments_tree).pack()
 
-        #Pending Peyment Frame
+        #Pending Payment Frame
         self.pending_payment_frame = Frame(self.tabs["payments"])
         self.payment_data_frame(self.pending_payment_frame).pack()
+        self.payment_posibles_frame(self.payment_data_frame, "editable_posibles").pack()
         Button(self.pending_payment_frame, text="Cerrar", command=self.show_payments_tree).pack()
 
         self.tabs["payments"].pack()

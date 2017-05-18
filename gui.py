@@ -177,7 +177,8 @@ class App(EasyFrame):
                 if column in data:
                     print(column)
                     name = "pagos.{}".format(column)
-                    self.tree["pagos"]["show"][column](data[column])
+                    if column in self.tree["pagos"]["show"]:
+                        data[column] = self.tree["pagos"]["show"][column](data[column])
                     self.set_var(name, data[column],
                                  w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, data[column]))
             for parent in (self.payment_frame, self.pending_payment_frame):

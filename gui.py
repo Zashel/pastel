@@ -166,7 +166,7 @@ class App(EasyFrame):
             for column in PAYMENTS_FIELDS:
                 if column in data:
                     name = "pagos.{}".format(column)
-                    print("Column: ", column)
+                    print("Name: ", name)
                     self.set_var(name, data[column],
                                  w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, self.get_var(name).get()))
 

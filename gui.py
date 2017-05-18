@@ -18,9 +18,9 @@ class App(EasyFrame):
         #Widgets
         self.set_menu()
         self.set_widgets()
-        self.payment_data_frame_text = None
 
     def set_widgets(self):
+        self.payment_data_frame_text = None
         self.tabs = {"init": Frame(self),
                      "configuration": Frame(self),
                      "payments": Frame(self)}

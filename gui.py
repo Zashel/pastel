@@ -82,15 +82,14 @@ class App(EasyFrame):
         # Payment search
         Label(self.payments_tree_frame, text="Estado: ").grid(column=0, row=row)
         self.Combobox("paysearch.state", admin_config.PAYMENTS_STATES, self.payments_tree_frame).grid(column=1,
-                                                                                                      row=row,
-                                                                                                      columnspan=2)
-        self.LabelEntry("paysearch.customer_id", "DNI: ", self.payments_tree_frame).grid(column=3,
+                                                                                                      row=row)
+        self.LabelEntry("paysearch.customer_id", "DNI: ", self.payments_tree_frame).grid(column=2,
                                                                                          row=row,
                                                                                          columnspan=2) #TODO: Do a phone searching
         Button(self.payments_tree_frame,
                text="Buscar",
                command=self.search_payment,
-               ).grid(column=4, row=row)
+               ).grid(column=3, row=row)
         row += 1
         #Button(self.payments_tree_frame,
         #       text="CalcularDNI",
@@ -98,8 +97,8 @@ class App(EasyFrame):
         #       ).grid(column=4, row=row)
         row += 1
         self.LabelEntry("paysearch.pay_date", "Fecha: ", self.payments_tree_frame).grid(column=0, row=row, columnspan=2)
-        self.LabelEntry("paysearch.office", "Oficina: ", self.payments_tree_frame).grid(column=2, row=row, columnspan=2)
-        self.LabelEntry("paysearch.amount", "Importe: ", self.payments_tree_frame).grid(column=4, row=row)
+        self.LabelEntry("paysearch.office", "Oficina: ", self.payments_tree_frame).grid(column=2, row=row)
+        self.LabelEntry("paysearch.amount", "Importe: ", self.payments_tree_frame).grid(column=3, row=row)
         row += 1
         self.payments_tree = self.TreeView("pagos",
                                            columns,

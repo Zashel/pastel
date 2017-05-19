@@ -59,9 +59,9 @@ class App(EasyFrame):
         "fecha_operacion",
         "importe",
         "periodo_facturado"
-        default_config = {"columns": {"width": 75},
+        default_config = {"columns": {"width": 100},
                           "column": {"#0": {"width": 30},
-                                     "periodo_facturado": {"width": 100},
+                                     "periodo_facturado": {"width": 110},
                                      },
                           "heading": {"#0": {"text": "ID"},
                                       "dni": {"text": "DNI"},
@@ -86,11 +86,10 @@ class App(EasyFrame):
         order = list()
         for index, item in enumerate(posibles):
             posible = item.get().split(";")
+            print(posible)
             final[str(index)] = dict()
             order.append(index)
             for header in self.posibles_headers:
-                print(header)
-                print(header in self.posibles_headers)
                 if header in self.posibles_columns:
                     final[str(index)][header] = posible[self.posibles_columns.index(header)]
         order.sort()
@@ -234,13 +233,10 @@ class App(EasyFrame):
                     if column in self.tree["pagos"]["show"]:
                         data[column] = self.tree["pagos"]["show"][column](data[column])
                     if column == "posibles":
-                        print(type(data[column]))
                         if type(data[column]) in (str, bytearray):
                             data[column] = json.loads(data[column])
                     self.set_var(name, data[column],
                                  w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, data[column]))
-                    if column == "posibles":
-                        print(name, type(self.get_var(name)))
             for parent in (self.payment_frame, self.pending_payment_frame):
                 self.payment_data_frame_text[parent]["state"] = "normal"
                 self.payment_data_frame_text[parent].delete("1.0", END)

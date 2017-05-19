@@ -284,6 +284,7 @@ class EasyFrame(Frame):
             pad = h // 2
             #data = tree.set(row, column)
             #last_entry_validation = (self.register(tree.set), row, column, "%P")
+            print(".".join((category, row)))
             var = self.get_var(".".join((category, row)))
             self._popUp = Entry(tree,
                                 textvariable=var)

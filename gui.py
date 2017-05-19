@@ -53,12 +53,6 @@ class App(EasyFrame):
         frame = Frame(parent)
         row = 0
         columnspan = 1
-        "dni",
-        "nombre",
-        "id_factura",
-        "fecha_operacion",
-        "importe",
-        "periodo_facturado"
         default_config = {"columns": {"width": 100},
                           "column": {"#0": {"width": 30},
                                      "periodo_facturado": {"width": 110},
@@ -75,7 +69,8 @@ class App(EasyFrame):
                           "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "")
                                                                 .replace("€", "").replace(".", "").replace(",", "")),
                                        },
-                          "bind": {}}
+                          "bind": {},
+                          "editable": ["nombre", "id_factura", "importe", "periodo_facturado"]}
         tree = self.TreeView(name, self.posibles_columns, frame, default_config=default_config)
         tree.grid(column=0, row=row, columnspan=columnspan)
         return frame
@@ -97,10 +92,7 @@ class App(EasyFrame):
                         val = lambda x: x
                     final[str(index)][header] = posible[self.posibles_headers.index(header)]
         order.sort()
-        if self.search_payments_estado == "PENDIENTE":
-            self.set_tree_data("editable_posibles", final, order=[str(key) for key in order])
-        else:
-            self.set_tree_data("posibles", final, order=[str(key) for key in order])
+        self.set_tree_data(name, final, order=[str(key) for key in order])
 
     def set_payments_tree_frame(self):
         #Payments Tree

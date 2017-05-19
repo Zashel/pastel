@@ -124,6 +124,7 @@ class EasyFrame(Frame):
         self._vars = dict()
         self._tree = dict()
         self._comboboxes = dict()
+        self._popUp_variable = StringVar()
         self._popUp = None
 
     @property
@@ -281,15 +282,18 @@ class EasyFrame(Frame):
             x, y, w, h = tree.bbox(row, column)
             pad = h // 2
             data = tree.set(row, column)
-            print(data)
             last_entry_validation = (self.register(tree.set), row, column, "%P")
-            self._popUp = Entry(tree, text=data, validate="all", validatecommand=last_entry_validation)
+            self._popUp = Entry(tree,
+                                textvariable=self._popUp_variable,
+                                validate="all", validatecommand=last_entry_validation)
+            self._popUp_variable.set(data)
             self._popUp.place(x=x, y=y+pad, anchor=W)
             self._popUp.bind("<Escape>", self.destroy_popUp)
             self._popUp.bind("<Return>", self.destroy_popUp)
 
     def destroy_popUp(self, event=None):
         if hasattr(self._popUp, "destroy"):
+            self._popUp_variable.set("")
             self._popUp.destroy()
 
     def set_combobox_values(self, route, values):

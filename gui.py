@@ -6,6 +6,7 @@ from definitions import local_config, admin_config, LOCAL, SHARED, PAYMENTS_FIEL
 from tkutils import *
 from utils import *
 import getpass
+import json
 import datetime
 
 class App(EasyFrame):
@@ -209,6 +210,8 @@ class App(EasyFrame):
                     name = "pagos.{}".format(column)
                     if column in self.tree["pagos"]["show"]:
                         data[column] = self.tree["pagos"]["show"][column](data[column])
+                    if column == "posibles":
+                        data[column] = json.loads(data[column])
                     self.set_var(name, data[column],
                                  w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, data[column]))
                     if column == "posibles":

@@ -281,8 +281,9 @@ class EasyFrame(Frame):
             x, y, w, h = tree.bbox(row, column)
             pad = h // 2
             data = tree.item(row, "text")
+            print(data)
             last_entry_validation = (self.register(tree.set), row, column, "%P")
-            self._popUp = Entry(tree, data, validate="all", validatecommand=last_entry_validation)
+            self._popUp = Entry(tree, text=data, validate="all", validatecommand=last_entry_validation)
             self._popUp.place(x=0, y=y+pad, anchow=W, relwidth=1)
             self._popUp.bind("<Escape>", lambda event: self._popUp.destroy())
 

@@ -8,6 +8,14 @@ import gc
 __all__ = ["TkVars",
            "EasyFrame"]
 
+class ListVar(list): #TODO: define "append"
+    def get(self):
+        return self
+
+class TupleVar(tuple):
+    def get(self):
+        return self
+
 class TkVars:
     reference = dict()
 
@@ -66,8 +74,8 @@ class TkVars:
                 tkvars = TkVars(".".join((self._name, item)))
                 for index, val in enumerate(value):
                     final.append(tkvars.set(index, val))
-                object.__setattr__(self, self._name, tk_var_class(final))
-                final.get = lambda: final
+                var = tk_var_class == list and ListVar or TupleVar
+                self._vars[self._name] = var(final)
                 #if tk_var_class == list:
                 #    final.append = lambda value, name=self._vars[item]: tkvars.set(len(name), value)
                 #TODO: Do an ad-hoc list

@@ -68,10 +68,15 @@ class App(EasyFrame):
                                       "fecha_operacion": {"text": "Fecha Operación"},
                                       "importe": {"text": "Importe"},
                                       "periodo_facturado": {"text": "Periodo Facturado"}},
-                          "show": {"importe": lambda x: str(x)[:-2] + "," + str(x)[-2:] + " \u20ac",
+                          #"show": {"importe": lambda x: str(x)[:-2] + "," + str(x)[-2:] + " \u20ac",
+                          #         },
+                          "show": {"importe": lambda x: x+" \u20ac",
                                    },
-                          "validate": {"importe": lambda x: int(float(x.replace("\n", "").replace(" ", "")
-                                                                      .replace("€", "").replace(",", "."))*100),
+                          "validate": {"importe": lambda x: str(float(x.replace("\n", "")
+                                                                      .replace(" ", "")
+                                                                      .replace("\u20ac", "")
+                                                                      .replace(",", "."))
+                                                                ).replace(".", ","),
                                        },
                           "bind": {},
                           "editable": editable}

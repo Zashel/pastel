@@ -65,8 +65,9 @@ class App(EasyFrame):
             final[item] = dict()
             order.append(int(item))
             for header in self.posibles_headers:
+                print(header)
+                print(header in self.posibles_headers)
                 if header in self.posibles_columns:
-                    print(header)
                     final[item][header] = posible[self.posibles_columns.index(index)]
         order.sort()
         if self.search_payments_estado == "PENDIENTE":
@@ -101,7 +102,7 @@ class App(EasyFrame):
                           "show": {"importe": lambda x: str(x)[:-2]+","+str(x)[-2:]+"\u20ac",
                                    "tels": lambda x: ", ".join(x)},
                           "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "")
-                                                                .replace("€", "").replace(".", "".replace(",", "")))},
+                                                                .replace("€", "").replace(".", "").replace(",", ""))},
                           "bind": {}}
         self.payments_tree_frame = Frame(self.tabs["payments"])
         self.payments_tree_frame.pack()
@@ -202,10 +203,8 @@ class App(EasyFrame):
         if len(selection) > 0:
             item = tree.selection()[0]
             data = API.get_link(self.tree[category]["data"][item]["_links"]["self"]["href"], var="pagos")
-            print(data)
             for column in PAYMENTS_FIELDS:
                 if column in data:
-                    print(column)
                     name = "pagos.{}".format(column)
                     if column in self.tree["pagos"]["show"]:
                         data[column] = self.tree["pagos"]["show"][column](data[column])
@@ -216,7 +215,6 @@ class App(EasyFrame):
                 self.payment_data_frame_text[parent].delete("1.0", END)
                 self.payment_data_frame_text[parent].insert("1.0", self.get_var("pagos.observaciones").get())
                 self.payment_data_frame_text[parent]["state"] = "disable"
-        print("vars", self._vars)
 
     def search_payment(self, *args, **kwargs):
         estado = self.get_var("paysearch.state").get()

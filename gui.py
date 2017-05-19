@@ -64,7 +64,7 @@ class App(EasyFrame):
         for index, item in enumerate(posibles):
             posible = item.get().split(";")
             final[str(index)] = dict()
-            order.append(int(item))
+            order.append(index)
             for header in self.posibles_headers:
                 print(header)
                 print(header in self.posibles_headers)

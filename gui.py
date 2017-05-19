@@ -7,7 +7,10 @@ from tkutils import *
 from utils import *
 import getpass
 import json
+import decimal
 import datetime
+
+decimal.getcontext().prec = 2
 
 class App(EasyFrame):
     def __init__(self, master=None):
@@ -57,6 +60,7 @@ class App(EasyFrame):
             editable = ["dni", "nombre", "id_factura", "importe", "periodo_facturado"]
         else:
             editable = list()
+        calculate_pending = partial(self.calculate_pending(name))
         default_config = {"columns": {"width": 100},
                           "column": {"#0": {"width": 30},
                                      "periodo_facturado": {"width": 110},
@@ -71,6 +75,7 @@ class App(EasyFrame):
                           #"show": {"importe": lambda x: str(x)[:-2] + "," + str(x)[-2:] + " \u20ac",
                           #         },
                           "show": {"importe": lambda x: x+" \u20ac",
+                                   "importe": lambda x: calculate_pending(),
                                    },
                           "validate": {"importe": lambda x: str(float(x.replace("\n", "")
                                                                       .replace(" ", "")
@@ -84,15 +89,30 @@ class App(EasyFrame):
         tree.grid(column=0, row=row, columnspan=columnspan)
         return frame
 
+    def calculate_pending(self, name):
+        tree = self.tree[name]["tree"]
+        paid = decimal.Decimal()
+        next = "0"
+        while True:
+            paid += decimal.Decimal(tree.set(next, "importe").replace(" \u20ac", "").replace(",", "."))
+            next = tree.next(next)
+            if next == "":
+                break
+        total = decimal.Decimal(self.get_var("pagos.importe").replace(" \u20ac", "").replace(",", "."))
+        self._pending = total - paid
+        self._pending_variable.set(str(self._pending).replace(".", ",")+" \u20ac")
+
     def payment_posibles_load(self, name):
         posibles = self.get_var("pagos.posibles").get()
         final = dict()
         order = list()
+        paid = decimal.Decimal()
         for index, item in enumerate(posibles):
             posible = item.get().split(";")
             print(posible)
             final[str(index)] = dict()
             order.append(index)
+            paid += decimal.Decimal(posible[self.posibles_headers.index("importe")])
             for header in self.posibles_headers:
                 if header in self.posibles_columns:
                     if header in self.tree[name]["validate"]:
@@ -101,7 +121,7 @@ class App(EasyFrame):
                         val = lambda x: x
                     final[str(index)][header] = posible[self.posibles_headers.index(header)]
         order.sort()
-        self.set_tree_data(name, final, order=[str(key) for key in order])
+        self.calculate_pending(name)
 
     def set_payments_tree_frame(self):
         #Payments Tree
@@ -193,7 +213,6 @@ class App(EasyFrame):
                                                   state="disable")
         self.payments_tree_last.grid(column=4, row=row)
         row += 1
-        self.Entry("pagos.importe", self.payments_tree_frame).grid(column=0, row=row)
 
         #Payment Frame
         self.payment_frame = Frame(self.tabs["payments"])
@@ -465,6 +484,8 @@ class App(EasyFrame):
 
     def set_variables(self):
         self.search_payments_estado = str()
+        self._pending = decimal.Decimal()
+        self._pending_variable = StringVar()
         self.posibles_headers = ["fecha_aplicacion",
                                  "codigo",
                                  "nombre",

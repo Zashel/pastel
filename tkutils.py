@@ -241,7 +241,9 @@ class EasyFrame(Frame):
             validate = dict()
         else:
             validate = default_config["validate"]
-        if "editable" in default_config and type(default_config["editable"]) in (list, tuple):
+
+        if "editable" in default_config:
+            print(default_config["editable"])
             tree.bind("<Double-1>", partial(self.editable_tree_pop_entry, tree, default_config["editable"]))
         for item in columns:
             if item not in validate:
@@ -274,6 +276,8 @@ class EasyFrame(Frame):
             self._popUp.destroy()
         assert isinstance(tree, Treeview)
         column = tree.identify_column(event.x)
+        print(column)
+        print(editable_columns)
         if column in editable_columns:
             row = tree.identify_row(event.y)
             parent = tree.parent(row)

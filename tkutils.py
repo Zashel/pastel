@@ -34,8 +34,6 @@ class TkVars:
             raise KeyError()
 
     def __setattr__(self, item, value):
-        if item == "posibles":
-            print(value)
         if item in ("_vars", "_name", "_bindings", "r", "w", "u"):
             object.__setattr__(self, item, value)
         else:
@@ -77,7 +75,7 @@ class TkVars:
                 for index, val in enumerate(value):
                     final.append(tkvars.set(index, val))
                 self._vars[".".join((self._name, item))] = tk_var_class(final)
-                print(".".join((self._name, item)), type(self._vars[".".join((self._name, item))]))
+                print(".".join((self._name, item)), type(self.get(".".join((self._name, item)))))
                 #if tk_var_class == list:
                 #    final.append = lambda value, name=self._vars[item]: tkvars.set(len(name), value)
                 #TODO: Do an ad-hoc list

@@ -172,7 +172,7 @@ class App(EasyFrame):
         #Pending Payment Frame
         self.pending_payment_frame = Frame(self.tabs["payments"])
         self.payment_data_frame(self.pending_payment_frame).pack()
-        self.payment_posibles_frame(self.payment_frame, "editable_posibles").pack()
+        self.payment_posibles_frame(self.pending_payment_frame, "editable_posibles").pack()
         Button(self.pending_payment_frame, text="Cerrar", command=self.show_payments_tree).pack()
 
         self.tabs["payments"].pack()
@@ -181,8 +181,10 @@ class App(EasyFrame):
         self.load_payment_from_tree()
         if self.search_payments_estado == "PENDIENTE":
             self.show_pending_payment()
+            self.payment_posibles_load("editable_posibles")
         else:
             self.show_payment()
+            self.payment_posibles_load("posibles")
 
     def validate_dni(self):
         dni = self.get_var("paysearch.customer_id").get()

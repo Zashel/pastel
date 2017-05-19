@@ -58,7 +58,6 @@ class App(EasyFrame):
 
     def payment_posibles_load(self, name):
         posibles = self.get_var("pagos.posibles").get()
-        print(posibles)
         final = dict()
         order = list()
         for index, item in enumerate(posibles):
@@ -75,7 +74,6 @@ class App(EasyFrame):
             self.set_tree_data("editable_posibles", final, order=[str(key) for key in order])
         else:
             self.set_tree_data("posibles", final, order=[str(key) for key in order])
-        
 
     def set_payments_tree_frame(self):
         #Payments Tree
@@ -103,7 +101,9 @@ class App(EasyFrame):
                           "show": {"importe": lambda x: str(x)[:-2]+","+str(x)[-2:]+"\u20ac",
                                    "tels": lambda x: ", ".join(x)},
                           "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "")
-                                                                .replace("€", "").replace(".", "").replace(",", ""))},
+                                                                .replace("€", "").replace(".", "").replace(",", "")),
+                                       "tels": lambda x: x.split(", ")},
+
                           "bind": {}}
         self.payments_tree_frame = Frame(self.tabs["payments"])
         self.payments_tree_frame.pack()
@@ -209,6 +209,8 @@ class App(EasyFrame):
                     name = "pagos.{}".format(column)
                     if column in self.tree["pagos"]["show"]:
                         data[column] = self.tree["pagos"]["show"][column](data[column])
+                    if column == "posibles":
+                        print(data[column])
                     self.set_var(name, data[column],
                                  w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, data[column]))
             for parent in (self.payment_frame, self.pending_payment_frame):

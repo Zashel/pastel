@@ -108,6 +108,7 @@ class TkVars:
             else:
                 if method is not None:
                     self._vars[name].trace(method_name, partial(method, var_name=".".join((self._name, name))))
+        return self.get(name)
 
     def get(self, name):
         return self.__getattr__(name)

@@ -171,7 +171,7 @@ class App(EasyFrame):
 
         #Pending Payment Frame
         self.pending_payment_frame = Frame(self.tabs["payments"])
-        self.payment_posibles_frame(self.pending_payment_frame).pack()
+        self.payment_data_frame(self.pending_payment_frame).pack()
         self.payment_posibles_frame(self.payment_frame, "editable_posibles").pack()
         Button(self.pending_payment_frame, text="Cerrar", command=self.show_payments_tree).pack()
 

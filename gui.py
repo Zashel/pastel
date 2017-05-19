@@ -452,10 +452,7 @@ class App(EasyFrame):
                                  "importe",
                                  "periodo_facturado"]
         for item in PAYMENTS_FIELDS:
-            if item == "posibles":
-                self.set_var(".".join(("pagos", item)), list())
-            else:
-                self.set_var(".".join(("pagos", item)))
+            self.set_var(".".join(("pagos", item)))
 
 
 if __name__ == "__main__":

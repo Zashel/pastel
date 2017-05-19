@@ -63,13 +63,13 @@ class App(EasyFrame):
         order = list()
         for index, item in enumerate(posibles):
             posible = item.get().split(";")
-            final[item] = dict()
+            final[str(index)] = dict()
             order.append(int(item))
             for header in self.posibles_headers:
                 print(header)
                 print(header in self.posibles_headers)
                 if header in self.posibles_columns:
-                    final[item][header] = posible[self.posibles_columns.index(index)]
+                    final[str(index)][header] = posible[self.posibles_columns.index(header)]
         order.sort()
         if self.search_payments_estado == "PENDIENTE":
             self.set_tree_data("editable_posibles", final, order=[str(key) for key in order])

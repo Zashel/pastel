@@ -58,6 +58,7 @@ class App(EasyFrame):
 
     def payment_posibles_load(self, name):
         posibles = self.get_var("pagos.posibles").get()
+        print(posibles)
         final = dict()
         order = list()
         for index, item in enumerate(posibles):
@@ -182,11 +183,11 @@ class App(EasyFrame):
     def open_payment_data_frame(self, event):
         self.load_payment_from_tree()
         if self.search_payments_estado == "PENDIENTE":
-            self.show_pending_payment()
             self.payment_posibles_load("editable_posibles")
+            self.show_pending_payment()
         else:
-            self.show_payment()
             self.payment_posibles_load("posibles")
+            self.show_payment()
 
     def validate_dni(self):
         dni = self.get_var("paysearch.customer_id").get()

@@ -74,8 +74,7 @@ class TkVars:
                 tkvars = TkVars(".".join((self._name, item)))
                 for index, val in enumerate(value):
                     final.append(tkvars.set(index, val))
-                self._vars[".".join((self._name, item))] = tk_var_class(final)
-                print(".".join((self._name, item)), type(self.get(".".join((self._name, item)))))
+                self._vars[item] = tk_var_class(final)
                 #if tk_var_class == list:
                 #    final.append = lambda value, name=self._vars[item]: tkvars.set(len(name), value)
                 #TODO: Do an ad-hoc list

@@ -99,8 +99,13 @@ class TkVars:
         for method_name, method in (("r", r),
                                     ("w", w),
                                     ("u", u)):
-            if method is not None:
-                self._vars[name].trace(method_name, partial(method, var_name=".".join((self._name, name))))
+            if type(self.get(name)) in (ListVar, TupleVar):
+                for index, item in enumerate(self.get(name)):
+                    if method is not None:
+                        item.trace(method_name, partial(method, var_name=".".join((self._name, name, str(index)))))
+            else:
+                if method is not None:
+                    self._vars[name].trace(method_name, partial(method, var_name=".".join((self._name, name))))
 
     def get(self, name):
         return self.__getattr__(name)

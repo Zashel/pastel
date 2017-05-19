@@ -278,10 +278,6 @@ class EasyFrame(Frame):
         column = tree.column(tree.identify_column(event.x))["id"]
         if column in editable_columns:
             row = tree.identify_row(event.y)
-            parent = tree.parent(row)
-            if parent == str():
-                print("parent")
-                return
             x, y, w, h = tree.bbox(row, column)
             pad = h // 2
             data = tree.item(row, "text")

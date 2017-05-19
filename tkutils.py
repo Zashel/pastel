@@ -8,18 +8,18 @@ import gc
 __all__ = ["TkVars",
            "EasyFrame"]
 
-class ListVar(list): #TODO: define "append"
+class TupleVar(tuple):
     def get(self):
         return self
 
-class TupleVar(tuple):
+class ListVar(list):  # TODO: define "append"
     def get(self):
         return self
 
 class TkVars:
     reference = dict()
 
-    def __init__(self, name, r=None, w=None, u=None):
+    def __init__(self, name, *, r=None, w=None, u=None):
         self._vars = dict()
         self._name = name
         self._bindings = dict()
@@ -69,13 +69,13 @@ class TkVars:
                 self._vars[item] = TkVars(item)
                 for val in value:
                     self._vars[item].set(item, value[val])
-            elif tk_var_class in (list, tuple):
+            elif tk_var_class in (ListVar, TupleVar):
                 final = list()
                 tkvars = TkVars(".".join((self._name, item)))
                 for index, val in enumerate(value):
                     final.append(tkvars.set(index, val))
-                var = tk_var_class == list and ListVar or TupleVar
-                self._vars[self._name] = var(final)
+                self._vars[self._name] = tk_var_class(final)
+                print(self._name, type(self._vars[self._name]))
                 #if tk_var_class == list:
                 #    final.append = lambda value, name=self._vars[item]: tkvars.set(len(name), value)
                 #TODO: Do an ad-hoc list
@@ -89,8 +89,8 @@ class TkVars:
                 type(float()): StringVar,
                 type(bool()): StringVar,
                 type(dict()): dict,
-                type(list()): list,
-                type(tuple()): tuple
+                type(list()): ListVar,
+                type(tuple()): TupleVar
                 }[type(value)]
 
     def set(self, name, value=None, *, r=None, w=None, u=None):

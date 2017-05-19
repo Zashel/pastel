@@ -295,7 +295,7 @@ class EasyFrame(Frame):
 
     def destroy_popUp(self, event=None):
         tree, row, column = self._popUp_data
-        if hasattr(self._popUp, "set"):
+        if hasattr(tree, "set"):
             print(column)
             print(row)
             print(self._popUp_variable.get())

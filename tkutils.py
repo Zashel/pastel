@@ -124,6 +124,7 @@ class EasyFrame(Frame):
         self._vars = dict()
         self._tree = dict()
         self._comboboxes = dict()
+        self._popUp_data = [None, None, None]
         self._popUp_variable = StringVar()
         self._popUp = None
 
@@ -295,6 +296,9 @@ class EasyFrame(Frame):
     def destroy_popUp(self, event=None):
         tree, row, column = self._popUp_data
         if hasattr(self._popUp, "set"):
+            print(column)
+            print(row)
+            print(self._popUp_variable.get())
             tree.set(column, row, self._popUp_variable.get())
         if hasattr(self._popUp, "destroy"):
             self._popUp_variable.set("")

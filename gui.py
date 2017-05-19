@@ -53,6 +53,10 @@ class App(EasyFrame):
         frame = Frame(parent)
         row = 0
         columnspan = 1
+        if "editable" in name:
+            editable = ["dni", "nombre", "id_factura", "importe", "periodo_facturado"]
+        else:
+            editable = list()
         default_config = {"columns": {"width": 100},
                           "column": {"#0": {"width": 30},
                                      "periodo_facturado": {"width": 110},
@@ -70,7 +74,7 @@ class App(EasyFrame):
                                                                 .replace("€", "").replace(".", "").replace(",", "")),
                                        },
                           "bind": {},
-                          "editable": ["dni", "nombre", "id_factura", "importe", "periodo_facturado"]}
+                          "editable": editable}
         tree = self.TreeView(name, self.posibles_columns, frame, default_config=default_config)
         tree.grid(column=0, row=row, columnspan=columnspan)
         return frame

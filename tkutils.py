@@ -196,7 +196,7 @@ class EasyFrame(Frame):
         if not "anchor" in labelkwargs:
             labelkwargs["anchor"] = "e"
         labelkwargs.update({"text": text})
-        Label(frame, *labelargs, **labelkwargs).grid(column=0, row=0, sticky="w")
+        Label(frame, *labelargs, **labelkwargs).grid(column=0, row=0, sticky="w", relwidth=1)
         self.Entry(route, frame, *entryargs, **entrykwargs).grid(column=1, row=0, sticky="e")
         frame.columnconfigure(0, weight=1)
         frame.columnconfigure(1, weight=2)
@@ -241,10 +241,10 @@ class EasyFrame(Frame):
             validate = dict()
         else:
             validate = default_config["validate"]
-
         if "editable" in default_config:
             print(default_config["editable"])
             tree.bind("<Double-1>", partial(self.editable_tree_pop_entry, tree, default_config["editable"]))
+            tree.bind("<Button-1>", self.destroy_popUp)
         for item in columns:
             if item not in validate:
                 validate[item] = lambda dato: dato
@@ -284,8 +284,13 @@ class EasyFrame(Frame):
             print(data)
             last_entry_validation = (self.register(tree.set), row, column, "%P")
             self._popUp = Entry(tree, text=data, validate="all", validatecommand=last_entry_validation)
-            self._popUp.place(x=0, y=y+pad, anchor=W, relwidth=1)
-            self._popUp.bind("<Escape>", lambda event: self._popUp.destroy())
+            self._popUp.place(x=x, y=y+pad, anchor=W)
+            self._popUp.bind("<Escape>", self.destroy_popUp)
+            self._popUp.bind("<Enter>", self.destroy_popUp)
+
+    def destroy_popUp(self, event=None):
+        if hasattr(self._popUp, "destroy"):
+            self._popUp.destroy()
 
     def set_combobox_values(self, route, values):
         assert type(values) in (list, tuple)

@@ -209,6 +209,8 @@ class EasyFrame(Frame):
         tree = Treeview(*args, **options)
         activate_tree_item = partial(self.activate_tree_item, category)
         tree.bind("<<TreeviewSelect>>", activate_tree_item)
+        if default_config is None:
+            default_config = dict()
         if "show" not in default_config:
             show = dict()
         else:

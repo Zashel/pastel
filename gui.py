@@ -53,7 +53,30 @@ class App(EasyFrame):
         frame = Frame(parent)
         row = 0
         columnspan = 1
-        tree = self.TreeView(name, self.posibles_columns, frame)
+        "dni",
+        "nombre",
+        "id_factura",
+        "fecha_operacion",
+        "importe",
+        "periodo_facturado"
+        default_config = {"columns": {"width": 75},
+                          "column": {"#0": {"width": 30},
+                                     "periodo_facturado": {"width": 100},
+                                     },
+                          "heading": {"#0": {"text": "ID"},
+                                      "dni": {"text": "DNI"},
+                                      "nombre": {"text": "Nombre"},
+                                      "id_factura": {"text": "ID Factura"},
+                                      "fecha_operacion": {"text": "Fecha Operación"},
+                                      "importe": {"text": "Importe"},
+                                      "periodo_facturado": {"text": "Periodo Facturado"}},
+                          "show": {"importe": lambda x: str(x)[:-2] + "," + str(x)[-2:] + "\u20ac",
+                                   },
+                          "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "")
+                                                                .replace("€", "").replace(".", "").replace(",", "")),
+                                       },
+                          "bind": {}}
+        tree = self.TreeView(name, self.posibles_columns, frame, default_config=default_config)
         tree.grid(column=0, row=row, columnspan=columnspan)
         return frame
 

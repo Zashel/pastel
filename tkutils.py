@@ -299,7 +299,7 @@ class EasyFrame(Frame):
             print(column)
             print(row)
             print(self._popUp_variable.get())
-            tree.set(column, row, self._popUp_variable.get())
+            tree.set(row, column, self._popUp_variable.get())
         if hasattr(self._popUp, "destroy"):
             self._popUp_variable.set("")
             self._popUp.destroy()

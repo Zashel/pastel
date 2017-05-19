@@ -70,7 +70,7 @@ class App(EasyFrame):
                                                                 .replace("€", "").replace(".", "").replace(",", "")),
                                        },
                           "bind": {},
-                          "editable": ["nombre", "id_factura", "importe", "periodo_facturado"]}
+                          "editable": ["dni", "nombre", "id_factura", "importe", "periodo_facturado"]}
         tree = self.TreeView(name, self.posibles_columns, frame, default_config=default_config)
         tree.grid(column=0, row=row, columnspan=columnspan)
         return frame

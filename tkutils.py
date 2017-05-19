@@ -276,12 +276,11 @@ class EasyFrame(Frame):
             self._popUp.destroy()
         assert isinstance(tree, Treeview)
         column = tree.column(tree.identify_column(event.x))["id"]
-        print(column)
-        print(editable_columns)
         if column in editable_columns:
             row = tree.identify_row(event.y)
             parent = tree.parent(row)
             if parent == str():
+                print("parent")
                 return
             x, y, w, h = tree.bbox(row, column)
             pad = h // 2

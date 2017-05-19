@@ -91,7 +91,7 @@ class App(EasyFrame):
             order.append(index)
             for header in self.posibles_headers:
                 if header in self.posibles_columns:
-                    final[str(index)][header] = posible[self.posibles_columns.index(header)]
+                    final[str(index)][header] = posible[self.posibles_headers.index(header)]
         order.sort()
         if self.search_payments_estado == "PENDIENTE":
             self.set_tree_data("editable_posibles", final, order=[str(key) for key in order])

@@ -91,6 +91,10 @@ class App(EasyFrame):
             order.append(index)
             for header in self.posibles_headers:
                 if header in self.posibles_columns:
+                    if header in self.tree[name]["validate"]:
+                        val = self.tree[name]["validate"][header]
+                    else:
+                        val = lambda x: x
                     final[str(index)][header] = posible[self.posibles_headers.index(header)]
         order.sort()
         if self.search_payments_estado == "PENDIENTE":

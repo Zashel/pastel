@@ -298,7 +298,6 @@ class EasyFrame(Frame):
         tree, row, column, var = self._popUp_data
         if hasattr(tree, "set"):
             tree.set(row, column, var.get())
-            self._popUp_variable.set("")
             self._popUp.destroy()
 
     def set_combobox_values(self, route, values):

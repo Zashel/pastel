@@ -34,6 +34,8 @@ class TkVars:
             raise KeyError()
 
     def __setattr__(self, item, value):
+        if item == "posibles":
+            print(value)
         if item in ("_vars", "_name", "_bindings", "r", "w", "u"):
             object.__setattr__(self, item, value)
         else:

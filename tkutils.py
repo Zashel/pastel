@@ -125,7 +125,7 @@ class EasyFrame(Frame):
         self._tree = dict()
         self._comboboxes = dict()
         self._popUp_data = [None, None, None]
-        self._popUp_variable = StringVar()
+        #self._popUp_variable = StringVar()
         self._popUp = None
 
     @property
@@ -245,7 +245,7 @@ class EasyFrame(Frame):
             validate = default_config["validate"]
         if "editable" in default_config:
             print(default_config["editable"])
-            tree.bind("<Double-1>", partial(self.editable_tree_pop_entry, tree, default_config["editable"]))
+            tree.bind("<Double-1>", partial(self.editable_tree_pop_entry, category, tree, default_config["editable"]))
             tree.bind("<Button-1>", self.destroy_popUp)
         for item in columns:
             if item not in validate:
@@ -273,7 +273,7 @@ class EasyFrame(Frame):
                 tree.bind(item, default_config["bind"][item])
         return tree
 
-    def editable_tree_pop_entry(self, tree, editable_columns, event): #make a partial
+    def editable_tree_pop_entry(self, category, tree, editable_columns, event): #make a partial
         if self._popUp is not None and hasattr(self._popUp, "destroy"):
             self._popUp.destroy()
         assert isinstance(tree, Treeview)
@@ -282,25 +282,22 @@ class EasyFrame(Frame):
             row = tree.identify_row(event.y)
             x, y, w, h = tree.bbox(row, column)
             pad = h // 2
-            data = tree.set(row, column)
+            #data = tree.set(row, column)
             #last_entry_validation = (self.register(tree.set), row, column, "%P")
+            var = self.get_var(".".join((category, row)))
             self._popUp = Entry(tree,
-                                textvariable=self._popUp_variable)
+                                textvariable=var)
             #                    validate="all", validatecommand=last_entry_validation)
-            self._popUp_variable.set(data)
+            #self._popUp_variable.set(data)
             self._popUp.place(x=x, y=y+pad, anchor=W)
-            self._popUp_data = (tree, row, column)
+            self._popUp_data = (tree, row, column, var)
             self._popUp.bind("<Escape>", self.destroy_popUp)
             self._popUp.bind("<Return>", self.destroy_popUp)
 
     def destroy_popUp(self, event=None):
-        tree, row, column = self._popUp_data
+        tree, row, column, var = self._popUp_data
         if hasattr(tree, "set"):
-            print(column)
-            print(row)
-            print(self._popUp_variable.get())
-            tree.set(row, column, self._popUp_variable.get())
-        if hasattr(self._popUp, "destroy"):
+            tree.set(row, column, var.get())
             self._popUp_variable.set("")
             self._popUp.destroy()
 

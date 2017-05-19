@@ -66,6 +66,7 @@ class App(EasyFrame):
             order.append(int(item))
             for header in self.posibles_headers:
                 if header in self.posibles_columns:
+                    print(header)
                     final[item][header] = posible[self.posibles_columns.index(index)]
         order.sort()
         if self.search_payments_estado == "PENDIENTE":

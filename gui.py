@@ -211,7 +211,9 @@ class App(EasyFrame):
                     if column in self.tree["pagos"]["show"]:
                         data[column] = self.tree["pagos"]["show"][column](data[column])
                     if column == "posibles":
-                        data[column] = json.loads(data[column])
+                        print(type(data[column]))
+                        if type(data[column]) in (str, bytearray):
+                            data[column] = json.loads(data[column])
                     self.set_var(name, data[column],
                                  w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, data[column]))
                     if column == "posibles":

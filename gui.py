@@ -70,8 +70,8 @@ class App(EasyFrame):
                                       "periodo_facturado": {"text": "Periodo Facturado"}},
                           "show": {"importe": lambda x: str(x)[:-2] + "," + str(x)[-2:] + " \u20ac",
                                    },
-                          "validate": {"importe": lambda x: int(x.replace("\n", "").replace(" ", "")
-                                                                .replace("€", "").replace(".", "").replace(",", "")),
+                          "validate": {"importe": lambda x: int(float(x.replace("\n", "").replace(" ", "")
+                                                                      .replace("€", "").replace(",", "."))*100),
                                        },
                           "bind": {},
                           "editable": editable}

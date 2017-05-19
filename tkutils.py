@@ -124,7 +124,7 @@ class EasyFrame(Frame):
         self._vars = dict()
         self._tree = dict()
         self._comboboxes = dict()
-        self._popUp_data = [None, None, None]
+        self._popUp_data = [None, None, None, None]
         #self._popUp_variable = StringVar()
         self._popUp = None
 
@@ -284,8 +284,7 @@ class EasyFrame(Frame):
             pad = h // 2
             #data = tree.set(row, column)
             #last_entry_validation = (self.register(tree.set), row, column, "%P")
-            print(".".join((category, row)))
-            var = self.get_var(".".join((category, row)))
+            var = self.get_var(".".join((category, column)))
             self._popUp = Entry(tree,
                                 textvariable=var)
             #                    validate="all", validatecommand=last_entry_validation)

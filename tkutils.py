@@ -284,7 +284,7 @@ class EasyFrame(Frame):
             print(data)
             last_entry_validation = (self.register(tree.set), row, column, "%P")
             self._popUp = Entry(tree, text=data, validate="all", validatecommand=last_entry_validation)
-            self._popUp.place(x=0, y=y+pad, anchow=W, relwidth=1)
+            self._popUp.place(x=0, y=y+pad, anchor=W, relwidth=1)
             self._popUp.bind("<Escape>", lambda event: self._popUp.destroy())
 
     def set_combobox_values(self, route, values):

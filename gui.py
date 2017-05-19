@@ -209,10 +209,10 @@ class App(EasyFrame):
                     name = "pagos.{}".format(column)
                     if column in self.tree["pagos"]["show"]:
                         data[column] = self.tree["pagos"]["show"][column](data[column])
-                    if column == "posibles":
-                        print(data[column])
                     self.set_var(name, data[column],
                                  w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, data[column]))
+                    if column == "posibles":
+                        print(data[column])
             for parent in (self.payment_frame, self.pending_payment_frame):
                 self.payment_data_frame_text[parent]["state"] = "normal"
                 self.payment_data_frame_text[parent].delete("1.0", END)
@@ -452,7 +452,10 @@ class App(EasyFrame):
                                  "importe",
                                  "periodo_facturado"]
         for item in PAYMENTS_FIELDS:
-            self.set_var(".".join(("pagos", item)))
+            if item == "posibles":
+                self.set_var(".".join(("pagos", item)), list())
+            else:
+                self.set_var(".".join(("pagos", item)))
 
 
 if __name__ == "__main__":

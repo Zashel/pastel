@@ -275,7 +275,7 @@ class EasyFrame(Frame):
         if self._popUp is not None and hasattr(self._popUp, "destroy"):
             self._popUp.destroy()
         assert isinstance(tree, Treeview)
-        column = tree.identify_column(event.x)
+        column = tree.column(tree.identify_column(event.x))["id"]
         print(column)
         print(editable_columns)
         if column in editable_columns:

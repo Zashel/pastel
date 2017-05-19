@@ -124,6 +124,7 @@ class EasyFrame(Frame):
         self._vars = dict()
         self._tree = dict()
         self._comboboxes = dict()
+        self._popUp = None
 
     @property
     def vars(self):
@@ -240,6 +241,8 @@ class EasyFrame(Frame):
             validate = dict()
         else:
             validate = default_config["validate"]
+        if "editable" in default_config and type(default_config["editable"]) in (list, tuple):
+            tree.bind("<Double-1>", partial(self.editable_tree_pop_entry, tree, default_config["editable"]))
         for item in columns:
             if item not in validate:
                 validate[item] = lambda dato: dato
@@ -265,6 +268,24 @@ class EasyFrame(Frame):
             for item in default_config["bind"]:
                 tree.bind(item, default_config["bind"][item])
         return tree
+
+    def editable_tree_pop_entry(self, tree, editable_columns, event): #make a partial
+        if self._popUp is not None and hasattr(self._popUp, "destroy"):
+            self._popUp.destroy()
+        assert isinstance(tree, Treeview)
+        column = tree.identify_column(event.x)
+        if column in editable_columns:
+            row = tree.identify_row(event.y)
+            parent = tree.parent(row)
+            if parent == str():
+                return
+            x, y, w, h = tree.bbox(row, column)
+            pad = h // 2
+            data = tree.item(row, "text")
+            last_entry_validation = (self.register(tree.set), row, column, "%P")
+            self._popUp = Entry(tree, data, validate="all", validatecommand=last_entry_validation)
+            self._popUp.place(x=0, y=y+pad, anchow=W, relwidth=1)
+            self._popUp.bind("<Escape>", lambda event: self._popUp.destroy())
 
     def set_combobox_values(self, route, values):
         assert type(values) in (list, tuple)

@@ -286,7 +286,7 @@ class EasyFrame(Frame):
             self._popUp = Entry(tree, text=data, validate="all", validatecommand=last_entry_validation)
             self._popUp.place(x=x, y=y+pad, anchor=W)
             self._popUp.bind("<Escape>", self.destroy_popUp)
-            self._popUp.bind("<Enter>", self.destroy_popUp)
+            self._popUp.bind("<Return>", self.destroy_popUp)
 
     def destroy_popUp(self, event=None):
         if hasattr(self._popUp, "destroy"):

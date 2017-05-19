@@ -165,14 +165,16 @@ class App(EasyFrame):
 
         #Payment Frame
         self.payment_frame = Frame(self.tabs["payments"])
-        self.payment_data_frame(self.payment_frame).pack()
-        self.payment_posibles_frame(self.payment_data_frame, "posibles").pack()
+        payment_data_frame = self.payment_data_frame(self.payment_frame)
+        payment_data_frame.pack()
+        self.payment_posibles_frame(payment_data_frame, "posibles").pack()
         Button(self.payment_frame, text="Cerrar", command=self.show_payments_tree).pack()
 
         #Pending Payment Frame
         self.pending_payment_frame = Frame(self.tabs["payments"])
-        self.payment_data_frame(self.pending_payment_frame).pack()
-        self.payment_posibles_frame(self.payment_data_frame, "editable_posibles").pack()
+        pending_payment_data_frame = self.payment_posibles_frame(self.pending_payment_frame)
+        pending_payment_data_frame.pack()
+        self.payment_posibles_frame(pending_payment_data_frame, "editable_posibles").pack()
         Button(self.pending_payment_frame, text="Cerrar", command=self.show_payments_tree).pack()
 
         self.tabs["payments"].pack()

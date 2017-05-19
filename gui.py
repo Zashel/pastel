@@ -212,7 +212,7 @@ class App(EasyFrame):
                     self.set_var(name, data[column],
                                  w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, data[column]))
                     if column == "posibles":
-                        print(self.get_var("pagos.posibles").get())
+                        print(type(self.get_var("pagos.posibles")))
             for parent in (self.payment_frame, self.pending_payment_frame):
                 self.payment_data_frame_text[parent]["state"] = "normal"
                 self.payment_data_frame_text[parent].delete("1.0", END)

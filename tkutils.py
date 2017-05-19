@@ -288,11 +288,12 @@ class EasyFrame(Frame):
             #                    validate="all", validatecommand=last_entry_validation)
             self._popUp_variable.set(data)
             self._popUp.place(x=x, y=y+pad, anchor=W)
-            destroy = partial(self.destroy_popUp, tree, row, column)
-            self._popUp.bind("<Escape>", destroy)
-            self._popUp.bind("<Return>", destroy)
+            self._popUp_data = (tree, row, column)
+            self._popUp.bind("<Escape>", self.destroy_popUp)
+            self._popUp.bind("<Return>", self.destroy_popUp)
 
-    def destroy_popUp(self, tree, row, column, event=None):
+    def destroy_popUp(self, event=None):
+        tree, row, column = self._popUp_data
         if hasattr(self._popUp, "set"):
             tree.set(column, row, self._popUp_variable.get())
         if hasattr(self._popUp, "destroy"):

@@ -176,6 +176,14 @@ class EasyFrame(Frame):
         button = Button(parent, *args, **config)
         return button
 
+    def ImageButton(self, parent=None, image=None, *args, font_size=9, **kwargs):
+        style = Style()
+        style.configure("Image.TLabel")
+        config = {"style": "Image-{}.TLabel"}
+        config.update(kwargs)
+        button = Button(parent, image=image, *args, **config)
+        return button
+
     def Entry(self, route, parent=None, *args, **kwargs):
         try:
             var = self.get_var(route)

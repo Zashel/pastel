@@ -116,7 +116,9 @@ class App(EasyFrame):
                 dni = str()
                 nombre = str()
                 break
-        data = {"dni":dni, "nombre":nombre, "importe": self.get_var("pagos.importe_pendiente").get()}
+        data = {"dni":dni,
+                "nombre":nombre,
+                "importe": self.get_var("pagos.importe_pendiente").get().replace(" \u20ac", "")}
         self.append_to_tree_data("editable_posibles", item, data)
         self.calculate_pending("editable_posibles")
 

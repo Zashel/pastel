@@ -97,17 +97,17 @@ class App(EasyFrame):
         next = "0"
         while True:
             try:
-                paid += int(float(tree.set(next, "importe").replace(" \u20ac", "").replace(",", "."))*100)
+                paid += int(round(float(tree.set(next, "importe").replace(" \u20ac", "").replace(",", "."))*100, 2))
             except TclError:
                 break
             next = tree.next(next)
             if next == "":
                 break
-        total = int(float(self.get_var("pagos.importe").get().replace(" \u20ac", "").replace(",", "."))*100)
+        total = int(round(float(self.get_var("pagos.importe").get().replace(" \u20ac", "").replace(",", "."))*100, 2))
         print("Total: ", str(total))
         print("Pagado: ", str(paid))
         self._pending = total - paid
-        self._pending_variable.set(str(self._pending/100).replace(".", ",")+" \u20ac")
+        self._pending_variable.set(str(round(self._pending/100, 2)).replace(".", ",")+" \u20ac")
 
     def payment_posibles_load(self, name):
         posibles = self.get_var("pagos.posibles").get()

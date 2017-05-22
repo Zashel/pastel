@@ -11,6 +11,7 @@ import decimal
 import datetime
 
 decimal.getcontext().prec = 2
+decimal.getcontext().rounding = decimal.ROUND_HALF_UP
 
 class App(EasyFrame):
     def __init__(self, master=None):
@@ -92,21 +93,21 @@ class App(EasyFrame):
 
     def calculate_pending(self, name):
         tree = self.tree[name]["tree"]
-        paid = decimal.Decimal()
+        paid = 0
         next = "0"
         while True:
             try:
-                paid += decimal.Decimal(tree.set(next, "importe").replace(" \u20ac", "").replace(",", "."))
+                paid += int(float(tree.set(next, "importe").replace(" \u20ac", "").replace(",", "."))*100)
             except TclError:
                 break
             next = tree.next(next)
             if next == "":
                 break
-        total = decimal.Decimal(self.get_var("pagos.importe").get().replace(" \u20ac", "").replace(",", "."))
+        total = int(float(self.get_var("pagos.importe").get().replace(" \u20ac", "").replace(",", "."))*100)
         print("Total: ", str(total))
         print("Pagado: ", str(paid))
         self._pending = total - paid
-        self._pending_variable.set(str(self._pending).replace(".", ",")+" \u20ac")
+        self._pending_variable.set(str(self._pending/100).replace(".", ",")+" \u20ac")
 
     def payment_posibles_load(self, name):
         posibles = self.get_var("pagos.posibles").get()
@@ -492,7 +493,7 @@ class App(EasyFrame):
 
     def set_variables(self):
         self.search_payments_estado = str()
-        self._pending = decimal.Decimal()
+        self._pending = 0
         self._pending_variable = self.set_var("pagos.importe_pendiente")
         self.posibles_headers = ["fecha_aplicacion",
                                  "codigo",

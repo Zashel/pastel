@@ -13,6 +13,10 @@ import datetime
 decimal.getcontext().prec = 2
 decimal.getcontext().rounding = decimal.ROUND_HALF_UP
 
+class Images:
+    add = PhotoImage(file=os.path.join("icons", "add.png"))
+    remove = PhotoImage(file=os.path.join("icons", "remove.png"))
+
 class App(EasyFrame):
     def __init__(self, master=None):
         super().__init__(master=master, padding=(3, 3, 3, 3))
@@ -57,7 +61,7 @@ class App(EasyFrame):
     def payment_posibles_frame(self, parent, name):
         frame = Frame(parent)
         row = 0
-        columnspan = 1
+        columnspan = 4
         if "editable" in name:
             editable = ["dni", "nombre", "id_factura", "importe", "periodo_facturado"]
         else:
@@ -89,6 +93,10 @@ class App(EasyFrame):
         if "editable" in name:
             self.set_tree_calculation(name, partial(self.calculate_pending, name))
         tree.grid(column=0, row=row, columnspan=columnspan)
+        if "editable" in name:
+            row += 1
+            self.ImageButton(frame, Images.remove).grid(column=2, row=row)
+            self.ImageButton(frame, Images.add).grid(column=3, row=row)
         return frame
 
     def calculate_pending(self, name):

@@ -120,13 +120,11 @@ class App(EasyFrame):
         posibles = self.get_var("pagos.posibles").get()
         final = dict()
         order = list()
-        paid = decimal.Decimal()
         for index, item in enumerate(posibles):
             posible = item.get().split(";")
             print(posible)
             final[str(index)] = dict()
             order.append(index)
-            paid += decimal.Decimal(posible[self.posibles_headers.index("importe")].replace(",", "."))
             for header in self.posibles_headers:
                 if header in self.posibles_columns:
                     if header in self.tree[name]["validate"]:

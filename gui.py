@@ -107,6 +107,7 @@ class App(EasyFrame):
                 dni = tree.set(item, "dni")
                 nombre = tree.set(item, "nombre")
                 next = tree.next(item)
+                print(next)
                 if next in ("", "0"):
                     item = str(int(item)+1)
                     break

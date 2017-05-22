@@ -12,8 +12,8 @@ import datetime
 
 class Images:
     def __init__(self):
-        self.add = PhotoImage(file=os.path.join("icons", "add.png"))
-        self.remove = PhotoImage(file=os.path.join("icons", "remove.png"))
+        self.add = PhotoImage(file=os.path.join("icons", "add.gif"))
+        self.remove = PhotoImage(file=os.path.join("icons", "remove.gif"))
 
 class App(EasyFrame):
     def __init__(self, master=None):

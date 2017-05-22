@@ -351,39 +351,21 @@ class Pari(RestfulBaseInterface):
                     elif row.startswith("23"):
                         observaciones += row[4:].strip()
 
-    @classmethod
-    def get_billing_period(cls, invoice_date):
-        if isinstance(invoice_date, str):
-            invoice_date = datetime.datetime.strptime(invoice_date, "%d/%m/%y").date()
-        if isinstance(invoice_date, datetime.datetime):
-            invoice_date = invoice_date.date()
-        assert isinstance(invoice_date, datetime.date)
-        prev_day = datetime.date.fromordinal((invoice_date - datetime.date(1, 1, 1)).days)
-        #prev_day = invoice_date
-        prev_month_day = prev_day.day
-        if prev_month_day == 7:
-            prev_month_day == 8
-        prev_month_month = prev_day.month - 1
-        if prev_month_month == 0:
-            prev_month_month = 12
-            prev_month_year = prev_day.year - 1
-        else:
-            prev_month_year = prev_day.year
-        prev_month = datetime.date(prev_month_year, prev_month_month, prev_month_day)
-        return "{}-{}".format(prev_month.strftime("%d/%m/%y"), prev_day.strftime("%d/%m/%y"))
-
-    def get_codes(self): #TODO: Get this out of here
+    def get_codes(self):
         fechas_facturas = list(self.shelf["reports"]["importes por fechas y estados"]["RESIDENCIAL"].keys())
         fechas_facturas = [datetime.datetime.strptime(fecha, "%d/%m/%y") for fecha in fechas_facturas]
-        print(fechas_facturas)
         fechas_facturas.sort()
-        fecha_inicio = datetime.datetime(year=2017, month=3, day=2)
-        codigo_inicio = 492
-        final = dict()
+        final = dict(admin_config.FACTURAS)
+        fechas_final = list(admin_config.FACTURAS.keys())
+        fechas_final.sort()
+        fecha_inicio = fechas_final[-1]
+        codigo_inicio = final[fecha_inicio]
         if fecha_inicio in fechas_facturas:
             index_inicio = fechas_facturas.index(fecha_inicio)
             for index, fecha in enumerate(fechas_facturas):
-                final[fecha] = codigo_inicio+index-index_inicio
+                if fecha not in final:
+                    final[fecha] = codigo_inicio+index-index_inicio
+        admin_config.FACTURAS = final
         return final
 
     def set_n43(self, filepath):
@@ -484,7 +466,7 @@ class Pari(RestfulBaseInterface):
                                                    str(id_factura),
                                                    str(data["fecha_operacion"].strftime("%d/%m/%y")),
                                                    str(round(to_apply/100, 2)).replace(".", ","),
-                                                   str(self.get_billing_period(possibles[id_factura]["fecha_factura"])),
+                                                   str(get_billing_period(possibles[id_factura]["fecha_factura"])),
                                                    str(admin_config.PM_PAYMENT_METHOD),
                                                    str(admin_config.PM_PAYMENT_WAY)
                                                    ]
@@ -496,28 +478,6 @@ class Pari(RestfulBaseInterface):
                                     go_on = False
                                     break
                             if pdte > 0 and applied_flag is True:
-                                '''
-                                id_factura = ids_factura[-1]
-                                try:
-                                    code = codes[possibles[id_factura]["fecha_factura"]]
-                                except KeyError:
-                                    "big")))
-                                    code = 1
-                                subdata = [str(apply_date),
-                                           str(code),
-                                           str(admin_config.PM_CUSTOMER),
-                                           str(data["nif"]),
-                                           str(id_factura),
-                                           str(data["fecha_operacion"].strftime("%d/%m/%y")),
-                                           str(round(pdte / 100, 2)).replace(".", ","),
-                                           str(self.get_billing_period(possibles[id_factura]["fecha_factura"])),
-                                           str(admin_config.PM_PAYMENT_METHOD),
-                                           str(admin_config.PM_PAYMENT_WAY)
-                                           ]
-                                final.append(";".join(subdata))
-                                go_on = False
-                                pdte = 0
-                                ''' #Do it simple, give people what to work with
                                 go_on = True
                         if pdte > 0 and applied_flag is False:
                             go_on = True

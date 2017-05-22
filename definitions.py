@@ -232,7 +232,8 @@ SHARED = ["PM_CUSTOMER",
           "N43_PATH_INCOMING",
           "N43_PATH_OUTGOING",
           "REPORT_PATH",
-          "PAYMENTS_STATES"
+          "PAYMENTS_STATES",
+          "FACTURAS"
           ]
 
 class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated myself!
@@ -318,6 +319,8 @@ admin_config.set_default("PM_PAYMENT_WAY", "INTERNA")
 admin_config.set_default("PAYMENTS_STATES",
                          ["", "PENDIENTE", "APLICADO", "ILOCALIZABLE", "GRAN CUENTA", "DEUDA VENDIDA", "PAGO ORANGE"])
 
+admin_config.set_default("FACTURAS", {datetime.datetime(year=2017, month=3, day=2): 492})
+
 
 __all__ = list()
 __all__.extend(STATIC)
@@ -326,6 +329,26 @@ __all__.extend(STATIC)
 __all__.extend(["local_config",
                 "admin_config",
                 "LOCAL",
-                "SHARED"
+                "SHARED",
+                "get_billing_period"
                 ])
 
+def get_billing_period(invoice_date):  # TODO: Get this Out of here
+    if isinstance(invoice_date, str):
+        invoice_date = datetime.datetime.strptime(invoice_date, "%d/%m/%y").date()
+    if isinstance(invoice_date, datetime.datetime):
+        invoice_date = invoice_date.date()
+    assert isinstance(invoice_date, datetime.date)
+    prev_day = datetime.date.fromordinal((invoice_date - datetime.date(1, 1, 1)).days)
+    # prev_day = invoice_date
+    if prev_day.day == 7:
+        prev_day = prev_day.replace(day=8)
+    prev_month_day = prev_day.day
+    prev_month_month = prev_day.month - 1
+    if prev_month_month == 0:
+        prev_month_month = 12
+        prev_month_year = prev_day.year - 1
+    else:
+        prev_month_year = prev_day.year
+    prev_month = datetime.date(prev_month_year, prev_month_month, prev_month_day)
+    return "{}-{}".format(prev_month.strftime("%d/%m/%y"), prev_day.strftime("%d/%m/%y"))

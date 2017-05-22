@@ -14,8 +14,7 @@ for x in range(5):
     except:
         continue
 
-from zashel.utils import log, daemonize
-from zrest.datamodels.shelvemodels import ShelveModel
+from zashel.utils import daemonize
 
 import datetime
 import sys
@@ -363,9 +362,21 @@ class API:
         os.system("server.cmd")
         API.server = False
 
-
     @classmethod
     def is_server_on(cls):
         return API.server
+
+    @classmethod
+    def get_billing_period(cls, fecha):
+        return get_billing_period(fecha)
+
+    @classmethod
+    def get_fecha_factura_from_periodo(cls, periodo):
+        initial, final = periodo.split("-")
+        ffact = datetime.datetime.strftime(final, "%d/%m/%Y")
+        if ffact.day == 7:
+            ffact = ffact.replace(day=8)
+
+
 
 

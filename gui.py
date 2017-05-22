@@ -187,8 +187,10 @@ class App(EasyFrame):
         posibles = list()
         code = 1 #Set in API or something
         item = "0"
+        codes = admin_config.FACTURAS
         while True:
             try:
+                code = codes[API.get_fecha_factura_from_periodo(tree.set(item, "periodo_facturado"))]
                 posibles.append([datetime.datetime.now().strftime("%d/%m/%Y"),
                                  str(code),
                                  str(admin_config.PM_CUSTOMER),

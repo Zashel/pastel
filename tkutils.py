@@ -176,7 +176,7 @@ class EasyFrame(Frame):
         button = Button(parent, *args, **config)
         return button
 
-    def ImageButton(self, parent=None, image=None, *args, font_size=9, **kwargs):
+    def ImageButton(self, parent=None, image=None, *args, **kwargs):
         style = Style()
         style.configure("Image.TLabel")
         config = {"style": "Image-{}.TLabel"}

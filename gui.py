@@ -109,6 +109,7 @@ class App(EasyFrame):
                 next = tree.next(item)
                 if next == "":
                     item = str(int(item)+1)
+                    break
             except TclError:
                 dni = str()
                 nombre = str()

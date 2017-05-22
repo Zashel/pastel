@@ -318,7 +318,7 @@ class EasyFrame(Frame):
                 tree.set(row, column, data)
                 self._popUp.destroy()
                 if category in self._tree_calculations:
-                    for function in self._tree_calculations:
+                    for function in self._tree_calculations[category]:
                         function()
 
     def set_combobox_values(self, route, values):

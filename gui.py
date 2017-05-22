@@ -106,10 +106,9 @@ class App(EasyFrame):
             try:
                 dni = tree.set(item, "dni")
                 nombre = tree.set(item, "nombre")
-                next = tree.next(item)
-                print(next)
-                if next in ("", "0"):
-                    item = str(int(item)+1)
+                item = tree.next(item)
+                if next == "":
+                    item = str(int(item) + 1)
                     break
             except TclError:
                 dni = str()

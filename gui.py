@@ -112,7 +112,7 @@ class App(EasyFrame):
             print(posible)
             final[str(index)] = dict()
             order.append(index)
-            paid += decimal.Decimal(posible[self.posibles_headers.index("importe")])
+            paid += decimal.Decimal(posible[self.posibles_headers.index("importe")].replace(",", "."))
             for header in self.posibles_headers:
                 if header in self.posibles_columns:
                     if header in self.tree[name]["validate"]:

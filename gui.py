@@ -101,7 +101,7 @@ class App(EasyFrame):
             next = tree.next(next)
             if next == "":
                 break
-        total = decimal.Decimal(self.get_var("pagos.importe").replace(" \u20ac", "").replace(",", "."))
+        total = decimal.Decimal(self.get_var("pagos.importe").get().replace(" \u20ac", "").replace(",", "."))
         self._pending = total - paid
         self._pending_variable.set(str(self._pending).replace(".", ",")+" \u20ac")
 

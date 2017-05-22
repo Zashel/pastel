@@ -11,8 +11,9 @@ import os
 import datetime
 
 class Images:
-    add = PhotoImage(file=os.path.join("icons", "add.png"))
-    remove = PhotoImage(file=os.path.join("icons", "remove.png"))
+    def __init__(self):
+        self.add = PhotoImage(file=os.path.join("icons", "add.png"))
+        self.remove = PhotoImage(file=os.path.join("icons", "remove.png"))
 
 class App(EasyFrame):
     def __init__(self, master=None):
@@ -25,6 +26,7 @@ class App(EasyFrame):
         self.set_variables()
         self.set_menu()
         self.set_widgets()
+        self.images = Images()
 
     def set_widgets(self):
         self.payment_data_frame_text = dict()
@@ -92,8 +94,8 @@ class App(EasyFrame):
         tree.grid(column=0, row=row, columnspan=columnspan)
         if "editable" in name:
             row += 1
-            self.ImageButton(frame, Images.remove).grid(column=2, row=row)
-            self.ImageButton(frame, Images.add).grid(column=3, row=row)
+            self.ImageButton(frame, self.images.remove).grid(column=2, row=row)
+            self.ImageButton(frame, self.images.add).grid(column=3, row=row)
         return frame
 
     def calculate_pending(self, name):

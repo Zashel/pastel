@@ -161,7 +161,7 @@ class EasyFrame(Frame):
         del (self._vars[category])
         gc.collect
 
-    def LinkButton(self, *args, font_size=9, **kwargs):
+    def LinkButton(self, parent=None, *args, font_size=9, **kwargs):
         font = Font(family = nametofont("TkDefaultFont").cget("family"),
                     size = font_size,
                     underline=True)
@@ -172,18 +172,18 @@ class EasyFrame(Frame):
         config = {"style": "Linked-{}.TLabel",
                   "cursor": "hand2"}
         config.update(kwargs)
-        button = Button(*args, **config)
+        button = Button(parent, *args, **config)
         return button
 
-    def Entry(self, route, *args, **kwargs):
+    def Entry(self, route, parent=None, *args, **kwargs):
         try:
             var = self.get_var(route)
         except KeyError:
             var = self.set_var(route)
         last_entry_validation = (self.register(self.entered_entry), "%P", route)
-        return Entry(*args, textvariable=var, validate="all", validatecommand=last_entry_validation, **kwargs)
+        return Entry(parent, *args, textvariable=var, validate="all", validatecommand=last_entry_validation, **kwargs)
 
-    def LabelEntry(self, route, text, *args, labelargs=None, labelkwargs=None, entryargs=None, entrykwargs=None,
+    def LabelEntry(self, route, text, parent=None, *args, labelargs=None, labelkwargs=None, entryargs=None, entrykwargs=None,
                    **kwargs):
         if labelargs is None:
             labelargs = list()
@@ -194,7 +194,7 @@ class EasyFrame(Frame):
         if entrykwargs is None:
             entrykwargs = dict()
         last_entry_validation = (self.register(self.entered_entry), "%P", route)
-        frame = Frame(*args, borderwidth=0, **kwargs)
+        frame = Frame(parent, *args, borderwidth=0, **kwargs)
         if not "anchor" in labelkwargs:
             labelkwargs["anchor"] = "e"
         labelkwargs.update({"text": text})
@@ -204,29 +204,40 @@ class EasyFrame(Frame):
         frame.columnconfigure(1, weight=2)
         return frame
 
-    def Checkbutton(self, route, *args, **kwargs):
+    def Checkbutton(self, route, parent=None, *args, **kwargs):
         try:
             var = self.get_var(route)
         except KeyError:
             var = self.set_var(route)
         last_entry_validation = partial(self.entered_entry, not var.get(), route)
-        return Checkbutton(*args, variable=var, command=last_entry_validation, **kwargs)
+        return Checkbutton(parent, *args, variable=var, command=last_entry_validation, **kwargs)
 
-    def Combobox(self, route, values, *args, **kwargs):
+    def Combobox(self, route, values, parent=None, *args, **kwargs):
         try:
             var = self.get_var(route)
         except KeyError:
             var = self.set_var(route)
         last_entry_validation = partial(self.entered_entry, var.get(), route)
-        cb = Combobox(*args, textvariable=var, values=values, **kwargs)
+        cb = Combobox(parent, *args, textvariable=var, values=values, **kwargs)
         cb.bind("<<ComboboxSelected>>", last_entry_validation)
         self._comboboxes[route] = cb
         return cb
 
-    def TreeView(self, category, columns, *args, default_config=None, **kwargs):  # Columns -> dictionary
+    def TreeView(self, category, columns, parent=None, *args, default_config=None,
+                 xscroll=False, yscroll=False, **kwargs):  # Columns -> dictionary
         options = {"columns": tuple(columns)}
         options.update(kwargs)
-        tree = Treeview(*args, **options)
+        tree = Treeview(parent, *args, **options)
+        if xscroll is True:
+            xTreeScroll = Scrollbar(parent,
+                                   orient=VERTICAL,
+                                   command=tree.xview)
+            tree["yscroll"] = xTreeScroll.set
+        if yscroll is True:
+            yTreeScroll = Scrollbar(parent,
+                                    orient=VERTICAL,
+                                    command=tree.yview)
+            tree["yscroll"] = yTreeScroll.set
         activate_tree_item = partial(self.activate_tree_item, category)
         tree.bind("<<TreeviewSelect>>", activate_tree_item)
         if default_config is None:

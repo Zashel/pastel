@@ -23,10 +23,10 @@ class App(EasyFrame):
         self.rol = "Operador"
         self.set_var("config.nombre_usuario", "")
         #Widgets
+        self.images = Images()
         self.set_variables()
         self.set_menu()
         self.set_widgets()
-        self.images = Images()
 
     def set_widgets(self):
         self.payment_data_frame_text = dict()

@@ -113,6 +113,7 @@ class App(EasyFrame):
             except TclError:
                 dni = str()
                 nombre = str()
+                break
         data = {"dni":dni, "nombre":nombre}
         self.append_to_tree_data("editable_posibles", item, data)
 

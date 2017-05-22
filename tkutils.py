@@ -127,6 +127,7 @@ class EasyFrame(Frame):
         self._popUp_data = [None, None, None, None]
         #self._popUp_variable = StringVar()
         self._popUp = None
+        self._tree_calculations = dict()
 
     @property
     def vars(self):
@@ -315,6 +316,9 @@ class EasyFrame(Frame):
                 data = var.get()
             tree.set(row, column, data)
             self._popUp.destroy()
+            if category in self._tree_calculations:
+                for function in self._tree_calculations:
+                    function()
 
     def set_combobox_values(self, route, values):
         assert type(values) in (list, tuple)
@@ -372,6 +376,11 @@ class EasyFrame(Frame):
         for item in order:
             if item in data:
                 self.append_to_tree_data(category, item, data[item])
+
+    def set_tree_calculation(self, category, function):
+        if category not in self._tree_calculations:
+            self._tree_calculations[category] = list()
+        self._tree_calculations[category].append(function)
 
     def append_to_tree_data(self, category, name, data):  # _details in data creates a shitty subitem
         values = list()

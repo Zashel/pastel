@@ -103,6 +103,8 @@ class App(EasyFrame):
             if next == "":
                 break
         total = decimal.Decimal(self.get_var("pagos.importe").get().replace(" \u20ac", "").replace(",", "."))
+        print("Total: ", str(total))
+        print("Pagado: ", str(paid))
         self._pending = total - paid
         self._pending_variable.set(str(self._pending).replace(".", ",")+" \u20ac")
 

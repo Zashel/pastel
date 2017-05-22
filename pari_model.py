@@ -372,7 +372,7 @@ class Pari(RestfulBaseInterface):
         prev_month = datetime.date(prev_month_year, prev_month_month, prev_month_day)
         return "{}-{}".format(prev_month.strftime("%d/%m/%y"), prev_day.strftime("%d/%m/%y"))
 
-    def get_codes(self):
+    def get_codes(self): #TODO: Get this out of here
         fechas_facturas = list(self.shelf["reports"]["importes por fechas y estados"]["RESIDENCIAL"].keys())
         fechas_facturas = [datetime.datetime.strptime(fecha, "%d/%m/%y") for fecha in fechas_facturas]
         print(fechas_facturas)

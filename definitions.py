@@ -2,7 +2,7 @@ import os
 import uuid
 import shelve
 import datetime
-from zrest.datamodels.shelvemodels import ShelveModel
+import getpass
 from zashel.utils import search_win_drive
 
 
@@ -140,7 +140,8 @@ LOCAL = ["HOST", "PORT",
          "ADMIN_DB",
          "UUID",
          "INIT_SERVER_STARTUP",
-         "ITEMS_PER_PAGE"
+         "ITEMS_PER_PAGE",
+         "USER"
          ]
 
 REMOTE_PATHS = ["PATH",
@@ -212,6 +213,7 @@ local_config.set_default("PATH", PATH)
 local_config.set_default("EXPORT_PATH", os.path.join(PATH, "Exportaciones"))
 local_config.set_default("ADMIN_DB", os.path.join(PATH, "DB", "Admin"))
 local_config.set_default("ITEMS_PER_PAGE", 50)
+local_config.set_default("USER", getpass.getuser())
 if not os.path.exists(local_config.ADMIN_DB):
     os.makedirs(local_config.ADMIN_DB)
 

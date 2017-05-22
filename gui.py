@@ -181,6 +181,33 @@ class App(EasyFrame):
         self.set_tree_data(name, final, order=[str(key) for key in order])
         self.calculate_pending(name)
 
+    def save_pagos_pendiente(self):
+        link = self.get_var("pagos.link").get()
+        tree = self.tree["editable_posibles"]["tree"]
+        posibles = list()
+        code = 1 #Set in API or something
+        item = "0"
+        while True:
+            try:
+                posibles.append([datetime.datetime.now().strftime("%d/%m/%Y"),
+                                 str(code),
+                                 str(admin_config.PM_CUSTOMER),
+                                 str(tree.set(item, "dni")),
+                                 str(tree.set(item, "id_factura")),
+                                 str(self.get_var("pagos.fecha_operacion").get()),
+                                 str(tree.set(item, "id_factura").replace(".", ",").replace(" \u20ac", "")),
+                                 str(tree.set(item, "periodo_facturado")),
+                                 str(admin_config.PM_PAYMENT_METHOD),
+                                 str(admin_config.PM_PAYMENT_WAY)
+                                 ])
+                item = tree.next(item)
+                if item == "":
+                    break
+            except TclError:
+                break
+        API.modify_pago({"link": link, "estado": self.get_var("pagos.estado").get(), "posibles": posibles})
+        API.insert_manual(link)
+
     def set_payments_tree_frame(self):
         #Payments Tree
         columns = ["estado",
@@ -310,7 +337,8 @@ class App(EasyFrame):
         selection = tree.selection()
         if len(selection) > 0:
             item = tree.selection()[0]
-            data = API.get_link(self.tree[category]["data"][item]["_links"]["self"]["href"], var="pagos")
+            link = self.tree[category]["data"][item]["_links"]["self"]["href"]
+            data = API.get_link(link, var="pagos")
             for column in PAYMENTS_FIELDS:
                 if column in data:
                     name = "pagos.{}".format(column)
@@ -321,6 +349,7 @@ class App(EasyFrame):
                             data[column] = json.loads(data[column])
                     self.set_var(name, data[column],
                                  w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, data[column]))
+                self.set_var("pagos.link", link)
             for parent in (self.payment_frame, self.pending_payment_frame):
                 self.payment_data_frame_text[parent]["state"] = "normal"
                 self.payment_data_frame_text[parent].delete("1.0", END)

@@ -194,6 +194,17 @@ class API:
                     API.pagos["active"] = None
             return API.pagos["active"]
 
+    @classmethod
+    def insert_manual(cls, link, usuario=None, fecha=None):
+        if usuario is None:
+            usuario = local_config.USER
+        if fecha is None:
+            fecha = datetime.datetime.now().strftime("%d/%m/%Y")
+        request = requests.post(link+"/manual", json({"usuario": usuario, "fecha":fecha}))
+        if request.status_code == 201:
+            return True
+        else:
+            return False
 
     @classmethod
     @daemonize

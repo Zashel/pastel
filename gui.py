@@ -60,7 +60,6 @@ class App(EasyFrame):
             editable = ["dni", "nombre", "id_factura", "importe", "periodo_facturado"]
         else:
             editable = list()
-        calculate_pending = partial(self.calculate_pending(name))
         default_config = {"columns": {"width": 100},
                           "column": {"#0": {"width": 30},
                                      "periodo_facturado": {"width": 110},
@@ -75,7 +74,6 @@ class App(EasyFrame):
                           #"show": {"importe": lambda x: str(x)[:-2] + "," + str(x)[-2:] + " \u20ac",
                           #         },
                           "show": {"importe": lambda x: x+" \u20ac",
-                                   "importe": lambda x: calculate_pending(),
                                    },
                           "validate": {"importe": lambda x: str(float(x.replace("\n", "")
                                                                       .replace(" ", "")
@@ -86,6 +84,8 @@ class App(EasyFrame):
                           "bind": {},
                           "editable": editable}
         tree = self.TreeView(name, self.posibles_columns, frame, default_config=default_config, yscroll=True)
+        if "editable" in name:
+            self.set_tree_calculation(name, partial(self.calculate_pending, name))
         tree.grid(column=0, row=row, columnspan=columnspan)
         return frame
 

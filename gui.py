@@ -49,6 +49,7 @@ class App(EasyFrame):
         self.payment_data_frame_text[parent] = Text(frame, width=80, height=5, state="disable")
         self.payment_data_frame_text[parent].grid(column=0, row=row, columnspan=3)
         row += 1
+        LabelEntry("pagos.importe_pendiente", "Importe Sin Asociar: ", frame).grid(column=1, row=row)
         self.Combobox("pagos.estado", admin_config.PAYMENTS_STATES, frame).grid(column=2, row=row) #frame is the name of the bunny
         return frame
 
@@ -490,7 +491,7 @@ class App(EasyFrame):
     def set_variables(self):
         self.search_payments_estado = str()
         self._pending = decimal.Decimal()
-        self._pending_variable = StringVar()
+        self._pending_variable = self.set_var("pagos.importe_pendiente")
         self.posibles_headers = ["fecha_aplicacion",
                                  "codigo",
                                  "nombre",

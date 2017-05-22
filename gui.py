@@ -94,7 +94,10 @@ class App(EasyFrame):
         paid = decimal.Decimal()
         next = "0"
         while True:
-            paid += decimal.Decimal(tree.set(next, "importe").replace(" \u20ac", "").replace(",", "."))
+            try:
+                paid += decimal.Decimal(tree.set(next, "importe").replace(" \u20ac", "").replace(",", "."))
+            except TclError:
+                break
             next = tree.next(next)
             if next == "":
                 break
@@ -121,6 +124,7 @@ class App(EasyFrame):
                         val = lambda x: x
                     final[str(index)][header] = posible[self.posibles_headers.index(header)]
         order.sort()
+        self.set_tree_data(name, final, order=[str(key) for key in order])
         self.calculate_pending(name)
 
     def set_payments_tree_frame(self):

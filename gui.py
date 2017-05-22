@@ -529,7 +529,6 @@ class App(EasyFrame):
         self.posibles_columns = ["dni",
                                  "nombre",
                                  "id_factura",
-                                 "fecha_operacion",
                                  "importe",
                                  "periodo_facturado"]
         for item in PAYMENTS_FIELDS:

@@ -14,6 +14,7 @@ class Images:
     def __init__(self):
         self.add = PhotoImage(file=os.path.join("icons", "add.gif"))
         self.remove = PhotoImage(file=os.path.join("icons", "remove.gif"))
+        self.check = PhotoImage(file=os.path.join("icons", "check.gif"))
 
 class App(EasyFrame):
     def __init__(self, master=None):
@@ -93,34 +94,50 @@ class App(EasyFrame):
         tree.grid(column=0, row=row, columnspan=columnspan)
         if "editable" in name:
             row += 1
-            self.ImageButton(frame, self.images.remove,
-                             command=self.del_selected_item_in_posibles).grid(column=2, row=row, sticky=E)
-            self.ImageButton(frame, self.images.add,
-                             command=self.add_new_row_to_posibles).grid(column=3, row=row, sticky=W)
+            button_frame = Frame()
+            button_frame.grid(column=3, row=row, sticky=E)
+            self.ImageButton(button_frame, self.images.remove,
+                             command=self.del_selected_item_in_posibles).grid(column=0, row=0, sticky=E)
+            self.ImageButton(button_frame, self.images.checj,
+                             command=self.add_pending_to_selected).grid(column=0, row=1, sticky=E)
+            self.ImageButton(button_frame, self.images.add,
+                             command=self.add_new_row_to_posibles).grid(column=0, row=2, sticky=E)
         return frame
+
+    def add_pending_to_selected(self):
+        tree = self.tree["editable_posibles"]["tree"]
+        item = tree.selection()[0]
+        if item != "":
+            importe = int(round(float(tree.set(item, "importe").replace(" \u20ac", "").replace(",", "."))*100, 2))
+            pendiente = int(round(float(self.get_var("pagos.importe_pendiente").get()
+                                        .replace(" \u20ac", "").replace(",", "."))*100, 2))
+            nuevo = str((importe + pendiente)/100).replace(".", ",")+" \u20ac"
+            tree.set(item, "importe", nuevo)
+            self.calculate_pending("editable_posibles")
 
     def add_new_row_to_posibles(self):
         item = "0"
         tree = self.tree["editable_posibles"]["tree"]
-        while True:
-            try:
-                dni = tree.set(item, "dni")
-                nombre = tree.set(item, "nombre")
-                next_item = tree.next(item)
-                if next_item == "":
-                    item = str(int(item) + 1)
+        if self.get_var("pagos.importe_pendiente").get() != "0,0 \u20ac":
+            while True:
+                try:
+                    dni = tree.set(item, "dni")
+                    nombre = tree.set(item, "nombre")
+                    next_item = tree.next(item)
+                    if next_item == "":
+                        item = str(int(item) + 1)
+                        break
+                    else:
+                        item = next_item
+                except TclError:
+                    dni = str()
+                    nombre = str()
                     break
-                else:
-                    item = next_item
-            except TclError:
-                dni = str()
-                nombre = str()
-                break
-        data = {"dni":dni,
-                "nombre":nombre,
-                "importe": self.get_var("pagos.importe_pendiente").get().replace(" \u20ac", "")}
-        self.append_to_tree_data("editable_posibles", item, data)
-        self.calculate_pending("editable_posibles")
+            data = {"dni":dni,
+                    "nombre":nombre,
+                    "importe": self.get_var("pagos.importe_pendiente").get().replace(" \u20ac", "")}
+            self.append_to_tree_data("editable_posibles", item, data)
+            self.calculate_pending("editable_posibles")
 
     def del_selected_item_in_posibles(self):
         self.del_selected_item_in_tree_data("editable_posibles")

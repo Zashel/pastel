@@ -73,7 +73,6 @@ class App(EasyFrame):
                                       "dni": {"text": "DNI"},
                                       "nombre": {"text": "Nombre"},
                                       "id_factura": {"text": "ID Factura"},
-                                      "fecha_operacion": {"text": "Fecha Operación"},
                                       "importe": {"text": "Importe"},
                                       "periodo_facturado": {"text": "Periodo Facturado"}},
                           #"show": {"importe": lambda x: str(x)[:-2] + "," + str(x)[-2:] + " \u20ac",
@@ -98,6 +97,22 @@ class App(EasyFrame):
             self.ImageButton(frame, self.images.remove, command=delete).grid(column=2, row=row, sticky=E)
             self.ImageButton(frame, self.images.add).grid(column=3, row=row, sticky=W)
         return frame
+
+    def add_new_row_to_posibles(self):
+        item = "0"
+        tree = self.tree["editable_posibles"]["tree"]
+        while True:
+            try:
+                dni = tree.set(item, "dni")
+                nombre = tree.set(item, "nombre")
+                next = tree.next(item)
+                if next == "":
+                    item = str(int(item)+1)
+            except TclError:
+                dni = str()
+                nombre = str()
+        data = {"dni":dni, "nombre":nombre}
+        self.append_to_tree_data("editable_posibles", item, data)
 
     def calculate_pending(self, name):
         tree = self.tree[name]["tree"]

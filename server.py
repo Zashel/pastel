@@ -57,20 +57,28 @@ if __name__ == "__main__":
                   "facturas",
                   "^/facturas/<id_factura>$")
     app.set_method("facturas", "^/n43$", LOAD, "load_n43")
-    app.set_model(PASTELBlocking(os.path.join(admin_config.DATABASE_PATH, "pagos"),
-                                 index_fields=PAYMENTS_INDEX,
-                                 headers=PAYMENTS_FIELDS,
-                                 items_per_page=local_config.ITEMS_PER_PAGE),
+    pagos = PASTELBlocking(os.path.join(admin_config.DATABASE_PATH, "pagos"),
+                           index_fields=PAYMENTS_INDEX,
+                           headers=PAYMENTS_FIELDS,
+                           items_per_page=local_config.ITEMS_PER_PAGE)
+    app.set_model(pagos,
                   "pagos",
                   "^/pagos/<_id>$",
                   ALL_NEXT)
-    app.set_model(ShelveForeign(os.path.join(admin_config.DATABASE_PATH, "manual"),
-                                index_fields=MANUAL_FIELDS,
-                                headers=MANUAL_FIELDS,
-                                items_per_page=local_config.ITEMS_PER_PAGE,
-                                unique="pagos_id"),
-                  "aplicados",
-                  "^/pagos/aplicados/<tipo>")
+    manual = ShelveModel(os.path.join(admin_config.DATABASE_PATH, "manual"),
+                         index_fields=MANUAL_FIELDS,
+                         headers=MANUAL_FIELDS,
+                         items_per_page=local_config.ITEMS_PER_PAGE,
+                         unique="pagos_id")
+    app.set_model(manual,
+                  "manual",
+                  "^/manual/<_id>")
+    app.set_model(ShelveForeign(pagos,
+                                manual,
+                                "pagos_id",
+                                items_per_page=local_config.ITEMS_PER_PAGE),
+                  "pagos_manual",
+                  "^/pagos/<pagos_id>/manual<_id>$")
     app.set_model(ShelveModel(os.path.join(admin_config.DATABASE_PATH, "compromisos"),
                               index_fields=COMMITMENTS_FIELDS,
                               headers=COMMITMENTS_FIELDS),

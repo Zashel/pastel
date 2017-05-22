@@ -95,7 +95,8 @@ class App(EasyFrame):
             row += 1
             delete = partial(self.del_selected_item_in_tree_data, name)
             self.ImageButton(frame, self.images.remove, command=delete).grid(column=2, row=row, sticky=E)
-            self.ImageButton(frame, self.images.add).grid(column=3, row=row, sticky=W)
+            self.ImageButton(frame, self.images.add,
+                             command=self.add_new_row_to_posibles).grid(column=3, row=row, sticky=W)
         return frame
 
     def add_new_row_to_posibles(self):

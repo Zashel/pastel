@@ -94,8 +94,8 @@ class App(EasyFrame):
         tree.grid(column=0, row=row, columnspan=columnspan)
         if "editable" in name:
             row += 1
-            self.ImageButton(frame, self.images.remove).grid(column=2, row=row)
-            self.ImageButton(frame, self.images.add).grid(column=3, row=row)
+            self.ImageButton(frame, self.images.remove).grid(column=2, row=row, sticky=E)
+            self.ImageButton(frame, self.images.add).grid(column=3, row=row, sticky=W)
         return frame
 
     def calculate_pending(self, name):

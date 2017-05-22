@@ -374,6 +374,11 @@ class EasyFrame(Frame):
                 except TclError:
                     pass
 
+    def del_selected_item_in_tree_data(self, category):
+        tree = self.tree[category]["tree"]
+        item = tree.selection()[0]
+        self.del_item_in_tree_data(category, item)
+
     def set_tree_data(self, category, data, order=None):
         assert category in self.tree
         self.del_tree_data(category)

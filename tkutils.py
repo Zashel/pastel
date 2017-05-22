@@ -236,17 +236,21 @@ class EasyFrame(Frame):
                  xscroll=False, yscroll=False, **kwargs):  # Columns -> dictionary
         options = {"columns": tuple(columns)}
         options.update(kwargs)
-        tree = Treeview(parent, *args, **options)
+        frame = Frame(parent)
+        tree = Treeview(frame, *args, **options)
+        tree.grid(row=0, column=0)
         if xscroll is True:
-            xTreeScroll = Scrollbar(parent,
-                                   orient=VERTICAL,
-                                   command=tree.xview)
-            tree["yscroll"] = xTreeScroll.set
+            xTreeScroll = Scrollbar(frame,
+                                    orient=HORIZONTAL,
+                                    command=tree.xview)
+            tree["xscroll"] = xTreeScroll.set
+            xTreeScroll.grid(row=1, column=0, sticky='ew')
         if yscroll is True:
-            yTreeScroll = Scrollbar(parent,
+            yTreeScroll = Scrollbar(frame,
                                     orient=VERTICAL,
                                     command=tree.yview)
             tree["yscroll"] = yTreeScroll.set
+            yTreeScroll.grid(row=0, column=1, sticky='ns')
         activate_tree_item = partial(self.activate_tree_item, category)
         tree.bind("<<TreeviewSelect>>", activate_tree_item)
         if default_config is None:

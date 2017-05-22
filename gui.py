@@ -7,11 +7,8 @@ from tkutils import *
 from utils import *
 import getpass
 import json
-import decimal
+import os
 import datetime
-
-decimal.getcontext().prec = 2
-decimal.getcontext().rounding = decimal.ROUND_HALF_UP
 
 class Images:
     add = PhotoImage(file=os.path.join("icons", "add.png"))

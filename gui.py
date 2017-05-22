@@ -216,7 +216,7 @@ class App(EasyFrame):
                                            self.payments_tree_frame,
                                            default_config=default_config,
                                            yscroll=True)
-        self.payments_tree.bind("<Double-1>", self.open_payment_data_frame)
+        self.tree["pagos"]["tree"].bind("<Double-1>", self.open_payment_data_frame)
         #treeScroll = Scrollbar(self.payments_tree_frame,
         #                       orient=VERTICAL,
         #                       command=self.payments_tree.yview)

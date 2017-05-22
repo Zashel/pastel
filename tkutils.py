@@ -295,7 +295,7 @@ class EasyFrame(Frame):
         if "bind" in default_config:
             for item in default_config["bind"]:
                 tree.bind(item, default_config["bind"][item])
-        return tree
+        return frame
 
     def editable_tree_pop_entry(self, category, tree, editable_columns, event): #make a partial
         if self._popUp is not None and hasattr(self._popUp, "destroy"):

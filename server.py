@@ -4,7 +4,7 @@ import time
 from random import randint
 
 from zrest.server import App, GET, PUT, LOAD, NEXT, ALL
-from zrest.datamodels.shelvemodels import ShelveModel, ShelveRelational, ShelveBlocking
+from zrest.datamodels.shelvemodels import ShelveModel, ShelveRelational, ShelveBlocking, ShelveForeign
 from definitions import local_config
 for x in range(5):
     try:
@@ -52,16 +52,6 @@ if __name__ == "__main__":
                               unique="id"),
                   "usuarios",
                   "^/usuarios/<id>$")
-    #app.set_model(ShelveModel(os.path.join(LOCAL_PATH, "config"),
-    #                          1,
-    #                          index_fields=CONFIG_FIELDS),
-    #              "config",
-    #              "^/config/<container>$")
-    #app.set_model(ShelveModel(os.path.join(DATABASE_PATH, "admin"),
-    #                          1,
-    #                          index_fields=CONFIG_FIELDS),
-    #              "admin",
-    #              "^/admin/<container>$")
     #TODO: New model of config and admin
     app.set_model(Pari(os.path.join(admin_config.DATABASE_PATH, "facturas")),
                   "facturas",
@@ -74,11 +64,11 @@ if __name__ == "__main__":
                   "pagos",
                   "^/pagos/<_id>$",
                   ALL_NEXT)
-    app.set_model(ShelveRelational(os.path.join(admin_config.DATABASE_PATH, "aplicados"),
-                                   index_fields=APLICATION_FIELDS,
-                                   headers=APLICATION_FIELDS,
-                                   relations=[app.get_model("facturas"),
-                                              app.get_model("pagos")]),
+    app.set_model(ShelveForeign(os.path.join(admin_config.DATABASE_PATH, "manual"),
+                                index_fields=MANUAL_FIELDS,
+                                headers=MANUAL_FIELDS,
+                                items_per_page=local_config.ITEMS_PER_PAGE,
+                                unique="pagos_id"),
                   "aplicados",
                   "^/pagos/aplicados/<tipo>")
     app.set_model(ShelveModel(os.path.join(admin_config.DATABASE_PATH, "compromisos"),

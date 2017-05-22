@@ -73,16 +73,10 @@ PAYMENTS_INDEX = ["fecha",
                   "oficina",
                   "estado"]
 
-APLICATION_FIELDS = ["tipo", # Automático o Manual
-                     "pagos__id",
-                     "clientes_id_factura",
-                     "importe_aplicado",
-                     "nombre_cliente", # Manual
-                     "numdoc",
-                     "id_cuenta",
-                     "fecha_factura",
-                     "metodos__id",
-                     "via_de_pago"] #Crear Objeto Relacional con esto
+MANUAL_FIELDS = ["pagos_id",
+                 "usuario",
+                 "fecha",
+                 "reportado"]
 
 METODOS_FIELDS = "nombre"
 

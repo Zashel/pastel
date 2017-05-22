@@ -308,17 +308,18 @@ class EasyFrame(Frame):
 
     def destroy_popUp(self, event=None):
         category, row, column, var = self._popUp_data
-        tree = self.tree[category]["tree"]
-        if hasattr(tree, "set"):
-            if column in self.tree[category]["show"]:
-                data = self.tree[category]["show"][column](var.get())
-            else:
-                data = var.get()
-            tree.set(row, column, data)
-            self._popUp.destroy()
-            if category in self._tree_calculations:
-                for function in self._tree_calculations:
-                    function()
+        if category is not None:
+            tree = self.tree[category]["tree"]
+            if hasattr(tree, "set"):
+                if column in self.tree[category]["show"]:
+                    data = self.tree[category]["show"][column](var.get())
+                else:
+                    data = var.get()
+                tree.set(row, column, data)
+                self._popUp.destroy()
+                if category in self._tree_calculations:
+                    for function in self._tree_calculations:
+                        function()
 
     def set_combobox_values(self, route, values):
         assert type(values) in (list, tuple)

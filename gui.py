@@ -93,8 +93,8 @@ class App(EasyFrame):
         tree.grid(column=0, row=row, columnspan=columnspan)
         if "editable" in name:
             row += 1
-            delete = partial(self.del_selected_item_in_tree_data, name)
-            self.ImageButton(frame, self.images.remove, command=delete).grid(column=2, row=row, sticky=E)
+            self.ImageButton(frame, self.images.remove,
+                             command=self.del_selected_item_in_posibles).grid(column=2, row=row, sticky=E)
             self.ImageButton(frame, self.images.add,
                              command=self.add_new_row_to_posibles).grid(column=3, row=row, sticky=W)
         return frame
@@ -118,6 +118,11 @@ class App(EasyFrame):
                 break
         data = {"dni":dni, "nombre":nombre}
         self.append_to_tree_data("editable_posibles", item, data)
+        self.calculate_pending("editable_posibles")
+
+    def del_selected_item_in_posibles(self):
+        self.del_selected_item_in_tree_data("editable_posibles")
+        self.calculate_pending("editable_posibles")
 
     def calculate_pending(self, name):
         tree = self.tree[name]["tree"]

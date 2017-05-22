@@ -85,7 +85,7 @@ class App(EasyFrame):
                                        },
                           "bind": {},
                           "editable": editable}
-        tree = self.TreeView(name, self.posibles_columns, frame, default_config=default_config)
+        tree = self.TreeView(name, self.posibles_columns, frame, default_config=default_config, yscroll=True)
         tree.grid(column=0, row=row, columnspan=columnspan)
         return frame
 
@@ -181,12 +181,13 @@ class App(EasyFrame):
         self.payments_tree = self.TreeView("pagos",
                                            columns,
                                            self.payments_tree_frame,
-                                           default_config=default_config)
+                                           default_config=default_config,
+                                           yscroll=True)
         self.payments_tree.bind("<Double-1>", self.open_payment_data_frame)
-        treeScroll = Scrollbar(self.payments_tree_frame,
-                               orient=VERTICAL,
-                               command=self.payments_tree.yview)
-        self.payments_tree["yscrollcommand"] = treeScroll.set
+        #treeScroll = Scrollbar(self.payments_tree_frame,
+        #                       orient=VERTICAL,
+        #                       command=self.payments_tree.yview)
+        #self.payments_tree["yscroll"] = treeScroll.set
         self.payments_tree.grid(column=0, row=row, columnspan=5)
         self.payments_tree_first = self.LinkButton(self.payments_tree_frame,
                                                    command=lambda: self.update_pagos_tree("first"),

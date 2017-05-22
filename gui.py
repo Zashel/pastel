@@ -99,9 +99,9 @@ class App(EasyFrame):
             self.ImageButton(button_frame, self.images.remove,
                              command=self.del_selected_item_in_posibles).grid(column=0, row=0, sticky=E)
             self.ImageButton(button_frame, self.images.check,
-                             command=self.add_pending_to_selected).grid(column=0, row=1, sticky=E)
+                             command=self.add_pending_to_selected).grid(column=1, row=0, sticky=E)
             self.ImageButton(button_frame, self.images.add,
-                             command=self.add_new_row_to_posibles).grid(column=0, row=2, sticky=E)
+                             command=self.add_new_row_to_posibles).grid(column=2, row=0, sticky=E)
         return frame
 
     def add_pending_to_selected(self):

@@ -94,7 +94,8 @@ class App(EasyFrame):
         tree.grid(column=0, row=row, columnspan=columnspan)
         if "editable" in name:
             row += 1
-            self.ImageButton(frame, self.images.remove).grid(column=2, row=row, sticky=E)
+            delete = partial(self.del_selected_item_in_tree_data, name)
+            self.ImageButton(frame, self.images.remove, command=delete).grid(column=2, row=row, sticky=E)
             self.ImageButton(frame, self.images.add).grid(column=3, row=row, sticky=W)
         return frame
 

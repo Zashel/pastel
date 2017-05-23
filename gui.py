@@ -190,6 +190,7 @@ class App(EasyFrame):
         self.calculate_pending(name)
 
     def save_pagos_pendiente(self):
+        self.destroy_popUp()
         link = self.get_var("pagos.link").get()
         tree = self.tree["editable_posibles"]["tree"]
         posibles = list()

@@ -329,7 +329,6 @@ with open(admin_config.FACTURAS_FILE, "r") as f:
         facturas[datetime.datetime.strptime(date, "%d/%m/%Y")] = code
 admin_config.set_default("FACTURAS", facturas)
 
-
 __all__ = list()
 __all__.extend(STATIC)
 #__all__.extend(LOCAL)

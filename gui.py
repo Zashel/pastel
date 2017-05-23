@@ -59,14 +59,19 @@ class App(EasyFrame):
         self.Combobox("pagos.estado", admin_config.PAYMENTS_STATES, frame).grid(column=2, row=row) #frame is the name of the bunny
         return frame
 
+    def set_list_codes(self):
+        return [API.get_billing_period(key) for key in admin_config.FACTURAS.keys()]
+
     def payment_posibles_frame(self, parent, name):
         frame = Frame(parent)
         row = 0
         columnspan = 4
         if "editable" in name:
             editable = ["dni", "nombre", "id_factura", "importe", "periodo_facturado"]
+            comboboxes = {"periodo_facturado": self.set_list_codes()}
         else:
             editable = list()
+            comboboxes = dict()
         default_config = {"columns": {"width": 100},
                           "column": {"#0": {"width": 30},
                                      "periodo_facturado": {"width": 110},
@@ -88,7 +93,8 @@ class App(EasyFrame):
                                                                 ).replace(".", ","),
                                        },
                           "bind": {},
-                          "editable": editable}
+                          "editable": editable,
+                          "comboboxes": comboboxes}
         tree = self.TreeView(name, self.posibles_columns, frame, default_config=default_config, yscroll=True)
         if "editable" in name:
             self.set_tree_calculation(name, partial(self.calculate_pending, name))

@@ -356,18 +356,10 @@ class EasyFrame(Frame):
         tree.set(item, name, self.tree[category]["show"][name](data))
 
     def del_tree_data(self, category):
-        all = list()
-        item = "0"
         tree = self.tree[category]["tree"]
-        while True:
-            try:
-                next = tree.next(item)
-                self.del_item_in_tree_data(category, item)
-                item = next
-                if next == "":
-                    break
-            except TclError:
-                break
+        items = tree.get_children()
+        for item in items:
+            self.del_item_in_tree_data(category, item)
 
     def del_item_in_tree_data(self, category, item):
         self.tree[category]["tree"].delete(item)

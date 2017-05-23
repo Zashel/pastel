@@ -354,10 +354,11 @@ class App(EasyFrame):
                 if column == "posibles":
                     if type(data[column]) in (str, bytearray):
                         data[column] = json.loads(data[column])
+                print(data[column])
                 self.set_var(name, data[column],
                              w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, data[column]))
-                link = data["_links"]["self"]["href"]
-                self.set_var("pagos.link", link)
+        link = data["_links"]["self"]["href"]
+        self.set_var("pagos.link", link)
         for parent in (self.payment_frame, self.pending_payment_frame):
             self.payment_data_frame_text[parent]["state"] = "normal"
             self.payment_data_frame_text[parent].delete("1.0", END)

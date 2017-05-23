@@ -94,7 +94,8 @@ class App(EasyFrame):
                                        },
                           "bind": {},
                           "editable": editable,
-                          "comboboxes": comboboxes}
+                          "comboboxes": comboboxes
+                          }
         tree = self.TreeView(name, self.posibles_columns, frame, default_config=default_config, yscroll=True)
         if "editable" in name:
             self.set_tree_calculation(name, partial(self.calculate_pending, name))

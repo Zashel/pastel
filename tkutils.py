@@ -311,8 +311,7 @@ class EasyFrame(Frame):
             #last_entry_validation = (self.register(tree.set), row, column, "%P")
             var = self.get_var(".".join((category, column)))
             if column not in comboboxes:
-                self._popUp = Entry(tree,
-                                    textvariable=var)
+                self._popUp = Entry(tree, textvariable=var)
             else:
                 self._popUp = Combobox(tree, values=comboboxes[column])
             #                    validate="all", validatecommand=last_entry_validation)

@@ -206,6 +206,7 @@ class App(EasyFrame):
         def save(link, estado, posibles):
             API.modify_pago({"link": link, "estado": estado, "posibles": posibles})
             API.insert_manual(link)
+            API.unblock_pago(link)
         save(link, self.get_var("pagos.estado").get(), posibles)
 
     def set_payments_tree_frame(self):

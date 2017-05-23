@@ -172,6 +172,13 @@ class API:
         return API.pagos["active"]
 
     @classmethod
+    def unblock_pago(cls, link):
+        request = requests.get("http://{}:{}{}{}?unblock=True".format(local_config.HOST,
+                                                                             str(local_config.PORT),
+                                                                             link,
+                                                                             str(item)))
+
+    @classmethod
     def get_pagos_list(cls, link=None):
         if link not in API.pagos:
             return API.pagos["cache"]

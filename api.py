@@ -190,8 +190,8 @@ class API:
                                    json=post_data)
             if request.status_code in (200, 201):
                 data = json.loads(request.text)
-                if data["total"] == 1:
-                    API.pagos["active"] = data["data"]
+                if not "total" in data:
+                    API.pagos["active"] = data
                 elif request.status_code == 404:
                     API.pagos["active"] = None
             return API.pagos["active"]

@@ -317,7 +317,7 @@ class App(EasyFrame):
         button_frame_apyment_pending.pack()
         Button(button_frame_apyment_pending, text="Cerrar", command=self.show_payments_tree).grid(column=0, row=0, sticky=W)
         Button(button_frame_apyment_pending, text="Guardar", command=self.save_pagos_pendiente).grid(column=1, row=0, sticky=E)
-        Button(button_frame_apyment_pending, text="Siguiente", command=self.next_payment).grid(column=2, row=0, sticky=E)
+        Button(button_frame_apyment_pending, text="Siguiente", command=self.save_and_next_payment).grid(column=2, row=0, sticky=E)
 
         self.tabs["payments"].pack()
 
@@ -339,7 +339,11 @@ class App(EasyFrame):
         self.set_var("paysearch.customer_id", dni)
 
     def next_payment(self):
-        self.load_payment(API.next_pagos(self._pagos_filter))
+        self.load_payment(API.next_pagos())
+
+    def save_and_next_payment(self):
+        self.save_pagos_pendiente()
+        self.next_payment()
 
     def load_payment(self, data):
         for column in PAYMENTS_FIELDS:
@@ -369,7 +373,6 @@ class App(EasyFrame):
             link = self.tree[category]["data"][item]["_links"]["self"]["href"]
             data = API.get_link(link, var="pagos")
             self.load_payment(data)
-
 
     def search_payment(self, *args, **kwargs):
         estado = self.get_var("paysearch.state").get()

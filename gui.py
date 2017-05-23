@@ -440,10 +440,10 @@ class App(EasyFrame):
 
     def show_payments_tree(self, *args, **kwargs):
         self.pending_payment_frame.pack_forget()
-        if self._pagos_filter != dict():
-            self.update_pagos_tree(**self._pagos_filter)
         self.payment_frame.pack_forget()
         self.payments_tree_frame.pack()
+        if self._pagos_filter != dict():
+            self.update_pagos_tree(**self._pagos_filter)
 
     def show_payment(self, *args, **kwargs):
         self.payments_tree_frame.pack_forget()

@@ -310,11 +310,11 @@ class EasyFrame(Frame):
             #data = tree.set(row, column)
             #last_entry_validation = (self.register(tree.set), row, column, "%P")
             var = self.get_var(".".join((category, column)))
-            print(column, comboboxes)
             if column not in comboboxes:
                 self._popUp = Entry(tree, textvariable=var)
             else:
                 self._popUp = Combobox(tree, values=comboboxes[column])
+                print("OK?")
             #                    validate="all", validatecommand=last_entry_validation)
             #self._popUp_variable.set(data)
             self._popUp.place(x=x, y=y+pad, anchor=W)

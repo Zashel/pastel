@@ -60,7 +60,10 @@ class App(EasyFrame):
         return frame
 
     def set_list_codes(self):
-        return [API.get_billing_period(key) for key in admin_config.FACTURAS.keys()]
+        keys = list(admin_config.FACTURAS.keys())
+        keys.sort()
+        keys.reverse()
+        return [API.get_billing_period(key) for key in keys]
 
     def payment_posibles_frame(self, parent, name):
         frame = Frame(parent)
@@ -74,7 +77,7 @@ class App(EasyFrame):
             comboboxes = dict()
         default_config = {"columns": {"width": 100},
                           "column": {"#0": {"width": 30},
-                                     "periodo_facturado": {"width": 110},
+                                     "periodo_facturado": {"width": 130},
                                      },
                           "heading": {"#0": {"text": "ID"},
                                       "dni": {"text": "DNI"},

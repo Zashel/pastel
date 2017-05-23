@@ -354,7 +354,7 @@ class App(EasyFrame):
                 if column == "posibles":
                     if type(data[column]) in (str, bytearray):
                         data[column] = json.loads(data[column])
-                print(data[column])
+                print(str(data[column]).replace("\u20ac", "Euro"))
                 self.set_var(name, data[column],
                              w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, data[column]))
         link = data["_links"]["self"]["href"]

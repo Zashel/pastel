@@ -135,7 +135,7 @@ class App(EasyFrame):
                 dni = tree.set(items[-1], "dni")
                 nombre = tree.set(items[-1], "nombre")
             else:
-                dni = self.get_vars("pagos.dni").get()
+                dni = self.get_var("pagos.dni").get()
                 nombre = str()
             data = {"dni":dni,
                     "nombre":nombre,

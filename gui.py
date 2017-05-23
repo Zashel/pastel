@@ -338,7 +338,9 @@ class App(EasyFrame):
         self.set_var("paysearch.customer_id", dni)
 
     def next_payment(self):
-        self.load_payment(API.next_pagos(_item=self.get_var("pagos._id").get()))
+        kwargs = dict(self._pagos_filter)
+        kwargs.update({"_item": self.get_var("pagos._id").get()})
+        self.load_payment(API.next_pagos(**kwargs))
 
     def save_and_next_payment(self):
         self.save_pagos_pendiente()
@@ -364,10 +366,10 @@ class App(EasyFrame):
             self.payment_data_frame_text[parent].delete("1.0", END)
             self.payment_data_frame_text[parent].insert("1.0", self.get_var("pagos.observaciones").get())
             self.payment_data_frame_text[parent]["state"] = "disable"
-            if self.search_payments_estado == "PENDIENTE":
-                self.payment_posibles_load("editable_posibles")
-            else:
-                self.payment_posibles_load("posibles")
+        if self.search_payments_estado == "PENDIENTE":
+            self.payment_posibles_load("editable_posibles")
+        else:
+            self.payment_posibles_load("posibles")
 
     def load_payment_from_tree(self, *args, **kwargs):
         category = "pagos"

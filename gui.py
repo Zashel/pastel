@@ -305,17 +305,19 @@ class App(EasyFrame):
         self.payment_frame = Frame(self.tabs["payments"])
         self.payment_data_frame(self.payment_frame).pack()
         self.payment_posibles_frame(self.payment_frame, "posibles").pack()
-        button_frame = Frame(self.payment_frame).pack()
-        Button(button_frame, text="Cerrar", command=self.show_payments_tree).pack()
+        button_frame_payment = Frame(self.payment_frame)
+        button_frame_payment.pack()
+        Button(button_frame_payment, text="Cerrar", command=self.show_payments_tree).pack()
 
         #Pending Payment Frame
         self.pending_payment_frame = Frame(self.tabs["payments"])
         self.payment_data_frame(self.pending_payment_frame).pack()
         self.payment_posibles_frame(self.pending_payment_frame, "editable_posibles").pack()
-        button_frame = Frame(self.pending_payment_frame).pack()
-        Button(button_frame, text="Cerrar", command=self.show_payments_tree).grid(column=0, row=0, sticky=W)
-        Button(button_frame, text="Guardar", command=self.save_pagos_pendiente).grid(column=1, row=0, sticky=E)
-        Button(button_frame, text="Siguiente", command=self.next_payment).grid(column=2, row=0, sticky=E)
+        button_frame_apyment_pending = Frame(self.pending_payment_frame)
+        button_frame_apyment_pending.pack()
+        Button(button_frame_apyment_pending, text="Cerrar", command=self.show_payments_tree).grid(column=0, row=0, sticky=W)
+        Button(button_frame_apyment_pending, text="Guardar", command=self.save_pagos_pendiente).grid(column=1, row=0, sticky=E)
+        Button(button_frame_apyment_pending, text="Siguiente", command=self.next_payment).grid(column=2, row=0, sticky=E)
 
         self.tabs["payments"].pack()
 

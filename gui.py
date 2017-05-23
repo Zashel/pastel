@@ -338,7 +338,7 @@ class App(EasyFrame):
         self.set_var("paysearch.customer_id", dni)
 
     def next_payment(self):
-        self.load_payment(API.next_pagos())
+        self.load_payment(API.next_pagos(_item=self.get_var("pagos._id").get()))
 
     def save_and_next_payment(self):
         self.save_pagos_pendiente()
@@ -358,6 +358,7 @@ class App(EasyFrame):
                              w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, data[column]))
         link = data["_links"]["self"]["href"]
         self.set_var("pagos.link", link)
+        self.set_var("pagos._id", data["_id"])
         for parent in (self.payment_frame, self.pending_payment_frame):
             self.payment_data_frame_text[parent]["state"] = "normal"
             self.payment_data_frame_text[parent].delete("1.0", END)

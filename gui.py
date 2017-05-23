@@ -5,6 +5,7 @@ from functools import partial
 from definitions import local_config, admin_config, LOCAL, SHARED, PAYMENTS_FIELDS
 from tkutils import *
 from utils import *
+from zashel.utils import threadize
 import getpass
 import json
 import os
@@ -186,29 +187,26 @@ class App(EasyFrame):
         link = self.get_var("pagos.link").get()
         tree = self.tree["editable_posibles"]["tree"]
         posibles = list()
-        item = "0"
+        items = tree.get_children
         codes = admin_config.FACTURAS
-        while True:
-            try:
-                code = codes[API.get_fecha_factura_from_periodo(tree.set(item, "periodo_facturado"))]
-                posibles.append(";".join([datetime.datetime.now().strftime("%d/%m/%Y"),
-                                          str(code),
-                                          str(tree.set(item, "nombre")),
-                                          str(tree.set(item, "dni")),
-                                          str(tree.set(item, "id_factura")),
-                                          str(self.get_var("pagos.fecha").get()),
-                                          str(tree.set(item, "importe").replace(".", ",").replace(" \u20ac", "")),
-                                          str(tree.set(item, "periodo_facturado")),
-                                          str(admin_config.PM_PAYMENT_METHOD),
-                                          str(admin_config.PM_PAYMENT_WAY)
-                                          ]))
-                item = tree.next(item)
-                if item == "":
-                    break
-            except TclError:
-                break
-        API.modify_pago({"link": link, "estado": self.get_var("pagos.estado").get(), "posibles": posibles})
-        API.insert_manual(link)
+        for item in items:
+            code = codes[API.get_fecha_factura_from_periodo(tree.set(item, "periodo_facturado"))]
+            posibles.append(";".join([datetime.datetime.now().strftime("%d/%m/%Y"),
+                                      str(code),
+                                      str(tree.set(item, "nombre")),
+                                      str(tree.set(item, "dni")),
+                                      str(tree.set(item, "id_factura")),
+                                      str(self.get_var("pagos.fecha").get()),
+                                      str(tree.set(item, "importe").replace(".", ",").replace(" \u20ac", "")),
+                                      str(tree.set(item, "periodo_facturado")),
+                                      str(admin_config.PM_PAYMENT_METHOD),
+                                      str(admin_config.PM_PAYMENT_WAY)
+                                      ]))
+        @threadize
+        def save(link, estado, posibles):
+            API.modify_pago({"link": link, "estado": estado, "posibles": posibles})
+            API.insert_manual(link)
+        save(link, self.get_var("pagos.estado").get(), posibles)
 
     def set_payments_tree_frame(self):
         #Payments Tree

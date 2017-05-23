@@ -173,10 +173,9 @@ class API:
 
     @classmethod
     def unblock_pago(cls, link):
-        request = requests.get("http://{}:{}{}{}?unblock=True".format(local_config.HOST,
+        request = requests.get("http://{}:{}{}?unblock=True".format(local_config.HOST,
                                                                              str(local_config.PORT),
-                                                                             link,
-                                                                             str(item)))
+                                                                             link))
 
     @classmethod
     def get_pagos_list(cls, link=None):

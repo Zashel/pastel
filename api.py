@@ -372,6 +372,7 @@ class API:
 
     @classmethod
     def get_fecha_factura_from_periodo(cls, periodo):
+        print(periodo)
         initial, final = periodo.split("-")
         ffact = datetime.datetime.strptime(final, "%d/%m/%y")
         if ffact.day != 8:

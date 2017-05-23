@@ -313,7 +313,7 @@ class EasyFrame(Frame):
             if column not in comboboxes:
                 self._popUp = Entry(tree, textvariable=var)
             else:
-                self._popUp = Combobox(tree, values=comboboxes[column])
+                self._popUp = Combobox(tree, textvariable=var, values=comboboxes[column])
                 print("OK?")
             #                    validate="all", validatecommand=last_entry_validation)
             #self._popUp_variable.set(data)

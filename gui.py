@@ -77,7 +77,7 @@ class App(EasyFrame):
             comboboxes = dict()
         default_config = {"columns": {"width": 100},
                           "column": {"#0": {"width": 30},
-                                     "periodo_facturado": {"width": 130},
+                                     "periodo_facturado": {"width": 150},
                                      },
                           "heading": {"#0": {"text": "ID"},
                                       "dni": {"text": "DNI"},

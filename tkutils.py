@@ -73,7 +73,7 @@ class TkVars:
                 final = list()
                 tkvars = TkVars(".".join((self._name, item)))
                 for index, val in enumerate(value):
-                    final.append(tkvars.set(index, val))
+                    final.append(tkvars.set(str(index), val))
                 print(final)
                 self._vars[item] = tk_var_class(final)
                 print(self._vars[item])

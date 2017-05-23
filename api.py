@@ -184,10 +184,10 @@ class API:
         if "link" in data:
             post_data = data.copy()
             del(post_data["link"])
-            request = requests.put("http://{}:{}{}".format(local_config.HOST,
-                                                           str(local_config.PORT),
-                                                           data["link"].split("?")[0]),
-                                   json=post_data)
+            request = requests.patch("http://{}:{}{}".format(local_config.HOST,
+                                                             str(local_config.PORT),
+                                                             data["link"].split("?")[0]),
+                                     json=post_data)
             if request.status_code in (200, 201):
                 data = json.loads(request.text)
                 if not "total" in data:

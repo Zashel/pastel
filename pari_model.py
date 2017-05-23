@@ -360,11 +360,19 @@ class Pari(RestfulBaseInterface):
         fechas_final.sort()
         fecha_inicio = fechas_final[-1]
         codigo_inicio = final[fecha_inicio]
+        len_facturas = len(final)
         if fecha_inicio in fechas_facturas:
             index_inicio = fechas_facturas.index(fecha_inicio)
             for index, fecha in enumerate(fechas_facturas):
                 if fecha not in final:
                     final[fecha] = codigo_inicio+index-index_inicio
+        len_final = len(final)
+        if len_final > len_facturas+6:
+            keys = len(final.keys())
+            keys.sort()
+            sfinal = [";".join((final[key], key.strftime("%d/%m/%Y"))) for key in keys]
+            with open(admin_config.FACTURAS_FILE, "w") as f:
+                f.write("\n".join(sfinal))
         admin_config.FACTURAS = final
         return final
 

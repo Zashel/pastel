@@ -162,6 +162,8 @@ class App(EasyFrame):
         print("Pagado: ", str(paid))
         self._pending = total - paid
         self._pending_variable.set(str(round(self._pending/100, 2)).replace(".", ",")+" \u20ac")
+        if self._pending == 0:
+            self.set_var("pagos.estado", "APLICADO")
 
     def payment_posibles_load(self, name):
         posibles = self.get_var("pagos.posibles").get()

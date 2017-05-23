@@ -1,1 +1,1 @@
-Python\pastel.exe server.py
+Python\pastel-server.exe server.py

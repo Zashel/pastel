@@ -184,7 +184,10 @@ class API:
         if "link" in data:
             post_data = data.copy()
             del(post_data["link"])
-            request = requests.put(data["link"], json=post_data)
+            request = requests.put("http://{}:{}{}".format(local_config.HOST,
+                                                           str(local_config.PORT),
+                                                           data["link"].split("?")[0]),
+                                   json=post_data)
             if request.status_code in (200, 201):
                 data = json.loads(request.text)
                 if data["total"] == 1:
@@ -199,7 +202,10 @@ class API:
             usuario = local_config.USER
         if fecha is None:
             fecha = datetime.datetime.now().strftime("%d/%m/%Y")
-        request = requests.post(link+"/manual", json({"usuario": usuario, "fecha":fecha}))
+        request = requests.post("http://{}:{}{}/manual".format(local_config.HOST,
+                                                        str(local_config.PORT),
+                                                        link.split("?")[0]),
+                                json({"usuario": usuario, "fecha":fecha}))
         if request.status_code == 201:
             return True
         else:

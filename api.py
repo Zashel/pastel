@@ -376,7 +376,7 @@ class API:
         initial, final = periodo.split("-")
         ffact = datetime.datetime.strptime(final, "%d/%m/%y")
         if ffact.day != 8:
-            ffact = ffact.replace(ffact.day + 1)
+            ffact = ffact.replace(day=ffact.day + 1)
         return ffact
 
 

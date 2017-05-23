@@ -325,10 +325,8 @@ class App(EasyFrame):
     def open_payment_data_frame(self, event):
         self.load_payment_from_tree()
         if self.search_payments_estado == "PENDIENTE":
-            self.payment_posibles_load("editable_posibles")
             self.show_pending_payment()
         else:
-            self.payment_posibles_load("posibles")
             self.show_payment()
 
     def validate_dni(self):
@@ -365,6 +363,10 @@ class App(EasyFrame):
             self.payment_data_frame_text[parent].delete("1.0", END)
             self.payment_data_frame_text[parent].insert("1.0", self.get_var("pagos.observaciones").get())
             self.payment_data_frame_text[parent]["state"] = "disable"
+            if self.search_payments_estado == "PENDIENTE":
+                self.payment_posibles_load("editable_posibles")
+            else:
+                self.payment_posibles_load("posibles")
 
     def load_payment_from_tree(self, *args, **kwargs):
         category = "pagos"

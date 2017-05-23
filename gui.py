@@ -190,17 +190,17 @@ class App(EasyFrame):
         while True:
             try:
                 code = codes[API.get_fecha_factura_from_periodo(tree.set(item, "periodo_facturado"))]
-                posibles.append([datetime.datetime.now().strftime("%d/%m/%Y"),
-                                 str(code),
-                                 str(admin_config.PM_CUSTOMER),
-                                 str(tree.set(item, "dni")),
-                                 str(tree.set(item, "id_factura")),
-                                 str(self.get_var("pagos.fecha").get()),
-                                 str(tree.set(item, "id_factura").replace(".", ",").replace(" \u20ac", "")),
-                                 str(tree.set(item, "periodo_facturado")),
-                                 str(admin_config.PM_PAYMENT_METHOD),
-                                 str(admin_config.PM_PAYMENT_WAY)
-                                 ])
+                posibles.append(";".join([datetime.datetime.now().strftime("%d/%m/%Y"),
+                                          str(code),
+                                          str(admin_config.PM_CUSTOMER),
+                                          str(tree.set(item, "dni")),
+                                          str(tree.set(item, "id_factura")),
+                                          str(self.get_var("pagos.fecha").get()),
+                                          str(tree.set(item, "id_factura").replace(".", ",").replace(" \u20ac", "")),
+                                          str(tree.set(item, "periodo_facturado")),
+                                          str(admin_config.PM_PAYMENT_METHOD),
+                                          str(admin_config.PM_PAYMENT_WAY)
+                                          ]))
                 item = tree.next(item)
                 if item == "":
                     break

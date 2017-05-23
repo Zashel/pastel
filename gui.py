@@ -185,7 +185,6 @@ class App(EasyFrame):
         link = self.get_var("pagos.link").get()
         tree = self.tree["editable_posibles"]["tree"]
         posibles = list()
-        code = 1 #Set in API or something
         item = "0"
         codes = admin_config.FACTURAS
         while True:
@@ -306,13 +305,17 @@ class App(EasyFrame):
         self.payment_frame = Frame(self.tabs["payments"])
         self.payment_data_frame(self.payment_frame).pack()
         self.payment_posibles_frame(self.payment_frame, "posibles").pack()
-        Button(self.payment_frame, text="Cerrar", command=self.show_payments_tree).pack()
+        button_frame = Frame(self.payment_frame).pack()
+        Button(button_frame, text="Cerrar", command=self.show_payments_tree).pack()
 
         #Pending Payment Frame
         self.pending_payment_frame = Frame(self.tabs["payments"])
         self.payment_data_frame(self.pending_payment_frame).pack()
         self.payment_posibles_frame(self.pending_payment_frame, "editable_posibles").pack()
-        Button(self.pending_payment_frame, text="Cerrar", command=self.show_payments_tree).pack()
+        button_frame = Frame(self.pending_payment_frame).pack()
+        Button(button_frame, text="Cerrar", command=self.show_payments_tree).grid(column=0, row=0, sticky=W)
+        Button(button_frame, text="Guardar", command=self.save_pagos_pendiente).grid(column=1, row=0, sticky=E)
+        Button(button_frame, text="Siguiente", command=self.next_payment).grid(column=2, row=0, sticky=E)
 
         self.tabs["payments"].pack()
 
@@ -333,6 +336,28 @@ class App(EasyFrame):
             dni = formatear_letra_dni(dni)
         self.set_var("paysearch.customer_id", dni)
 
+    def next_payment(self):
+        self.load_payment(API.next_pagos(self._pagos_filter))
+
+    def load_payment(self, data):
+        for column in PAYMENTS_FIELDS:
+            if column in data:
+                name = "pagos.{}".format(column)
+                if column in self.tree["pagos"]["show"]:
+                    data[column] = self.tree["pagos"]["show"][column](data[column])
+                if column == "posibles":
+                    if type(data[column]) in (str, bytearray):
+                        data[column] = json.loads(data[column])
+                self.set_var(name, data[column],
+                             w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, data[column]))
+                link = data["_links"]["self"]["href"]
+                self.set_var("pagos.link", link)
+        for parent in (self.payment_frame, self.pending_payment_frame):
+            self.payment_data_frame_text[parent]["state"] = "normal"
+            self.payment_data_frame_text[parent].delete("1.0", END)
+            self.payment_data_frame_text[parent].insert("1.0", self.get_var("pagos.observaciones").get())
+            self.payment_data_frame_text[parent]["state"] = "disable"
+
     def load_payment_from_tree(self, *args, **kwargs):
         category = "pagos"
         tree = self.tree[category]["tree"]
@@ -341,22 +366,8 @@ class App(EasyFrame):
             item = tree.selection()[0]
             link = self.tree[category]["data"][item]["_links"]["self"]["href"]
             data = API.get_link(link, var="pagos")
-            for column in PAYMENTS_FIELDS:
-                if column in data:
-                    name = "pagos.{}".format(column)
-                    if column in self.tree["pagos"]["show"]:
-                        data[column] = self.tree["pagos"]["show"][column](data[column])
-                    if column == "posibles":
-                        if type(data[column]) in (str, bytearray):
-                            data[column] = json.loads(data[column])
-                    self.set_var(name, data[column],
-                                 w=lambda *args, **kwargs: API.pagos["active"].__setitem__(column, data[column]))
-                self.set_var("pagos.link", link)
-            for parent in (self.payment_frame, self.pending_payment_frame):
-                self.payment_data_frame_text[parent]["state"] = "normal"
-                self.payment_data_frame_text[parent].delete("1.0", END)
-                self.payment_data_frame_text[parent].insert("1.0", self.get_var("pagos.observaciones").get())
-                self.payment_data_frame_text[parent]["state"] = "disable"
+            self.load_payment(data)
+
 
     def search_payment(self, *args, **kwargs):
         estado = self.get_var("paysearch.state").get()
@@ -385,6 +396,7 @@ class App(EasyFrame):
             kwargs["fecha"] = fecha #TODO: Validate
         if importe != "":
             kwargs["importe"] = importe
+        self._pagos_filter = kwargs
         self.update_pagos_tree(**kwargs)
 
     def update_pagos_tree(self, link=None, **filter):
@@ -576,6 +588,7 @@ class App(EasyFrame):
         self.search_payments_estado = str()
         self._pending = 0
         self._pending_variable = self.set_var("pagos.importe_pendiente")
+        self._pagos_filter = str()
         self.posibles_headers = ["fecha_aplicacion",
                                  "codigo",
                                  "nombre",

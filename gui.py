@@ -113,7 +113,7 @@ class App(EasyFrame):
                                         .replace(" \u20ac", "").replace(",", "."))*100, 2))
             nuevo = str((importe + pendiente)/100).replace(".", ",")+" \u20ac"
             #tree.set(item, "importe", nuevo)
-            self.set_var("editable_posibles.importe", nuevo)
+            self.set_var("editable_posibles.importe", nuevo.replace(" \u20ac", ""))
             self.calculate_pending("editable_posibles")
 
     def add_new_row_to_posibles(self):

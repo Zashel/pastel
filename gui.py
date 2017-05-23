@@ -192,7 +192,7 @@ class App(EasyFrame):
                 code = codes[API.get_fecha_factura_from_periodo(tree.set(item, "periodo_facturado"))]
                 posibles.append(";".join([datetime.datetime.now().strftime("%d/%m/%Y"),
                                           str(code),
-                                          str(admin_config.PM_CUSTOMER),
+                                          str(tree.set(item, "nombre")),
                                           str(tree.set(item, "dni")),
                                           str(tree.set(item, "id_factura")),
                                           str(self.get_var("pagos.fecha").get()),

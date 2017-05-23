@@ -186,7 +186,7 @@ class API:
             del(post_data["link"])
             request = requests.patch("http://{}:{}{}".format(local_config.HOST,
                                                              str(local_config.PORT),
-                                                             data["link"].split("?")[0]),
+                                                             data["link"]),
                                      json=post_data)
             if request.status_code in (200, 201):
                 data = json.loads(request.text)
@@ -205,7 +205,7 @@ class API:
         request = requests.post("http://{}:{}{}/manual".format(local_config.HOST,
                                                         str(local_config.PORT),
                                                         link.split("?")[0]),
-                                json({"usuario": usuario, "fecha":fecha}))
+                                json={"usuario": usuario, "fecha":fecha})
         if request.status_code == 201:
             return True
         else:

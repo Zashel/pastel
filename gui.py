@@ -187,7 +187,7 @@ class App(EasyFrame):
         link = self.get_var("pagos.link").get()
         tree = self.tree["editable_posibles"]["tree"]
         posibles = list()
-        items = tree.get_children
+        items = tree.get_children()
         codes = admin_config.FACTURAS
         for item in items:
             code = codes[API.get_fecha_factura_from_periodo(tree.set(item, "periodo_facturado"))]

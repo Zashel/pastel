@@ -134,9 +134,11 @@ class App(EasyFrame):
             if len(items) > 0:
                 dni = tree.set(items[-1], "dni")
                 nombre = tree.set(items[-1], "nombre")
+                item = str(int(items[-1])+1)
             else:
                 dni = self.get_var("pagos.dni").get()
                 nombre = str()
+                item = "0"
             data = {"dni":dni,
                     "nombre":nombre,
                     "importe": self.get_var("pagos.importe_pendiente").get().replace(" \u20ac", "")}

@@ -128,23 +128,15 @@ class App(EasyFrame):
             self.calculate_pending("editable_posibles")
 
     def add_new_row_to_posibles(self):
-        item = "0"
         tree = self.tree["editable_posibles"]["tree"]
+        items = tree.get_children()
         if self.get_var("pagos.importe_pendiente").get() != "0,0 \u20ac":
-            while True:
-                try:
-                    dni = tree.set(item, "dni")
-                    nombre = tree.set(item, "nombre")
-                    next_item = tree.next(item)
-                    if next_item == "":
-                        item = str(int(item) + 1)
-                        break
-                    else:
-                        item = next_item
-                except TclError:
-                    dni = str()
-                    nombre = str()
-                    break
+            if len(items) > 0:
+                dni = tree.set(items[-1], "dni")
+                nombre = tree.set(items[-1], "nombre")
+            else:
+                dni = self.get_vars("pagos.dni").get()
+                nombre = str()
             data = {"dni":dni,
                     "nombre":nombre,
                     "importe": self.get_var("pagos.importe_pendiente").get().replace(" \u20ac", "")}

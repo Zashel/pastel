@@ -325,6 +325,7 @@ facturas = dict()
 with open(admin_config.FACTURAS_FILE, "r") as f:
     for row in f:
         code, date = row.split(";")
+        date = date.strip("\n")
         facturas[datetime.datetime.strptime(date, "%d%m%Y")] = code
 admin_config.set_default("FACTURAS", facturas)
 

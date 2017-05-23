@@ -316,7 +316,6 @@ class EasyFrame(Frame):
             self._popUp.bind("<Escape>", self.destroy_popUp)
             self._popUp.bind("<Return>", self.destroy_popUp)
 
-    @log
     def destroy_popUp(self, event=None):
         category, row, column, var = self._popUp_data
         if category is not None:
@@ -339,7 +338,6 @@ class EasyFrame(Frame):
     def get_combobox_values(self, route):
         return self._comboboxes[route]["values"]
 
-    @log
     def activate_tree_item(self, category, event):
         tree = self.tree[category]["tree"]
         item = tree.selection()[0]
@@ -347,7 +345,6 @@ class EasyFrame(Frame):
         for field in template:
             self.set_var(".".join((category, str(field))), self.tree[category]["data"][item][field])
 
-    @log
     def changed_active_tree_item(self, variable, void, method, *, var_name):
         category, name = self.get_category_and_name(var_name)
         tree = self.tree[category]["tree"]

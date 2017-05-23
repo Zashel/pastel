@@ -195,7 +195,7 @@ class App(EasyFrame):
                                  str(admin_config.PM_CUSTOMER),
                                  str(tree.set(item, "dni")),
                                  str(tree.set(item, "id_factura")),
-                                 str(self.get_var("pagos.fecha_operacion").get()),
+                                 str(self.get_var("pagos.fecha").get()),
                                  str(tree.set(item, "id_factura").replace(".", ",").replace(" \u20ac", "")),
                                  str(tree.set(item, "periodo_facturado")),
                                  str(admin_config.PM_PAYMENT_METHOD),

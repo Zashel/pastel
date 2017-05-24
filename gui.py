@@ -632,7 +632,7 @@ class App(EasyFrame):
 
 if __name__ == "__main__":
     root = Tk()
-    root.title("P.A.S.T.E.L. ", VERSION)
+    root.title("P.A.S.T.E.L. {}".format(VERSION))
     root.iconbitmap("pastel.ico")
     app = App(root)
     app.mainloop()

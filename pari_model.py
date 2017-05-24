@@ -261,8 +261,7 @@ class Pari(RestfulBaseInterface):
             last = 0.0000
             total = int()
             info = False
-            re_nif = re.compile(r"[DNI]?[ ]?([XYZ]?[0-9]{5,8}[TRWAGMYFPDXBNJZSQVHLCKE]{1})[ ]?")
-            re_renif = re.compile(r"[DNI]?[ ]?([XYZ]?[0-9]{5,8})[TRWAGMYFPDXBNJZSQVHLCKE]{0,1}[ ]?")
+            re_nif = re.compile(r"[DNI]?[ ]?([XYZ]?[0-9]{5,8})[TRWAGMYFPDXBNJZSQVHLCKE]{0,1}[ ]?")
             re_cif = re.compile(r"[ABCDEFGHJNPQRUVW]{1}[0-9]{8}")
             re_tels = re.compile(r"\+34[6-9]{1}[0-9]{8}|[6-9]{1}[0-9]{8}")
             with open(filepath, "r") as file_:
@@ -299,31 +298,27 @@ class Pari(RestfulBaseInterface):
                                                                 observaciones.replace(".", ""),
                                                                 observaciones.replace("-", ""),
                                                                 observaciones.replace(" ", ""))):
-                                    for tel in re_tels.findall(restring.upper()):
-                                        tels.add(tel)
                                     for nif in re_nif.findall(restring.upper()):
-                                        nifs.add(nif)
-                                    if len(nifs) == 0:
-                                        for nif in re_renif.findall(restring.upper()):
-                                            if not any([nif in tel for tel in tels]):
-                                                nifs.add(calcular_letra_dni(nif))
+                                        nifs.add(calcular_letra_dni(nif))
                                     for cif in re_cif.findall(restring.upper()):
                                         if cif[0] in "XYZ":
                                             cif = calcular_letra_dni(cif)
                                         nifs.add(cif)
+                                    for tel in re_tels.findall(restring.upper()):
+                                        tels.add(tel)
                                     if ind == 0 and len(nifs) > 0:
                                         break
                                 telefonos = list(tels)
-                                nif = list(nifs)
-                                #if len(nifs) > 0:
-                                #    nif = nifs[0]
-                                #    for nifid in nifs:
-                                #        if nif[-1] in "TRWAGMYFPDXBNJZSQVHLCKE":
-                                #            nif = nifid
-                                #            break
-                                #else:
-                                #    nif = ""
-                            nif = [formatear_letra_dni(n) for n in nifs]
+                                nifs = list(nifs)
+                                if len(nifs) > 0:
+                                    nif = nifs[0]
+                                    for nifid in nifs:
+                                        if nif[-1] in "TRWAGMYFPDXBNJZSQVHLCKE":
+                                            nif = nifid
+                                            break
+                                else:
+                                    nif = ""
+                            nif = formatear_letra_dni(nif)
                             final = {"cuenta": account,
                                      "fecha_operacion": f_oper,
                                      "fecha_valor": f_valor,
@@ -419,89 +414,81 @@ class Pari(RestfulBaseInterface):
                         continue
                     id_cliente = str()
                     id_cuentas = list()
-                    pdte = data["importe"]
-                    applied_flag = False
-                    for nif in data["nif"]:
-                        if nif in shelf["numdoc"]["data"]:
-                            #print("{} en numdoc".format(data["nif"]))
-                            id_cliente = shelf["numdoc"]["data"][nif][0] #TODO: Get index of field by header position
-                            id_cuentas = shelf["id_cliente"]["data"][id_cliente][1]
-                            for id_cuenta in id_cuentas:
-                                #print("id_cuenta {}".format(id_cuentas))
-                                if shelf["id_cuenta"]["data"][id_cuenta][0] != "GRAN CUENTA":
-                                    facturas = shelf["id_cuenta"]["data"][id_cuenta][1]
-                                    facturas.sort()
-                                    for id_factura in facturas:
-                                        total += 1
-                                        estado = (shelf["estados"][int.from_bytes(
-                                                shelf["id_factura"]["data"][id_factura][2], "big")])
-                                        fecha_factura = int.from_bytes(shelf["id_factura"]["data"][id_factura][0],
-                                                                       "big")
-                                        fecha_factura = str(fecha_factura)
-                                        fecha_factura = "0"*(6-len(fecha_factura))+fecha_factura
-                                        fecha_factura = datetime.datetime.strptime(fecha_factura, "%d%m%y")
-                                        possibles[id_factura] = {"importe": shelf["id_factura"]["data"][id_factura][1],
-                                                                 "id_cuenta": id_cuenta,
-                                                                 "fecha_factura": fecha_factura,
-                                                                 "estado": estado}
-                            if total >= 1:
-                                data["nif"] = nif
-                                break
-                    if type(data["nif"]) == list and len(data["nif"]) != 1:
-                        data["nif"] = ""
-                    elif type(data["nif"]) == list:
-                        data["nif"] = data["nif"][0]
-                    election = None
-                    if total >= 1:
-                        ids_factura = list(possibles.keys())
-                        ids_factura.sort()
-                        for id_factura in ids_factura:
-                            #print("Posibles :{}".format(pprint.pprint(possibles[id_factura])))
-                            #input("id_factura in applied {}".format(id_factura in applied))
-                            if (possibles[id_factura]["estado"] in ("IMPAGADO", "PAGO PARCIAL") and
-                                        possibles[id_factura]["importe"] > 0):
-                                if (not id_factura in applied or
-                                        (id_factura in applied and
-                                        applied[id_factura]["importe_aplicado"] < applied[id_factura]["importe"]) and
-                                        pdte > 0):
-                                    if not id_factura in applied:
-                                        applied[id_factura] = {"importe_aplicado": 0,
-                                                               "importe": possibles[id_factura]["importe"]}
-                                    unpaid = applied[id_factura]["importe"] - applied[id_factura]["importe_aplicado"]
-                                    to_apply = pdte < unpaid and pdte or unpaid
-                                    pdte -= to_apply
-                                    if pdte < 0:
-                                        pdte = 0
-                                    try:
-                                        code = codes[possibles[id_factura]["fecha_factura"]]
-                                    except KeyError:
-                                        #print(possibles)
-                                        #print("Orig: {}".format(int.from_bytes(
-                                        #                   shelf["id_factura"]["data"][id_factura][0],
-                                        #                   "big")))
-                                        code = 1
-                                    subdata = [str(apply_date),
-                                               str(code),
-                                               str(admin_config.PM_CUSTOMER),
-                                               str(data["nif"]),
-                                               str(id_factura),
-                                               str(data["fecha_operacion"].strftime("%d/%m/%y")),
-                                               str(round(to_apply/100, 2)).replace(".", ","),
-                                               str(get_billing_period(possibles[id_factura]["fecha_factura"])),
-                                               str(admin_config.PM_PAYMENT_METHOD),
-                                               str(admin_config.PM_PAYMENT_WAY)
-                                               ]
-                                    payments_list.append(";".join(subdata))
-                                    applied[id_factura]["importe_aplicado"] += to_apply
-                                    applied_flag = True
-                            if pdte == 0:
-                                final.extend(payments_list)
-                                go_on = False
-                                break
-                        if pdte > 0 and applied_flag is True:
+                    if data["nif"] in shelf["numdoc"]["data"]:
+                        #print("{} en numdoc".format(data["nif"]))
+                        id_cliente = shelf["numdoc"]["data"][data["nif"]][0] #TODO: Get index of field by header position
+                        id_cuentas = shelf["id_cliente"]["data"][id_cliente][1]
+                        for id_cuenta in id_cuentas:
+                            #print("id_cuenta {}".format(id_cuentas))
+                            if shelf["id_cuenta"]["data"][id_cuenta][0] != "GRAN CUENTA":
+                                facturas = shelf["id_cuenta"]["data"][id_cuenta][1]
+                                facturas.sort()
+                                for id_factura in facturas:
+                                    total += 1
+                                    estado = (shelf["estados"][int.from_bytes(
+                                            shelf["id_factura"]["data"][id_factura][2], "big")])
+                                    fecha_factura = int.from_bytes(shelf["id_factura"]["data"][id_factura][0],
+                                                                   "big")
+                                    fecha_factura = str(fecha_factura)
+                                    fecha_factura = "0"*(6-len(fecha_factura))+fecha_factura
+                                    fecha_factura = datetime.datetime.strptime(fecha_factura, "%d%m%y")
+                                    possibles[id_factura] = {"importe": shelf["id_factura"]["data"][id_factura][1],
+                                                             "id_cuenta": id_cuenta,
+                                                             "fecha_factura": fecha_factura,
+                                                             "estado": estado}
+                        election = None
+                        if total >= 1:
+                            ids_factura = list(possibles.keys())
+                            ids_factura.sort()
+                            pdte = data["importe"]
+                            applied_flag = False
+                            for id_factura in ids_factura:
+                                #print("Posibles :{}".format(pprint.pprint(possibles[id_factura])))
+                                #input("id_factura in applied {}".format(id_factura in applied))
+                                if (possibles[id_factura]["estado"] in ("IMPAGADO", "PAGO PARCIAL") and
+                                            possibles[id_factura]["importe"] > 0):
+                                    if (not id_factura in applied or
+                                            (id_factura in applied and
+                                            applied[id_factura]["importe_aplicado"] < applied[id_factura]["importe"]) and
+                                            pdte > 0):
+                                        if not id_factura in applied:
+                                            applied[id_factura] = {"importe_aplicado": 0,
+                                                                   "importe": possibles[id_factura]["importe"]}
+                                        unpaid = applied[id_factura]["importe"] - applied[id_factura]["importe_aplicado"]
+                                        to_apply = pdte < unpaid and pdte or unpaid
+                                        pdte -= to_apply
+                                        if pdte < 0:
+                                            pdte = 0
+                                        try:
+                                            code = codes[possibles[id_factura]["fecha_factura"]]
+                                        except KeyError:
+                                            #print(possibles)
+                                            #print("Orig: {}".format(int.from_bytes(
+                                            #                   shelf["id_factura"]["data"][id_factura][0],
+                                            #                   "big")))
+                                            code = 1
+                                        subdata = [str(apply_date),
+                                                   str(code),
+                                                   str(admin_config.PM_CUSTOMER),
+                                                   str(data["nif"]),
+                                                   str(id_factura),
+                                                   str(data["fecha_operacion"].strftime("%d/%m/%y")),
+                                                   str(round(to_apply/100, 2)).replace(".", ","),
+                                                   str(get_billing_period(possibles[id_factura]["fecha_factura"])),
+                                                   str(admin_config.PM_PAYMENT_METHOD),
+                                                   str(admin_config.PM_PAYMENT_WAY)
+                                                   ]
+                                        payments_list.append(";".join(subdata))
+                                        applied[id_factura]["importe_aplicado"] += to_apply
+                                        applied_flag = True
+                                if pdte == 0:
+                                    final.extend(payments_list)
+                                    go_on = False
+                                    break
+                            if pdte > 0 and applied_flag is True:
+                                go_on = True
+                        if pdte > 0 and applied_flag is False:
                             go_on = True
-                        #if pdte > 0 and applied_flag is False:
-                        #    go_on = True
                     else:
                         go_on = True
                     if go_on is True:

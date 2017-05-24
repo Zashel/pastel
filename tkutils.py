@@ -321,6 +321,7 @@ class EasyFrame(Frame):
             self._popUp_data = (category, row, column, var)
             self._popUp.bind("<Escape>", self.destroy_popUp)
             self._popUp.bind("<Return>", self.destroy_popUp)
+            self._popUp.focus_set()
 
     def destroy_popUp(self, event=None):
         category, row, column, var = self._popUp_data

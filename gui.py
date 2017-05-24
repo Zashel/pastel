@@ -172,6 +172,7 @@ class App(EasyFrame):
             self.set_var("pagos.estado", "APLICADO")
 
     def payment_posibles_load(self, name):
+        self.clean_pagos_vars()
         posibles = self.get_var("pagos.posibles").get()
         final = dict()
         order = list()
@@ -605,6 +606,10 @@ class App(EasyFrame):
         self.set_var("config.REPORT_PATH", admin_config.REPORT_PATH)
         self.set_var("config.DAILY_EXPORT_PATH", admin_config.DAILY_EXPORT_PATH)
         self.set_var("config.ITEMS_PER_PAGE", local_config.ITEMS_PER_PAGE)
+
+    def clean_pagos_vars(self):
+        for item in PAYMENTS_FIELDS:
+            self.set_var(".".join(("pagos", "")))
 
     def set_variables(self):
         self.search_payments_estado = str()

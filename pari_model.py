@@ -446,57 +446,57 @@ class Pari(RestfulBaseInterface):
                             if total >= 1:
                                 data["nif"] = nif
                                 break
-                        election = None
-                        if total >= 1:
-                            ids_factura = list(possibles.keys())
-                            ids_factura.sort()
-                            for id_factura in ids_factura:
-                                #print("Posibles :{}".format(pprint.pprint(possibles[id_factura])))
-                                #input("id_factura in applied {}".format(id_factura in applied))
-                                if (possibles[id_factura]["estado"] in ("IMPAGADO", "PAGO PARCIAL") and
-                                            possibles[id_factura]["importe"] > 0):
-                                    if (not id_factura in applied or
-                                            (id_factura in applied and
-                                            applied[id_factura]["importe_aplicado"] < applied[id_factura]["importe"]) and
-                                            pdte > 0):
-                                        if not id_factura in applied:
-                                            applied[id_factura] = {"importe_aplicado": 0,
-                                                                   "importe": possibles[id_factura]["importe"]}
-                                        unpaid = applied[id_factura]["importe"] - applied[id_factura]["importe_aplicado"]
-                                        to_apply = pdte < unpaid and pdte or unpaid
-                                        pdte -= to_apply
-                                        if pdte < 0:
-                                            pdte = 0
-                                        try:
-                                            code = codes[possibles[id_factura]["fecha_factura"]]
-                                        except KeyError:
-                                            #print(possibles)
-                                            #print("Orig: {}".format(int.from_bytes(
-                                            #                   shelf["id_factura"]["data"][id_factura][0],
-                                            #                   "big")))
-                                            code = 1
-                                        subdata = [str(apply_date),
-                                                   str(code),
-                                                   str(admin_config.PM_CUSTOMER),
-                                                   str(data["nif"]),
-                                                   str(id_factura),
-                                                   str(data["fecha_operacion"].strftime("%d/%m/%y")),
-                                                   str(round(to_apply/100, 2)).replace(".", ","),
-                                                   str(get_billing_period(possibles[id_factura]["fecha_factura"])),
-                                                   str(admin_config.PM_PAYMENT_METHOD),
-                                                   str(admin_config.PM_PAYMENT_WAY)
-                                                   ]
-                                        payments_list.append(";".join(subdata))
-                                        applied[id_factura]["importe_aplicado"] += to_apply
-                                        applied_flag = True
-                                if pdte == 0:
-                                    final.extend(payments_list)
-                                    go_on = False
-                                    break
-                            if pdte > 0 and applied_flag is True:
-                                go_on = True
-                        if pdte > 0 and applied_flag is False:
+                    election = None
+                    if total >= 1:
+                        ids_factura = list(possibles.keys())
+                        ids_factura.sort()
+                        for id_factura in ids_factura:
+                            #print("Posibles :{}".format(pprint.pprint(possibles[id_factura])))
+                            #input("id_factura in applied {}".format(id_factura in applied))
+                            if (possibles[id_factura]["estado"] in ("IMPAGADO", "PAGO PARCIAL") and
+                                        possibles[id_factura]["importe"] > 0):
+                                if (not id_factura in applied or
+                                        (id_factura in applied and
+                                        applied[id_factura]["importe_aplicado"] < applied[id_factura]["importe"]) and
+                                        pdte > 0):
+                                    if not id_factura in applied:
+                                        applied[id_factura] = {"importe_aplicado": 0,
+                                                               "importe": possibles[id_factura]["importe"]}
+                                    unpaid = applied[id_factura]["importe"] - applied[id_factura]["importe_aplicado"]
+                                    to_apply = pdte < unpaid and pdte or unpaid
+                                    pdte -= to_apply
+                                    if pdte < 0:
+                                        pdte = 0
+                                    try:
+                                        code = codes[possibles[id_factura]["fecha_factura"]]
+                                    except KeyError:
+                                        #print(possibles)
+                                        #print("Orig: {}".format(int.from_bytes(
+                                        #                   shelf["id_factura"]["data"][id_factura][0],
+                                        #                   "big")))
+                                        code = 1
+                                    subdata = [str(apply_date),
+                                               str(code),
+                                               str(admin_config.PM_CUSTOMER),
+                                               str(data["nif"]),
+                                               str(id_factura),
+                                               str(data["fecha_operacion"].strftime("%d/%m/%y")),
+                                               str(round(to_apply/100, 2)).replace(".", ","),
+                                               str(get_billing_period(possibles[id_factura]["fecha_factura"])),
+                                               str(admin_config.PM_PAYMENT_METHOD),
+                                               str(admin_config.PM_PAYMENT_WAY)
+                                               ]
+                                    payments_list.append(";".join(subdata))
+                                    applied[id_factura]["importe_aplicado"] += to_apply
+                                    applied_flag = True
+                            if pdte == 0:
+                                final.extend(payments_list)
+                                go_on = False
+                                break
+                        if pdte > 0 and applied_flag is True:
                             go_on = True
+                        #if pdte > 0 and applied_flag is False:
+                        #    go_on = True
                     else:
                         go_on = True
                     if go_on is True:

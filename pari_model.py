@@ -261,7 +261,7 @@ class Pari(RestfulBaseInterface):
             last = 0.0000
             total = int()
             info = False
-            re_nif = re.compile(r"[DNI]?[ ]?([XYZ]?[0-9]{5,8})[TRWAGMYFPDXBNJZSQVHLCKE]{0,1}[ ]?")
+            re_nif = re.compile(r"[DNI]?[ ]?([XYZ]?[0-9]{5,8}[TRWAGMYFPDXBNJZSQVHLCKE]{1})")
             re_cif = re.compile(r"[ABCDEFGHJNPQRUVW]{1}[0-9]{8}")
             re_tels = re.compile(r"\+34[6-9]{1}[0-9]{8}|[6-9]{1}[0-9]{8}")
             with open(filepath, "r") as file_:

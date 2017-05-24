@@ -261,7 +261,8 @@ class Pari(RestfulBaseInterface):
             last = 0.0000
             total = int()
             info = False
-            re_nif = re.compile(r"[DNI]?[ ]?([XYZ]?[0-9]{5,8})[TRWAGMYFPDXBNJZSQVHLCKE]{0,1}[ ]?")
+            re_nif = re.compile(r"[DNI]?[ ]?([XYZ]?[0-9]{5,8}[TRWAGMYFPDXBNJZSQVHLCKE]{1})[ ]?")
+            re_renif = re.compile(r"[DNI]?[ ]?([XYZ]?[0-9]{5,8})[TRWAGMYFPDXBNJZSQVHLCKE]{0,1}[ ]?")
             re_cif = re.compile(r"[ABCDEFGHJNPQRUVW]{1}[0-9]{8}")
             re_tels = re.compile(r"\+34[6-9]{1}[0-9]{8}|[6-9]{1}[0-9]{8}")
             with open(filepath, "r") as file_:
@@ -299,7 +300,9 @@ class Pari(RestfulBaseInterface):
                                                                 observaciones.replace("-", ""),
                                                                 observaciones.replace(" ", ""))):
                                     for nif in re_nif.findall(restring.upper()):
-                                        nifs.add(calcular_letra_dni(nif))
+                                        nifs.add(nif)
+                                    if len(nifs) == 0:
+                                        nifs.add(calcular_letra_dni(re_renif))
                                     for cif in re_cif.findall(restring.upper()):
                                         if cif[0] in "XYZ":
                                             cif = calcular_letra_dni(cif)

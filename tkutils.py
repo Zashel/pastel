@@ -277,7 +277,7 @@ class EasyFrame(Frame):
                 validate[item] = lambda dato: dato
         assert all([item in validate for item in columns])
         self.tree[category] = {"template": list(columns),
-                               "data": list(),
+                               "data": dict(),
                                "tree": tree,
                                "show": show,
                                "validate": validate}

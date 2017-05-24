@@ -173,6 +173,8 @@ class LocalConfig: #To a dynamic access -> change API
             try:
                 data = shelf[attr]
             except KeyError:
+                if attr == "UUID":
+                    pass
                 if attr in LocalConfig.cache:
                     data = LocalConfig.cache[attr]
                 else:

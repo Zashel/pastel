@@ -313,16 +313,16 @@ class Pari(RestfulBaseInterface):
                                     if ind == 0 and len(nifs) > 0:
                                         break
                                 telefonos = list(tels)
-                                nifs = list(nifs)
-                                if len(nifs) > 0:
-                                    nif = nifs[0]
-                                    for nifid in nifs:
-                                        if nif[-1] in "TRWAGMYFPDXBNJZSQVHLCKE":
-                                            nif = nifid
-                                            break
-                                else:
-                                    nif = ""
-                            nif = formatear_letra_dni(nif)
+                                nif = list(nifs)
+                                #if len(nifs) > 0:
+                                #    nif = nifs[0]
+                                #    for nifid in nifs:
+                                #        if nif[-1] in "TRWAGMYFPDXBNJZSQVHLCKE":
+                                #            nif = nifid
+                                #            break
+                                #else:
+                                #    nif = ""
+                            nif = [formatear_letra_dni(n) for n in nifs]
                             final = {"cuenta": account,
                                      "fecha_operacion": f_oper,
                                      "fecha_valor": f_valor,
@@ -418,28 +418,32 @@ class Pari(RestfulBaseInterface):
                         continue
                     id_cliente = str()
                     id_cuentas = list()
-                    if data["nif"] in shelf["numdoc"]["data"]:
-                        #print("{} en numdoc".format(data["nif"]))
-                        id_cliente = shelf["numdoc"]["data"][data["nif"]][0] #TODO: Get index of field by header position
-                        id_cuentas = shelf["id_cliente"]["data"][id_cliente][1]
-                        for id_cuenta in id_cuentas:
-                            #print("id_cuenta {}".format(id_cuentas))
-                            if shelf["id_cuenta"]["data"][id_cuenta][0] != "GRAN CUENTA":
-                                facturas = shelf["id_cuenta"]["data"][id_cuenta][1]
-                                facturas.sort()
-                                for id_factura in facturas:
-                                    total += 1
-                                    estado = (shelf["estados"][int.from_bytes(
-                                            shelf["id_factura"]["data"][id_factura][2], "big")])
-                                    fecha_factura = int.from_bytes(shelf["id_factura"]["data"][id_factura][0],
-                                                                   "big")
-                                    fecha_factura = str(fecha_factura)
-                                    fecha_factura = "0"*(6-len(fecha_factura))+fecha_factura
-                                    fecha_factura = datetime.datetime.strptime(fecha_factura, "%d%m%y")
-                                    possibles[id_factura] = {"importe": shelf["id_factura"]["data"][id_factura][1],
-                                                             "id_cuenta": id_cuenta,
-                                                             "fecha_factura": fecha_factura,
-                                                             "estado": estado}
+                    for nif in data["nif"]:
+                        if nif in shelf["numdoc"]["data"]:
+                            #print("{} en numdoc".format(data["nif"]))
+                            id_cliente = shelf["numdoc"]["data"][nif][0] #TODO: Get index of field by header position
+                            id_cuentas = shelf["id_cliente"]["data"][id_cliente][1]
+                            for id_cuenta in id_cuentas:
+                                #print("id_cuenta {}".format(id_cuentas))
+                                if shelf["id_cuenta"]["data"][id_cuenta][0] != "GRAN CUENTA":
+                                    facturas = shelf["id_cuenta"]["data"][id_cuenta][1]
+                                    facturas.sort()
+                                    for id_factura in facturas:
+                                        total += 1
+                                        estado = (shelf["estados"][int.from_bytes(
+                                                shelf["id_factura"]["data"][id_factura][2], "big")])
+                                        fecha_factura = int.from_bytes(shelf["id_factura"]["data"][id_factura][0],
+                                                                       "big")
+                                        fecha_factura = str(fecha_factura)
+                                        fecha_factura = "0"*(6-len(fecha_factura))+fecha_factura
+                                        fecha_factura = datetime.datetime.strptime(fecha_factura, "%d%m%y")
+                                        possibles[id_factura] = {"importe": shelf["id_factura"]["data"][id_factura][1],
+                                                                 "id_cuenta": id_cuenta,
+                                                                 "fecha_factura": fecha_factura,
+                                                                 "estado": estado}
+                            if total >= 1:
+                                data["nif"] = nif
+                                break
                         election = None
                         if total >= 1:
                             ids_factura = list(possibles.keys())

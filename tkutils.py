@@ -397,7 +397,6 @@ class EasyFrame(Frame):
             order = data.keys()
         else:
             assert all([item in data for item in order])
-        self.tree[category]["data"] = data
         for item in order:
             if item in data:
                 self.append_to_tree_data(category, item, data[item])
@@ -409,10 +408,12 @@ class EasyFrame(Frame):
 
     def append_to_tree_data(self, category, name, data):  # _details in data creates a shitty subitem
         values = list()
+        self.tree[category]["data"][name] = dict()
         for field in self.tree[category]["template"]:
             if field not in data:
                 data[field] = str()
             values.append(self.tree[category]["show"][field](data[field]))
+            self.tree[category]["data"][name][field] = data[field]
         self.tree[category]["tree"].insert("", END, name, text=name, values=values)
         if "_details" in data:
             for item in data["_details"]:

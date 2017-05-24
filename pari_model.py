@@ -299,17 +299,18 @@ class Pari(RestfulBaseInterface):
                                                                 observaciones.replace(".", ""),
                                                                 observaciones.replace("-", ""),
                                                                 observaciones.replace(" ", ""))):
+                                    for tel in re_tels.findall(restring.upper()):
+                                        tels.add(tel)
                                     for nif in re_nif.findall(restring.upper()):
                                         nifs.add(nif)
                                     if len(nifs) == 0:
                                         for nif in re_renif.findall(restring.upper()):
-                                            nifs.add(calcular_letra_dni(nif))
+                                            if not any([nif in tel for tel in tels]):
+                                                nifs.add(calcular_letra_dni(nif))
                                     for cif in re_cif.findall(restring.upper()):
                                         if cif[0] in "XYZ":
                                             cif = calcular_letra_dni(cif)
                                         nifs.add(cif)
-                                    for tel in re_tels.findall(restring.upper()):
-                                        tels.add(tel)
                                     if ind == 0 and len(nifs) > 0:
                                         break
                                 telefonos = list(tels)
@@ -446,6 +447,10 @@ class Pari(RestfulBaseInterface):
                             if total >= 1:
                                 data["nif"] = nif
                                 break
+                    if type(data["nif"]) == list and len(data["nif"]) != 1:
+                        data["nif"] = ""
+                    elif type(data["nif"]) == list:
+                        data["nif"] = data["nif"][0]
                     election = None
                     if total >= 1:
                         ids_factura = list(possibles.keys())

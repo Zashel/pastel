@@ -413,7 +413,7 @@ class EasyFrame(Frame):
             if field not in data:
                 data[field] = str()
             values.append(self.tree[category]["show"][field](data[field]))
-            self.tree[category]["data"][name][field] = data[field]
+        self.tree[category]["data"][name] = data
         self.tree[category]["tree"].insert("", END, name, text=name, values=values)
         if "_details" in data:
             for item in data["_details"]:

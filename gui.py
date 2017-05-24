@@ -630,5 +630,6 @@ class App(EasyFrame):
 
 if __name__ == "__main__":
     root = Tk()
+    root.iconbitmap("pastel.ico")
     app = App(root)
     app.mainloop()

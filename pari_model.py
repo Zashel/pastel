@@ -419,6 +419,7 @@ class Pari(RestfulBaseInterface):
                     id_cliente = str()
                     id_cuentas = list()
                     pdte = data["importe"]
+                    applied_flag = False
                     for nif in data["nif"]:
                         if nif in shelf["numdoc"]["data"]:
                             #print("{} en numdoc".format(data["nif"]))
@@ -449,7 +450,6 @@ class Pari(RestfulBaseInterface):
                         if total >= 1:
                             ids_factura = list(possibles.keys())
                             ids_factura.sort()
-                            applied_flag = False
                             for id_factura in ids_factura:
                                 #print("Posibles :{}".format(pprint.pprint(possibles[id_factura])))
                                 #input("id_factura in applied {}".format(id_factura in applied))

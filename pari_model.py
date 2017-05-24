@@ -299,7 +299,7 @@ class Pari(RestfulBaseInterface):
                                                                 observaciones.replace("-", ""),
                                                                 observaciones.replace(" ", ""))):
                                     for nif in re_nif.findall(restring.upper()):
-                                        nifs.add(calcular_letra_dni(nif))
+                                        nifs.add(nif)
                                     for cif in re_cif.findall(restring.upper()):
                                         if cif[0] in "XYZ":
                                             cif = calcular_letra_dni(cif)

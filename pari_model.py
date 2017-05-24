@@ -302,7 +302,8 @@ class Pari(RestfulBaseInterface):
                                     for nif in re_nif.findall(restring.upper()):
                                         nifs.add(nif)
                                     if len(nifs) == 0:
-                                        nifs.add(calcular_letra_dni(re_renif))
+                                        for nif in re_renif.findall(restring.upper()):
+                                            nifs.add(calcular_letra_dni(nif))
                                     for cif in re_cif.findall(restring.upper()):
                                         if cif[0] in "XYZ":
                                             cif = calcular_letra_dni(cif)

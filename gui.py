@@ -11,6 +11,8 @@ import json
 import os
 import datetime
 
+VERSION = "Beta"
+
 class Images:
     def __init__(self):
         self.add = PhotoImage(file=os.path.join("icons", "add.gif"))
@@ -630,6 +632,7 @@ class App(EasyFrame):
 
 if __name__ == "__main__":
     root = Tk()
+    root.title("P.A.S.T.E.L. ", VERSION)
     root.iconbitmap("pastel.ico")
     app = App(root)
     app.mainloop()

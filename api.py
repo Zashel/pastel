@@ -155,7 +155,7 @@ class API:
     def next_pagos(cls, **kwargs):
         filter = list()
         for item in kwargs:
-            if item in PAYMENTS_INDEX:
+            if item in PAYMENTS_INDEX+["_item"]:
                 filter.append("=".join((item, str(kwargs[item]))))
         filter = "&".join(filter)
         request = requests.request("NEXT",

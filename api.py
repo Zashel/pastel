@@ -188,8 +188,9 @@ class API:
     @classmethod
     def to_export_manuals(cls, **filter):
         if filter != dict():
-            request = requests.get("http://{}:{}/pagos//manual?{}".format(local_config.HOST,
+            request = requests.get("http://{}:{}{}/pagos//manual?{}".format(local_config.HOST,
                                                                           str(local_config.PORT),
+                                                                          BASE_URI[1:-1],
                                                                           "&".join(["=".join(
                                                                               (str(key), str(filter[key]))) for key in filter
                                                                           ])

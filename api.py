@@ -186,6 +186,24 @@ class API:
             return API.get_pagos_list()
 
     @classmethod
+    def to_export_manuals(cls, **filter):
+        if filter != dict():
+            request = requests.get("http://{}:{}/pagos//manual?{}".format(local_config.HOST,
+                                                                          str(local_config.PORT),
+                                                                          "&".join(["=".join(
+                                                                              (key, filter[key]) for key in filter
+                                                                          )])
+                                                                          )
+                                   )
+            if request.status_code in (200, 201):
+                data = json.loads(request.text)
+                final = list()
+                for pago in data["_embedded"]["pagos/manual"]:
+                    for posible in pago["posibles"]:
+                        final.append(posible)
+                return final
+
+    @classmethod
     def modify_pago(cls, data):
         if "link" in data:
             post_data = data.copy()

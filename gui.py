@@ -323,12 +323,12 @@ class App(EasyFrame):
         self.pending_payment_frame = Frame(self.tabs["payments"])
         self.payment_data_frame(self.pending_payment_frame).pack()
         self.payment_posibles_frame(self.pending_payment_frame, "editable_posibles").pack()
-        button_frame_apyment_pending = Frame(self.pending_payment_frame)
-        button_frame_apyment_pending.pack()
-        Label(button_frame_apyment_pending, text="Quedan {} pagos.".format(API.get_pagos_count(self._pagos_filter))).grid(column=0, row=0, sticky=W)
-        Button(button_frame_apyment_pending, text="Cerrar", command=self.show_payments_tree).grid(column=1, row=0, sticky=E)
-        Button(button_frame_apyment_pending, text="Guardar", command=self.save_pagos_pendiente).grid(column=2, row=0, sticky=E)
-        Button(button_frame_apyment_pending, text="Siguiente", command=self.save_and_next_payment).grid(column=3, row=0, sticky=E)
+        button_frame_payment_pending = Frame(self.pending_payment_frame)
+        button_frame_payment_pending.pack()
+        Label(button_frame_payment_pending, textvariable=self.set_var("gui.pagos_pendientes")).grid(column=0, row=0, sticky=W)
+        Button(button_frame_payment_pending, text="Cerrar", command=self.show_payments_tree).grid(column=1, row=0, sticky=E)
+        Button(button_frame_payment_pending, text="Guardar", command=self.save_pagos_pendiente).grid(column=2, row=0, sticky=E)
+        Button(button_frame_payment_pending, text="Siguiente", command=self.save_and_next_payment).grid(column=3, row=0, sticky=E)
 
         self.tabs["payments"].pack()
 
@@ -380,6 +380,7 @@ class App(EasyFrame):
             self.payment_posibles_load("editable_posibles")
         else:
             self.payment_posibles_load("posibles")
+        self.set_var("gui.pagos_pendientes", "Quedan {} pagos.".format(API.get_pagos_count(self._pagos_filter))))
 
     def load_payment_from_tree(self, *args, **kwargs):
         category = "pagos"

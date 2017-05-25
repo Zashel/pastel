@@ -297,7 +297,7 @@ class App(EasyFrame):
                                                   state="disable")
         self.payments_tree_prev.grid(column=1, row=row)
         self.payments_tree_label = Label(self.payments_tree_frame,
-                                         text="Página 1 de 1")
+                                         text="Página 1 de 1.\t0 Registros")
         self.payments_tree_label.grid(column=2, row=row)
         self.payments_tree_next = self.LinkButton(self.payments_tree_frame,
                                                   command=lambda: self.update_pagos_tree("next"),
@@ -445,7 +445,7 @@ class App(EasyFrame):
         if page == last:
             self.payments_tree_next["state"] = "disable"
             self.payments_tree_last["state"] = "disable"
-        self.payments_tree_label["text"] = "Página {} de {}./t{} Registros".format(str(page), str(last), str(total))
+        self.payments_tree_label["text"] = "Página {} de {}.\t{} Registros".format(str(page), str(last), str(total))
 
     def show_payments_tree(self, *args, **kwargs):
         self.pending_payment_frame.pack_forget()

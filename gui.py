@@ -445,7 +445,7 @@ class App(EasyFrame):
         if page == last:
             self.payments_tree_next["state"] = "disable"
             self.payments_tree_last["state"] = "disable"
-        self.payments_tree_label["text"] = "Página {} de {}. {} Registros".format(str(page), str(last), str(total))
+        self.payments_tree_label["text"] = "Página {} de {}./t{} Registros".format(str(page), str(last), str(total))
 
     def show_payments_tree(self, *args, **kwargs):
         self.pending_payment_frame.pack_forget()

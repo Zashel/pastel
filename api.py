@@ -202,7 +202,7 @@ class API:
                 for pago in data["_embedded"]["pagos/manual"]:
                     for posible in pago["posibles"]:
                         final.append(posible)
-                return "\n".join(final)
+                return "\r\n".join(final)
 
     @classmethod
     def modify_pago(cls, data):

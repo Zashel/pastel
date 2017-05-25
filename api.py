@@ -191,7 +191,7 @@ class API:
             request = requests.get("http://{}:{}/pagos//manual?{}".format(local_config.HOST,
                                                                           str(local_config.PORT),
                                                                           "&".join(["=".join(
-                                                                              (key, filter[key]) for key in filter
+                                                                              (key, str(filter[key])) for key in filter
                                                                           )])
                                                                           )
                                    )

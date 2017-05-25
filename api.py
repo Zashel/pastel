@@ -191,8 +191,8 @@ class API:
             request = requests.get("http://{}:{}/pagos//manual?{}".format(local_config.HOST,
                                                                           str(local_config.PORT),
                                                                           "&".join(["=".join(
-                                                                              (str(key), str(filter[key])) for key in filter
-                                                                          )])
+                                                                              (str(key), str(filter[key]))) for key in filter
+                                                                          ])
                                                                           )
                                    )
             if request.status_code in (200, 201):

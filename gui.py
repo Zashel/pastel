@@ -354,8 +354,8 @@ class App(EasyFrame):
         self.set_var("gui.pagos_pendientes", "Quedan {} pagos.".format(API.get_pagos_count(**self._pagos_filter)))
 
     def save_and_next_payment(self):
-        self.save_pagos_pendiente()
         self.next_payment()
+        self.save_pagos_pendiente()
 
     def load_payment(self, data):
         for column in PAYMENTS_FIELDS:

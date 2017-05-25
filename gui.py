@@ -351,6 +351,7 @@ class App(EasyFrame):
         kwargs = dict(self._pagos_filter)
         kwargs.update({"_item": self.get_var("pagos._id").get()})
         self.load_payment(API.next_pagos(**kwargs))
+        self.set_var("gui.pagos_pendientes", "Quedan {} pagos.".format(API.get_pagos_count(**self._pagos_filter)))
 
     def save_and_next_payment(self):
         self.save_pagos_pendiente()

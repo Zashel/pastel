@@ -278,6 +278,16 @@ class API:
         return data
 
     @classmethod
+    def get_pagos_count(cls):
+        request = requests.request("COUNT",
+                                   "http://{}:{}{}/pagos".format(local_config.HOST,
+                                                                 str(local_config.PORT),
+                                                                 BASE_URI[1:-1]))
+        data = json.loads(request.text)
+        if "count" in data:
+            return int(data["count"])
+
+    @classmethod
     def set_pari(cls, filename=None, *, do_report=True, do_export=True):
         if filename is None:
             files =  glob.glob("{}*.csv".format(os.path.join(admin_config.N43_PATH_INCOMING, "BI_131_FICHERO_PARI_DIARIO")))

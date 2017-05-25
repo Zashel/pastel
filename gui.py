@@ -438,13 +438,14 @@ class App(EasyFrame):
             self.__getattribute__("payments_tree_"+link)["state"] = "enable"
         page = API.get_this_pagos_page()
         last = API.get_total_pagos_page()
+        total = API.get_pagos_count()
         if page == 1:
             self.payments_tree_first["state"] = "disable"
             self.payments_tree_prev["state"] = "disable"
         if page == last:
             self.payments_tree_next["state"] = "disable"
             self.payments_tree_last["state"] = "disable"
-        self.payments_tree_label["text"] = "Página {} de {}".format(str(page), str(last))
+        self.payments_tree_label["text"] = "Página {} de {}. {} Registros".format(str(page), str(last), str(total))
 
     def show_payments_tree(self, *args, **kwargs):
         self.pending_payment_frame.pack_forget()

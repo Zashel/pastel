@@ -325,9 +325,10 @@ class App(EasyFrame):
         self.payment_posibles_frame(self.pending_payment_frame, "editable_posibles").pack()
         button_frame_apyment_pending = Frame(self.pending_payment_frame)
         button_frame_apyment_pending.pack()
-        Button(button_frame_apyment_pending, text="Cerrar", command=self.show_payments_tree).grid(column=0, row=0, sticky=W)
-        Button(button_frame_apyment_pending, text="Guardar", command=self.save_pagos_pendiente).grid(column=1, row=0, sticky=E)
-        Button(button_frame_apyment_pending, text="Siguiente", command=self.save_and_next_payment).grid(column=2, row=0, sticky=E)
+        Label(button_frame_apyment_pending, text="Quedan {} pagos.".format(API.get_pagos_count(self._pagos_filter)))
+        Button(button_frame_apyment_pending, text="Cerrar", command=self.show_payments_tree).grid(column=1, row=0, sticky=E)
+        Button(button_frame_apyment_pending, text="Guardar", command=self.save_pagos_pendiente).grid(column=2, row=0, sticky=E)
+        Button(button_frame_apyment_pending, text="Siguiente", command=self.save_and_next_payment).grid(column=3, row=0, sticky=E)
 
         self.tabs["payments"].pack()
 
@@ -438,7 +439,7 @@ class App(EasyFrame):
             self.__getattribute__("payments_tree_"+link)["state"] = "enable"
         page = API.get_this_pagos_page()
         last = API.get_total_pagos_page()
-        total = API.get_pagos_count()
+        total = API.get_pagos_count(self._pagos_filter)
         if page == 1:
             self.payments_tree_first["state"] = "disable"
             self.payments_tree_prev["state"] = "disable"

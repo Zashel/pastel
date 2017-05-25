@@ -278,11 +278,18 @@ class API:
         return data
 
     @classmethod
-    def get_pagos_count(cls):
-        request = requests.request("COUNT",
-                                   "http://{}:{}{}/pagos".format(local_config.HOST,
-                                                                 str(local_config.PORT),
-                                                                 BASE_URI[1:-1]))
+    def get_pagos_count(cls, filter=None):
+        if filter is not None:
+            request = requests.request("COUNT",
+                                       "http://{}:{}{}/pagos".format(local_config.HOST,
+                                                                     str(local_config.PORT),
+                                                                     BASE_URI[1:-1]))
+        else:
+            request = requests.request("COUNT",
+                                       "http://{}:{}{}/pagos?{}".format(local_config.HOST,
+                                                                        str(local_config.PORT),
+                                                                        BASE_URI[1:-1],
+                                                                        "&".join(["=".join((key, filter[key])) for key in filter])))
         data = json.loads(request.text)
         if "count" in data:
             return int(data["count"])

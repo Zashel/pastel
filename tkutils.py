@@ -332,7 +332,10 @@ class EasyFrame(Frame):
                     data = self.tree[category]["show"][column](var.get())
                 else:
                     data = var.get()
-                tree.set(row, column, data)
+                try:
+                    tree.set(row, column, data)
+                except TclError:
+                    pass
                 self._popUp.destroy()
                 if category in self._tree_calculations:
                     for function in self._tree_calculations[category]:

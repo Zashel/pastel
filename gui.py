@@ -380,7 +380,7 @@ class App(EasyFrame):
             self.payment_posibles_load("editable_posibles")
         else:
             self.payment_posibles_load("posibles")
-        self.set_var("gui.pagos_pendientes", "Quedan {} pagos.".format(API.get_pagos_count(self._pagos_filter)))
+        self.set_var("gui.pagos_pendientes", "Quedan {} pagos.".format(API.get_pagos_count(**self._pagos_filter)))
 
     def load_payment_from_tree(self, *args, **kwargs):
         category = "pagos"
@@ -440,7 +440,7 @@ class App(EasyFrame):
             self.__getattribute__("payments_tree_"+link)["state"] = "enable"
         page = API.get_this_pagos_page()
         last = API.get_total_pagos_page()
-        total = API.get_pagos_count(self._pagos_filter)
+        total = API.get_pagos_count(**filter)
         if page == 1:
             self.payments_tree_first["state"] = "disable"
             self.payments_tree_prev["state"] = "disable"

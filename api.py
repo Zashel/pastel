@@ -278,8 +278,8 @@ class API:
         return data
 
     @classmethod
-    def get_pagos_count(cls, filter=None):
-        if filter is not None:
+    def get_pagos_count(cls, **filter):
+        if filter != dict():
             request = requests.request("COUNT",
                                        "http://{}:{}{}/pagos".format(local_config.HOST,
                                                                      str(local_config.PORT),

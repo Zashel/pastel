@@ -336,6 +336,7 @@ class App(EasyFrame):
         self.load_payment_from_tree()
         if self.search_payments_estado == "PENDIENTE":
             self.show_pending_payment()
+            self.set_var("gui.pagos_pendientes", "Quedan {} pagos.".format(API.get_pagos_count(**self._pagos_filter)))
         else:
             self.show_payment()
 
@@ -381,7 +382,6 @@ class App(EasyFrame):
             self.payment_posibles_load("editable_posibles")
         else:
             self.payment_posibles_load("posibles")
-        self.set_var("gui.pagos_pendientes", "Quedan {} pagos.".format(API.get_pagos_count(**self._pagos_filter)))
 
     def load_payment_from_tree(self, *args, **kwargs):
         category = "pagos"

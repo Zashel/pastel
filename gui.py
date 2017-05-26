@@ -463,13 +463,16 @@ class App(EasyFrame):
         if self._pagos_filter != dict():
             self.update_pagos_tree(**self._pagos_filter)
 
-    def show_home(self, *args, **kwargs):
+    def hide_everything(self, *args, **kwrags):
         self.payments_tree_frame.pack_forget()
         self.pending_payment_frame.pack_forget()
         self.payment_frame.pack_forget()
 
+    def show_home(self, *args, **kwargs):
+        self.hide_everything()
+
     def show_payment(self, *args, **kwargs):
-        self.payments_tree_frame.pack_forget()
+        self.hide_everything()
         if self.search_payments_estado == "PENDIENTE":
             self.pending_payment_frame.pack()
         else:

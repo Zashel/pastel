@@ -662,6 +662,7 @@ class App(EasyFrame):
                                  "periodo_facturado"]
         for item in PAYMENTS_FIELDS:
             self.set_var(".".join(("pagos", item)))
+        self.set_var("pagos._id", -1)
 
 
 if __name__ == "__main__":

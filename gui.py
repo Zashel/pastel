@@ -31,6 +31,8 @@ class App(EasyFrame):
         self.set_variables()
         self.set_menu()
         self.set_widgets()
+        #Show Home
+        self.show_home()
 
     def set_widgets(self):
         self.payment_data_frame_text = dict()
@@ -457,13 +459,29 @@ class App(EasyFrame):
         if self._pagos_filter != dict():
             self.update_pagos_tree(**self._pagos_filter)
 
+    def show_home(self, *args, **kwargs):
+        self.payments_tree_frame.pack_forget()
+        self.pending_payment_frame.pack_forget()
+        self.payment_frame.pack_forget()
+
     def show_payment(self, *args, **kwargs):
         self.payments_tree_frame.pack_forget()
-        self.payment_frame.pack()
+        if self.search_payments_estado == "PENDIENTE":
+            self.pending_payment_frame.pack()
+        else:
+            self.payment_frame.pack()
 
     def show_pending_payment(self, *args, **kwargs):
-        self.payments_tree_frame.pack_forget()
-        self.pending_payment_frame.pack()
+        self.show_payment()
+
+    def go_to_payment_by_state(self, estado, *args, **kwargs):
+        self.set_var("paysearch.customer_id", "")
+        self.set_var("paysearch.office", "")
+        self.set_var("paysearch.pay_date", "")
+        self.set_var("paysearch.amount", "")
+        self.set_var("paysearch.state", estado)
+        self.search_payments_estado = estado
+        self.show_payment()
 
     def set_menu(self):
         self.option_add("*tearOff", FALSE)
@@ -493,9 +511,11 @@ class App(EasyFrame):
         self.menu_new.add_command(label="Usuario")
 
         self.menu_open.add_command(label="Compromisos")
-        self.menu_open.add_command(label="Pagos")
-        self.menu_open.add_command(label="Pagos Pendientes")
-        self.menu_open.add_command(label="Pagos Ilocalizables")
+        self.menu_open.add_command(label="Pagos", command=self.show_payments_tree)
+        self.menu_open.add_command(label="Pagos Pendientes",
+                                   command=partial(self.go_to_payment_by_state, "PENDIENTE"))
+        self.menu_open.add_command(label="Pagos Ilocalizables",
+                                   command=partial(self.go_to_payment_by_state, "ILOCALIZABLE"))
         self.menu_open.add_command(label="Usuarios")
 
         self.menu_load.add_command(label="Pagos ISM")

@@ -395,14 +395,15 @@ class App(EasyFrame):
             data = API.get_link(link, var="pagos")
             self.load_payment(data)
 
-    def search_payment(self, *args, **kwargs):
+    def filter_payment(self, *args, **kwargs):
         estado = self.get_var("paysearch.state").get()
         self.search_payments_estado = estado
         dni = self.get_var("paysearch.customer_id").get()
         oficina = self.get_var("paysearch.office").get()
         fecha = self.get_var("paysearch.pay_date").get()
         importe = self.get_var("paysearch.amount").get().replace(" ",
-                                                                   "").replace(".", "").replace(",", "").replace("\u20ac", "")
+                                                                 "").replace(".", "").replace(",", "").replace("\u20ac",
+                                                                                                               "")
         kwargs = dict()
         if estado != "" and estado in admin_config.PAYMENTS_STATES:
             kwargs["estado"] = estado
@@ -415,14 +416,17 @@ class App(EasyFrame):
             try:
                 int(oficina)
             except ValueError:
-                pass #TODO: Actualizar NADA
+                pass  # TODO: Actualizar NADA
             else:
                 kwargs["oficina"] = oficina
         if fecha != "":
-            kwargs["fecha"] = fecha #TODO: Validate
+            kwargs["fecha"] = fecha  # TODO: Validate
         if importe != "":
             kwargs["importe"] = importe
         self._pagos_filter = kwargs
+
+    def search_payment(self, *args, **kwargs):
+        self.filter_payment()
         self.update_pagos_tree(**kwargs)
 
     def update_pagos_tree(self, link=None, **filter):
@@ -480,7 +484,8 @@ class App(EasyFrame):
         self.set_var("paysearch.pay_date", "")
         self.set_var("paysearch.amount", "")
         self.set_var("paysearch.state", estado)
-        self.search_payments_estado = estado
+        self.filter_payment()
+        self.next_payment()
         self.show_payment()
 
     def set_menu(self):

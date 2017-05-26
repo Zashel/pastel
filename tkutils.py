@@ -358,12 +358,15 @@ class EasyFrame(Frame):
     def changed_active_tree_item(self, variable, void, method, *, var_name):
         category, name = self.get_category_and_name(var_name)
         tree = self.tree[category]["tree"]
-        item = tree.selection()[0]
-        data = self.get_var(var_name).get()
-        if item not in self.tree[category]["data"]:
-            self.tree[category]["data"][item] = dict()
-        self.tree[category]["data"][item][name] = self.tree[category]["validate"][name](data)
-        tree.set(item, name, self.tree[category]["show"][name](data))
+        try:
+            item = tree.selection()[0]
+            data = self.get_var(var_name).get()
+            if item not in self.tree[category]["data"]:
+                self.tree[category]["data"][item] = dict()
+            self.tree[category]["data"][item][name] = self.tree[category]["validate"][name](data)
+            tree.set(item, name, self.tree[category]["show"][name](data))
+        except IndexError:
+            pass
 
     def del_tree_data(self, category):
         tree = self.tree[category]["tree"]

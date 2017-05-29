@@ -416,7 +416,8 @@ class App(EasyFrame):
                          text="Reportado: ").grid(column=2, row=row, sticky=W, columnspan=2)
         row += 1
         default_config = {"columns": {"width": 75},
-                          "heading": {"fecha_aplicacion": {"text": "Fecha Aplicación"},
+                          "heading": {"#0": {"text": "ID"},
+                                      "fecha_aplicacion": {"text": "Fecha Aplicación"},
                                       "codigo": {"text": "Código"},
                                       "nombre": {"text": "Nombre"},
                                       "nif": {"text": "DNI"},

@@ -202,9 +202,8 @@ class API:
                 for pago in data["_embedded"]["pagos/manual"]:
                     usuario = pago["_embedded"]["manual"][0]["usuario"]
                     final[usuario] = list()
-                    for pago in data["_embedded"]["pagos/manual"]:
-                        for posible in pago["posibles"]:
-                            final[usuario].append(posible.split(";"))
+                    for posible in pago["posibles"]:
+                        final[usuario].append(posible.split(";"))
                 return final
 
     @classmethod

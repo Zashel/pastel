@@ -455,7 +455,7 @@ class App(EasyFrame):
         index = int()
         for user in data:
             for item in data[user]:
-                final[index] = item + [user]
+                final[index] = dict(zip(admin_config.PAYMENTS_UPLOADING_HEADERS+["usuario"], item+[user]))
                 index += 1
         self.set_tree_data("manual_review", final)
 

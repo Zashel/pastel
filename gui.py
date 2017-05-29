@@ -445,7 +445,7 @@ class App(EasyFrame):
         user = self.get_var("manualsearch.user").get()
         #reported = self.get_var("manualsearch.reported").get()
         if state != str():
-            filter["manual_estado"] = state
+            filter["pagos_estado"] = state
         if date != str():
             filter["manual_fecha"] = date
         if user != str():

@@ -204,6 +204,7 @@ class API:
                     final[usuario] = list()
                     for posible in pago["posibles"]:
                         final[usuario].append(posible.split(";"))
+                print(final)
                 return final
 
     @classmethod

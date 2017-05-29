@@ -411,9 +411,9 @@ class App(EasyFrame):
                                                                                          row=row,
                                                                                          #sticky=E,
                                                                                          columnspan=2)
-        self.Checkbutton("manualsearch.reported",
-                         self.manual_review_frame,
-                         text="Reportado: ").grid(column=2, row=row, sticky=W, columnspan=2)
+        #self.Checkbutton("manualsearch.reported",
+        #                 self.manual_review_frame,
+        #                 text="Reportado: ").grid(column=2, row=row, sticky=W, columnspan=2)
         row += 1
         default_config = {"columns": {"width": 75},
                           "heading": {"#0": {"text": "ID"},
@@ -426,12 +426,34 @@ class App(EasyFrame):
                                       "importe": {"text": "Importe"},
                                       "periodo_facturado": {"text": "Periodo Facturado"},
                                       "metodo": {"text": "Método"},
-                                      "via": {"text": "Vía"}
+                                      "via": {"text": "Vía"},
+                                      "usuario": {"text": "Usuario"}
                                       }}
-        tree = self.TreeView("manual_review", admin_config.PAYMENTS_UPLOADING_HEADERS, self.manual_review_frame,
+        tree = self.TreeView("manual_review", admin_config.PAYMENTS_UPLOADING_HEADERS+["usuario"], self.manual_review_frame,
                              default_config=default_config, yscroll=True)
         tree.grid(column=0, row = row, columnspan=4)
 
+    #Manual Review Related
+    def load_review_manuals_tree(self):
+        filter = dict()
+        state = self.get_var("manualsearch.state").get()
+        date = self.get_var("manualsearch.date").get()
+        user = self.get_var("manualsearch.user").get()
+        reported = self.get_var("manualsearch.reported").get()
+        if state != str():
+            filter["manual_estado"] = state
+        if date != str():
+            filter["manual_fecha"] = date
+        if user != str():
+            filter["manual_usuario"] = user
+        data = API.review_manuals(**filter)
+        final = dict()
+        index = int()
+        for user in data:
+            for item in data:
+                final[index] = item + [user]
+                index += 1
+        self.set_tree_data("manual_review", final)
 
     #Payments related
     def add_new_row_to_posibles(self):

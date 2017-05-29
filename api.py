@@ -186,6 +186,28 @@ class API:
             return API.get_pagos_list()
 
     @classmethod
+    def review_manuals(cls, **filter):
+        if filter != dict():
+            request = requests.get("http://{}:{}{}/pagos//manual?{}".format(local_config.HOST,
+                                                                          str(local_config.PORT),
+                                                                          BASE_URI[1:-1],
+                                                                          "&".join(["=".join(
+                                                                              (str(key), str(filter[key]))) for key in filter
+                                                                          ])
+                                                                          )
+                                   )
+            if request.status_code in (200, 201):
+                data = json.loads(request.text)
+                final = dict()
+                for pago in data["_embedded"]["pagos/manual"]:
+                    usuario = pago["_embedded"]["manual"][0]["usuario"]
+                    final[usuario] = list()
+                    for pago in data["_embedded"]["pagos/manual"]:
+                        for posible in pago["posibles"]:
+                            final[usuario].append(posible.split(";"))
+                return final
+
+    @classmethod
     def to_export_manuals(cls, **filter):
         if filter != dict():
             request = requests.get("http://{}:{}{}/pagos//manual?{}".format(local_config.HOST,

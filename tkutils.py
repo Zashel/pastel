@@ -292,7 +292,8 @@ class EasyFrame(Frame):
                 column_config.update(default_config["column"][column])
             tree.column(column, **column_config)
             if "heading" in default_config:
-                tree.heading(column, **default_config["heading"][column])
+                if column in default_config["heading"]:
+                    tree.heading(column, **default_config["heading"][column])
         if "bind" in default_config:
             for item in default_config["bind"]:
                 tree.bind(item, default_config["bind"][item])

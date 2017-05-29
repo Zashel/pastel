@@ -40,6 +40,7 @@ class App(EasyFrame):
                      "configuration": Frame(self),
                      "payments": Frame(self)}
         self.set_payments_tree_frame()
+        self.set_manual_review_frame()
         #TABS
 
     def set_variables(self):

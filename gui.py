@@ -415,7 +415,7 @@ class App(EasyFrame):
                          self.manual_review_frame,
                          text="Reportado: ").grid(column=2, row=row, sticky=W, columnspan=2)
         row += 1
-        default_config = dict()
+        default_config = {"columns": {"width": 75}}
         tree = self.TreeView("manual_review", admin_config.PAYMENTS_UPLOADING_HEADERS, self.manual_review_frame,
                              default_config=default_config, yscroll=True)
         tree.grid(column=0, row = row, columnspan=4)

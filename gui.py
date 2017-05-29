@@ -411,6 +411,10 @@ class App(EasyFrame):
                                                                                          row=row,
                                                                                          #sticky=E,
                                                                                          columnspan=2)
+        Button(self.manual_review_frame, text="Buscar", command=self.load_review_manuals_tree).grid(column=2,
+                                                                                                    row=row,
+                                                                                                    sticky=W,
+                                                                                                    columnspan=2)
         #self.Checkbutton("manualsearch.reported",
         #                 self.manual_review_frame,
         #                 text="Reportado: ").grid(column=2, row=row, sticky=W, columnspan=2)

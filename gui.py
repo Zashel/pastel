@@ -409,7 +409,7 @@ class App(EasyFrame):
         row+=1
         self.LabelEntry("manualsearch.user", "Usuario: ", self.manual_review_frame).grid(column=0,
                                                                                          row=row,
-                                                                                         sticky=E,
+                                                                                         #sticky=E,
                                                                                          columnspan=2)
         self.Checkbutton("manualsearch.reported",
                          self.manual_review_frame,

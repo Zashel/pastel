@@ -443,7 +443,7 @@ class App(EasyFrame):
         state = self.get_var("manualsearch.state").get()
         date = self.get_var("manualsearch.date").get()
         user = self.get_var("manualsearch.user").get()
-        reported = self.get_var("manualsearch.reported").get()
+        #reported = self.get_var("manualsearch.reported").get()
         if state != str():
             filter["manual_estado"] = state
         if date != str():

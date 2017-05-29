@@ -415,7 +415,18 @@ class App(EasyFrame):
                          self.manual_review_frame,
                          text="Reportado: ").grid(column=2, row=row, sticky=W, columnspan=2)
         row += 1
-        default_config = {"columns": {"width": 75}}
+        default_config = {"columns": {"width": 75},
+                          "heading": {"fecha_aplicacion": {"text": "Fecha Aplicación"},
+                                      "codigo": {"text": "Código"},
+                                      "nombre": {"text": "Nombre"},
+                                      "nif": {"text": "DNI"},
+                                      "id_factura": {"text": "ID Factura"},
+                                      "fecha_pago": {"text": "Fecha de Pago"},
+                                      "importe": {"text": "Importe"},
+                                      "periodo_facturado": {"text": "Periodo Facturado"},
+                                      "metodo": {"text": "Método"},
+                                      "via": {"text": "Vía"}
+                                      }}
         tree = self.TreeView("manual_review", admin_config.PAYMENTS_UPLOADING_HEADERS, self.manual_review_frame,
                              default_config=default_config, yscroll=True)
         tree.grid(column=0, row = row, columnspan=4)

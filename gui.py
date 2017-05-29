@@ -111,7 +111,7 @@ class App(EasyFrame):
                                    command=partial(self.go_to_payment_by_state, "PENDIENTE"))
         self.menu_open.add_command(label="Pagos Ilocalizables",
                                    command=partial(self.go_to_payment_by_state, "ILOCALIZABLE"))
-        self.menu_open.add_command(label="Revisión Pagos Manuales", command=)
+        self.menu_open.add_command(label="Revisión Pagos Manuales", command=self.go_to_manual_review)
         self.menu_open.add_command(label="Usuarios")
 
         self.menu_load.add_command(label="Pagos ISM")
@@ -644,7 +644,7 @@ class App(EasyFrame):
         self.pending_payment_frame.pack_forget()
         self.payment_frame.pack_forget()
 
-    def go_to_manual_review(self):
+    def go_to_manual_review(self, *args, **kwargs):
         self.hide_everything()
         self.manual_review_frame.pack()
 

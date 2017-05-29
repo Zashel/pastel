@@ -236,7 +236,8 @@ SHARED = ["PM_CUSTOMER",
           "REPORT_PATH",
           "PAYMENTS_STATES",
           "FACTURAS",
-          "FACTURAS_FILE"
+          "FACTURAS_FILE",
+          "PAYMENTS_UPLOADING_HEADERS"
           ]
 
 class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated myself!
@@ -323,6 +324,18 @@ admin_config.set_default("PAYMENTS_STATES",
                          ["", "PENDIENTE", "APLICADO", "ILOCALIZABLE", "GRAN CUENTA", "DEUDA VENDIDA", "PAGO ORANGE"])
 
 admin_config.set_default("FACTURAS_FILE", "codes.txt")
+
+admin_config.set_default("PAYMENTS_UPLOADING_HEADERS", ["fecha_aplicacion",
+                                                        "codigo",
+                                                        "nombre",
+                                                        "nif",
+                                                        "id_factura",
+                                                        "fecha_pago",
+                                                        "importe",
+                                                        "periodo_facturado",
+                                                        "metodo",
+                                                        "via"
+                                                        ])
 facturas = dict()
 with open(admin_config.FACTURAS_FILE, "r") as f:
     for row in f:

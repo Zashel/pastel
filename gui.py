@@ -412,7 +412,13 @@ class App(EasyFrame):
                                                                                          columnspan=2)
         self.Checkbutton("manualsearch.reported",
                          self.manual_review_frame,
-                         text="Reportado: ").grid(column=2, row=2, sticky=W, columnspan=2)
+                         text="Reportado: ").grid(column=2, row=row, sticky=W, columnspan=2)
+        row += 1
+        default_config = dict()
+        tree = self.TreeView("manual_review", admin_config.PAYMENTS_UPLOADING_HEADERS, self.manual_review_frame,
+                             default_config=default_config, yscroll=True)
+        tree.grid(column=0, row = row, columnspan=4)
+
 
     #Payments related
     def add_new_row_to_posibles(self):

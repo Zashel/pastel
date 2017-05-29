@@ -457,6 +457,7 @@ class App(EasyFrame):
             for item in data:
                 final[index] = item + [user]
                 index += 1
+        print("I'm blue dabadee dabadaaa")
         self.set_tree_data("manual_review", final)
 
     #Payments related

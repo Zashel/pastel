@@ -454,7 +454,7 @@ class App(EasyFrame):
         final = dict()
         index = int()
         for user in data:
-            for item in data:
+            for item in data[user]:
                 final[index] = item + [user]
                 index += 1
         self.set_tree_data("manual_review", final)

@@ -201,10 +201,10 @@ class API:
                 final = dict()
                 for pago in data["_embedded"]["pagos/manual"]:
                     usuario = pago["_embedded"]["manual"][0]["usuario"]
-                    final[usuario] = list()
+                    if usuario not in final:
+                        final[usuario] = list()
                     for posible in pago["posibles"]:
                         final[usuario].append(posible.split(";"))
-                print(final)
                 return final
 
     @classmethod

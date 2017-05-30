@@ -176,7 +176,13 @@ class LocalConfig: #To a dynamic access -> change API
                 if attr == "UUID":
                     pass
                 if attr in LocalConfig.cache:
-                    data = LocalConfig.cache[attr]
+                    while True:
+                        try:
+                            data = LocalConfig.cache[attr]
+                        except KeyError:
+                            continue
+                        else:
+                            break
                 else:
                     raise
             if attr in REMOTE_PATHS:

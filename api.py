@@ -187,7 +187,7 @@ class API:
         if API.next_pago == API.last_next:
             API.next_thread.join()
         if API.next_pago is not None and kwargs == API.next_kwargs:
-            API.last_next = API.next_thread
+            API.last_next = API.next_pago
             API.next_kwargs = ffilter
             kwargs["_item"] = API.last_next["_id"]
             get_next(**kwargs)

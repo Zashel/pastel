@@ -615,11 +615,36 @@ class App(EasyFrame):
         self.set_tree_data(name, final, order=[str(key) for key in order])
         self.calculate_pending(name)
 
-    #def save_and_next_payment(self):
-    #    self.save_pagos_pendiente()
-    #    self.next_payment()
+    def save_and_next_payment(self):
+        self.destroy_popUp()
+        link = self.get_var("pagos.link").get()
+        tree = self.tree["editable_posibles"]["tree"]
+        posibles = list()
+        items = tree.get_children()
+        codes = admin_config.FACTURAS
+        for item in items:
+            code = codes[API.get_fecha_factura_from_periodo(tree.set(item, "periodo_facturado"))]
+            posibles.append(";".join([datetime.datetime.now().strftime("%d/%m/%Y"),
+                                      str(code),
+                                      str(tree.set(item, "nombre")),
+                                      str(tree.set(item, "dni")),
+                                      str(tree.set(item, "id_factura")),
+                                      str(self.get_var("pagos.fecha").get()),
+                                      str(tree.set(item, "importe").replace(".", ",").replace(" \u20ac", "")),
+                                      str(tree.set(item, "periodo_facturado")),
+                                      str(admin_config.PM_PAYMENT_METHOD),
+                                      str(admin_config.PM_PAYMENT_WAY)
+                                      ]))
 
-    def save_and_next_pagos_pendiente(self):
+        @threadize
+        def save(link, estado, posibles):
+            API.modify_pago({"link": link, "estado": estado, "posibles": posibles})
+            API.insert_manual(link)
+            API.unblock_pago(link)
+        self.next_payment()
+        save(link, self.get_var("pagos.estado").get(), posibles) #Repeating myself...
+
+    def save_pagos_pendiente(self):
         self.destroy_popUp()
         link = self.get_var("pagos.link").get()
         tree = self.tree["editable_posibles"]["tree"]
@@ -644,7 +669,6 @@ class App(EasyFrame):
             API.modify_pago({"link": link, "estado": estado, "posibles": posibles})
             API.insert_manual(link)
             API.unblock_pago(link)
-        self.next_payment() #Let's try to improve shitty
         save(link, self.get_var("pagos.estado").get(), posibles)
 
     def search_payment(self, *args, **kwargs):

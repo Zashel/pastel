@@ -5,7 +5,7 @@ from functools import partial
 from definitions import local_config, admin_config, LOCAL, SHARED, PAYMENTS_FIELDS
 from tkutils import *
 from utils import *
-from zashel.utils import threadize
+from zashel.utils import threadize, daemonize
 import getpass
 import json
 import os
@@ -584,7 +584,10 @@ class App(EasyFrame):
         kwargs = dict(self._pagos_filter)
         kwargs.update({"_item": self.get_var("pagos._id").get()})
         self.load_payment(API.next_pagos(**kwargs))
-        self.set_var("gui.pagos_pendientes", "Quedan {} pagos.".format(API.get_pagos_count(**self._pagos_filter)))
+        @daemonize
+        def update():
+            self.set_var("gui.pagos_pendientes", "Quedan {} pagos.".format(API.get_pagos_count(**self._pagos_filter)))
+        update()
 
     def open_payment_data_frame(self, event):
         self.load_payment_from_tree()

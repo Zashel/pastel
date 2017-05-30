@@ -688,6 +688,7 @@ class App(EasyFrame):
         self.manual_review_frame.pack()
 
     def go_to_payment_by_state(self, estado, *args, **kwargs):
+        self.hide_everything()
         self.set_var("paysearch.customer_id", "")
         self.set_var("paysearch.office", "")
         self.set_var("paysearch.pay_date", "")
@@ -708,8 +709,7 @@ class App(EasyFrame):
             self.payment_frame.pack()
 
     def show_payments_tree(self, *args, **kwargs):
-        self.pending_payment_frame.pack_forget()
-        self.payment_frame.pack_forget()
+        self.hide_everything()
         self.payments_tree_frame.pack()
         if self._pagos_filter != dict():
             self.update_pagos_tree(**self._pagos_filter)

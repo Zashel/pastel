@@ -58,6 +58,11 @@ class API:
              "total_pages": None
              }
 
+    next_pago = None
+    next_kwargs = None
+    last_next = None
+    next_thread = None
+
     @classmethod
     def get_pago(cls, _id):
         if API.pagos["active"]["_id"] != _id:
@@ -153,23 +158,35 @@ class API:
 
     @classmethod
     def next_pagos(cls, **kwargs):
-        filter = list()
-        for item in kwargs:
-            if item in PAYMENTS_INDEX+["_item"]:
-                filter.append("=".join((item, str(kwargs[item]))))
-        filter = "&".join(filter)
-        request = requests.request("NEXT",
-                                   "http://{}:{}{}/pagos?{}".format(local_config.HOST,
-                                                                    str(local_config.PORT),
-                                                                    BASE_URI[1:-1],
-                                                                    filter))
-        if request.status_code == 200:
-            data = json.loads(request.text)
-            if request.status_code == 404:
-                API.pagos["active"] = None
-            else:
-                API.pagos["active"] = data
-        return API.pagos["active"]
+        @threadize
+        def get_next(**kwargs):
+            filter = list()
+            for item in kwargs:
+                if item in PAYMENTS_INDEX+["_item"]:
+                    filter.append("=".join((item, str(kwargs[item]))))
+            filter = "&".join(filter)
+            request = requests.request("NEXT",
+                                       "http://{}:{}{}/pagos?{}".format(local_config.HOST,
+                                                                        str(local_config.PORT),
+                                                                        BASE_URI[1:-1],
+                                                                        filter))
+            if request.status_code == 200:
+                data = json.loads(request.text)
+                if request.status_code == 404:
+                    API.pagos["active"] = None
+                else:
+                    API.pagos["active"] = data
+            API.next_pago = API.pagos["active"]
+        if API.next_pago is None or kwargs != API.next_kwargs:
+            API.next_kwargs = kwargs
+            API.next_thread = get_next(**kwargs)
+            API.next_thread.join()
+        if API.next_pago == API.last_next:
+            API.next_thread.join()
+        if API.next_pago is not None and kwargs == API.next_kwargs:
+            API.last_next = API.next_thread
+            get_next(kwargs)
+            return API.next_pagos()
 
     @classmethod
     def unblock_pago(cls, link):

@@ -177,7 +177,10 @@ class API:
                 else:
                     API.pagos["active"] = data
             API.next_pago = API.pagos["active"]
-        if API.next_pago is None or kwargs != API.next_kwargs:
+        ffilter = dict(kwargs)
+        if "_item" in ffilter:
+            del(ffilter["_item"])
+        if API.next_pago is None or ffilter != API.next_kwargs:
             API.next_kwargs = kwargs
             API.next_thread = get_next(**kwargs)
             API.next_thread.join()
@@ -185,8 +188,10 @@ class API:
             API.next_thread.join()
         if API.next_pago is not None and kwargs == API.next_kwargs:
             API.last_next = API.next_thread
+            API.next_kwargs = ffilter
+            kwargs["_item"] = API.last_next["_id"]
             get_next(**kwargs)
-            return API.next_pagos()
+            return API.next_pago
 
     @classmethod
     def unblock_pago(cls, link):

@@ -743,6 +743,7 @@ class App(EasyFrame):
             self.update_pagos_tree(**self._pagos_filter)
 
     def show_pending_payment(self, *args, **kwargs):
+        self.hide_everything()
         self.show_payment()
 
     #Others

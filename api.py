@@ -185,7 +185,7 @@ class API:
             API.next_thread.join()
         if API.next_pago is not None and kwargs == API.next_kwargs:
             API.last_next = API.next_thread
-            get_next(kwargs)
+            get_next(**kwargs)
             return API.next_pagos()
 
     @classmethod

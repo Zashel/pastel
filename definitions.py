@@ -175,8 +175,8 @@ class LocalConfig: #To a dynamic access -> change API
             except KeyError:
                 if attr == "UUID":
                     pass
-                if attr in LocalConfig.cache:
-                    while True:
+                while True:
+                    if attr in LocalConfig.cache:
                         try:
                             data = LocalConfig.cache[attr]
                         except KeyError:

@@ -181,12 +181,12 @@ class API:
         if "_item" in ffilter:
             del(ffilter["_item"])
         if API.next_pago is None or ffilter != API.next_kwargs:
-            API.next_kwargs = kwargs
+            API.next_kwargs = ffilter
             API.next_thread = get_next(**kwargs)
             API.next_thread.join()
         if API.next_pago == API.last_next:
             API.next_thread.join()
-        if API.next_pago is not None and kwargs == API.next_kwargs:
+        if API.next_pago is not None and ffilter == API.next_kwargs:
             API.last_next = API.next_pago
             API.next_kwargs = ffilter
             kwargs["_item"] = API.last_next["_id"]

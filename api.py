@@ -185,6 +185,7 @@ class API:
             API.next_thread = get_next(**kwargs)
             API.next_thread.join()
         if API.next_pago == API.last_next:
+            print("Joining")
             API.next_thread.join()
         if API.next_pago is not None and ffilter == API.next_kwargs:
             API.last_next = API.next_pago

@@ -615,11 +615,11 @@ class App(EasyFrame):
         self.set_tree_data(name, final, order=[str(key) for key in order])
         self.calculate_pending(name)
 
-    def save_and_next_payment(self):
-        self.save_pagos_pendiente()
-        self.next_payment()
+    #def save_and_next_payment(self):
+    #    self.save_pagos_pendiente()
+    #    self.next_payment()
 
-    def save_pagos_pendiente(self):
+    def save_and_next_pagos_pendiente(self):
         self.destroy_popUp()
         link = self.get_var("pagos.link").get()
         tree = self.tree["editable_posibles"]["tree"]
@@ -644,6 +644,7 @@ class App(EasyFrame):
             API.modify_pago({"link": link, "estado": estado, "posibles": posibles})
             API.insert_manual(link)
             API.unblock_pago(link)
+        self.next_payment() #Let's try to improve shitty
         save(link, self.get_var("pagos.estado").get(), posibles)
 
     def search_payment(self, *args, **kwargs):

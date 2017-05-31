@@ -178,6 +178,7 @@ class API:
                                                                             filter))
                 if request.status_code == 200:
                     data = json.loads(request.text)
+                    print("DATA: ", data)
                     break
                 else:
                     time.sleep(1)

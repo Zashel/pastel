@@ -165,6 +165,10 @@ class API:
                 if item in PAYMENTS_INDEX+["_item"]:
                     filter.append("=".join((item, str(kwargs[item]))))
             filter = "&".join(filter)
+            print("http://{}:{}{}/pagos?{}".format(local_config.HOST,
+                                                   str(local_config.PORT),
+                                                   BASE_URI[1:-1],
+                                                   filter))
             request = requests.request("NEXT",
                                        "http://{}:{}{}/pagos?{}".format(local_config.HOST,
                                                                         str(local_config.PORT),

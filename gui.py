@@ -648,8 +648,8 @@ class App(EasyFrame):
             print("Inserted Manual")
             API.unblock_pago(link)
             print("Unblocked Pago")
-        self.next_payment()
         save(link, estado, posibles) #Repeating myself...
+        self.next_payment()
 
     def save_pagos_pendiente(self):
         self.destroy_popUp()

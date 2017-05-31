@@ -185,6 +185,7 @@ class API:
         if "_item" in ffilter:
             del(ffilter["_item"])
         if API.next_pago is None or ffilter != API.next_kwargs:
+            print("This is shit!")
             API.next_kwargs = ffilter
             API.next_thread = get_next(**kwargs)
             API.next_thread.join()

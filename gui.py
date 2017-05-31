@@ -638,14 +638,18 @@ class App(EasyFrame):
                                       str(admin_config.PM_PAYMENT_METHOD),
                                       str(admin_config.PM_PAYMENT_WAY)
                                       ]))
-
+        estado = self.get_var("pagos.estado").get()
         @threadize
         def save(link, estado, posibles):
+            print("Saving")
             API.modify_pago({"link": link, "estado": estado, "posibles": posibles})
+            print("Modified Payment")
             API.insert_manual(link)
+            print("Inserted Manual")
             API.unblock_pago(link)
+            print("Unblocked Pago")
         self.next_payment()
-        save(link, self.get_var("pagos.estado").get(), posibles) #Repeating myself...
+        save(link, estado, posibles) #Repeating myself...
 
     def save_pagos_pendiente(self):
         self.destroy_popUp()

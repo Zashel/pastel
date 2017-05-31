@@ -197,7 +197,7 @@ class API:
             kwargs["_item"] = API.last_next["_id"]
             get_next(**kwargs)
             return API.next_pago
-        print("Nothing happens")
+        print("Nothing happens: ", API.next_pago)
 
     @classmethod
     def unblock_pago(cls, link):

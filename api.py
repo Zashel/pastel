@@ -169,17 +169,21 @@ class API:
                                                    str(local_config.PORT),
                                                    BASE_URI[1:-1],
                                                    filter))
-            request = requests.request("NEXT",
-                                       "http://{}:{}{}/pagos?{}".format(local_config.HOST,
-                                                                        str(local_config.PORT),
-                                                                        BASE_URI[1:-1],
-                                                                        filter))
-            if request.status_code == 200:
-                data = json.loads(request.text)
-                if request.status_code == 404:
-                    API.pagos["active"] = {}
+            while True:
+                request = requests.request("NEXT",
+                                           "http://{}:{}{}/pagos?{}".format(local_config.HOST,
+                                                                            str(local_config.PORT),
+                                                                            BASE_URI[1:-1],
+                                                                            filter))
+                if request.status_code == 200:
+                    data = json.loads(request.text)
+                    if request.status_code == 404:
+                        API.pagos["active"] = {}
+                    else:
+                        API.pagos["active"] = data
+                    break
                 else:
-                    API.pagos["active"] = data
+                    time.sleep(1)
             API.next_pago = API.pagos["active"]
         ffilter = dict(kwargs)
         if "_item" in ffilter:

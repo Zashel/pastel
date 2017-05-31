@@ -177,7 +177,7 @@ class API:
             if request.status_code == 200:
                 data = json.loads(request.text)
                 if request.status_code == 404:
-                    API.pagos["active"] = None
+                    API.pagos["active"] = {}
                 else:
                     API.pagos["active"] = data
             API.next_pago = API.pagos["active"]

@@ -586,7 +586,12 @@ class App(EasyFrame):
         self.load_payment(API.next_pagos(**kwargs))
         @daemonize
         def update():
-            self.set_var("gui.pagos_pendientes", "Quedan {} pagos.".format(API.get_pagos_count(**self._pagos_filter)))
+            try:
+                self.set_var("gui.pagos_pendientes", "Quedan {} pagos.".format(API.get_pagos_count(**self._pagos_filter)))
+            except (SystemExit, KeyboardInterrupt):
+                raise
+            except:
+                pass
         update()
 
     def open_payment_data_frame(self, event):

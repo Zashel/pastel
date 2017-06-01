@@ -1,4 +1,4 @@
-import requests
+import requests as reqs
 import pprint
 import time
 from random import randint
@@ -15,6 +15,9 @@ for x in range(5):
         continue
 
 from zashel.utils import daemonize
+from queue import Queue, Empty
+from functools import partial
+from multiprocessing import Pipe
 
 import datetime
 import sys
@@ -29,6 +32,37 @@ if sys.version_info.minor == 3:
     shelve_open = lambda file, flag="c", protocol=None, writeback=False: closing(shelve.open(file, flag))
 else:
     shelve_open = shelve.open
+
+class Requests:
+    pool = Queue()
+    dir = dir(reqs)
+    thread = None
+
+    def __getattribute__(self, item):
+        if item in Requests.dir:
+            return partial(self.put_queue, reqs.__getattribute__(item))
+        else:
+            return object.__getattribute__(self, item)
+
+    def put_queue(self, function, *args, **kwargs):
+        pippin, pippout = Pipe(False)
+        Requests.pool.put((pippout, function, args, kwargs))
+        if Requests.thread is None or Requests.thread.is_alive() is False: #This may end always
+            Requests.thread = Requests.run()
+        return pippin.recv()
+
+    @classmethod
+    @threadize
+    def run(cls):
+        while True:
+            try:
+                pippout, function, args, kwargs = Requests.pool.get_nowait()
+                pippout.send(function(*args, **kwargs))
+            except Empty:
+                break
+
+
+requests = Requests()
 
 class API:
     basepath = "http://{}:{}/{}".format(local_config.HOST, str(local_config.PORT), BASE_URI[1:-1].strip("/"))
@@ -484,7 +518,4 @@ class API:
         if ffact.day != 8:
             ffact = ffact.replace(day=ffact.day + 1)
         return ffact
-
-
-
 

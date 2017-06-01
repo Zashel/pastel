@@ -176,7 +176,7 @@ class API:
                                                                             str(local_config.PORT),
                                                                             BASE_URI[1:-1],
                                                                             filter))
-                if request.status_code == 200:
+                if request.status_code in (200, 404):
                     data = json.loads(request.text)
                     print("DATA: ", data)
                     break

@@ -282,10 +282,13 @@ class API:
             usuario = local_config.USER
         if fecha is None:
             fecha = datetime.datetime.now().strftime("%d/%m/%Y")
+        print("Asked for manual")
+        print(link, usuario, fecha)
         request = requests.post("http://{}:{}{}/manual".format(local_config.HOST,
                                                         str(local_config.PORT),
                                                         link.split("?")[0]),
                                 json={"usuario": usuario, "fecha":fecha})
+        print("Answered from manual")
         if request.status_code == 201:
             return True
         else:

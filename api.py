@@ -204,19 +204,15 @@ class API:
                                                    BASE_URI[1:-1],
                                                    filter))
             data = {}
-            while True:
-                request = requests.request("NEXT",
-                                           "http://{}:{}{}/pagos?{}".format(local_config.HOST,
-                                                                            str(local_config.PORT),
-                                                                            BASE_URI[1:-1],
-                                                                            filter))
-                if request.status_code in (200, 404):
-                    data = json.loads(request.text)
-                    print("DATA: ", data)
-                    break
-                else:
-                    time.sleep(1)
-
+            request = requests.request("NEXT",
+                                       "http://{}:{}{}/pagos?{}".format(local_config.HOST,
+                                                                        str(local_config.PORT),
+                                                                        BASE_URI[1:-1],
+                                                                        filter))
+            if request.status_code in (200, 404):
+                data = json.loads(request.text)
+            else:
+                data = None
             API.pagos["active"] = data
             API.next_pago = API.pagos["active"]
         ffilter = dict(kwargs)
@@ -235,7 +231,11 @@ class API:
             API.next_kwargs = ffilter
             kwargs["_item"] = API.last_next["_id"]
             get_next(**kwargs)
-            return API.next_pago
+            pago = dict(API.next_pago)
+            API.next_pago = None
+            return pago
+        elif API.next_pago is None:
+            return API.next_pagos(**kwargs)
         print("Nothing happens: ", API.next_pago)
 
     @classmethod

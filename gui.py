@@ -36,10 +36,6 @@ class App(EasyFrame):
 
     def set_widgets(self):
         self.payment_data_frame_text = dict()
-        self.tabs = {"init": Frame(self),
-                     "configuration": Frame(self),
-                     "payments": Frame(self),
-                     "manuals": Frame(self)}
         self.set_payments_tree_frame()
         self.set_manual_review_frame()
         #TABS
@@ -318,7 +314,7 @@ class App(EasyFrame):
                                        "tels": lambda x: x.split(", ")},
 
                           "bind": {}}
-        self.payments_tree_frame = Frame(self.tabs["payments"])
+        self.payments_tree_frame = Frame(self)
         self.payments_tree_frame.pack()
         row = 0
         # Payment search
@@ -376,7 +372,7 @@ class App(EasyFrame):
         row += 1
 
         #Payment Frame
-        self.payment_frame = Frame(self.tabs["payments"])
+        self.payment_frame = Frame(self)
         self.payment_data_frame(self.payment_frame).pack()
         self.payment_posibles_frame(self.payment_frame, "posibles").pack()
         button_frame_payment = Frame(self.payment_frame)
@@ -384,7 +380,7 @@ class App(EasyFrame):
         Button(button_frame_payment, text="Cerrar", command=self.show_payments_tree).pack()
 
         #Pending Payment Frame
-        self.pending_payment_frame = Frame(self.tabs["payments"])
+        self.pending_payment_frame = Frame(self)
         self.payment_data_frame(self.pending_payment_frame).pack()
         self.payment_posibles_frame(self.pending_payment_frame, "editable_posibles").pack()
         button_frame_payment_pending = Frame(self.pending_payment_frame)
@@ -394,10 +390,8 @@ class App(EasyFrame):
         Button(button_frame_payment_pending, text="Guardar", command=self.save_pagos_pendiente).grid(column=2, row=0, sticky=E)
         Button(button_frame_payment_pending, text="Siguiente", command=self.save_and_next_payment).grid(column=3, row=0, sticky=E)
 
-        self.tabs["payments"].pack()
-
     def set_manual_review_frame(self):
-        self.manual_review_frame = Frame(self.tabs["manuals"])
+        self.manual_review_frame = Frame(self)
         row = 0
         Label(self.manual_review_frame, text="Estado: ").grid(column=0, row=row, sticky=E)
         #self.Combobox("manualsearch.state", admin_config.PAYMENTS_STATES, self.manual_review_frame).grid(column=1,
@@ -437,8 +431,6 @@ class App(EasyFrame):
         tree = self.TreeView("manual_review", admin_config.PAYMENTS_UPLOADING_HEADERS+["usuario"], self.manual_review_frame,
                              default_config=default_config, yscroll=True)
         tree.grid(column=0, row = row, columnspan=4)
-
-        self.tabs["manuals"].pack()
 
     #Manual Review Related
     def load_review_manuals_tree(self):

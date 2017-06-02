@@ -87,6 +87,7 @@ class Requests:
     def exec_pool(cls):
         while True:
             for item in Requests.pool_dict:
+                print("Item: ", item, " -> ", str(len(Requests.pool_dict[item])))
                 try:
                     pippout, function, args, kwargs = Requests.pool_dict[item].popleft()
                 except IndexError:

@@ -98,8 +98,8 @@ class Requests:
                     Requests.lock.release()
                     break #Let's begin again because it's a priority pool!
             time.sleep(0.5) #A quick nap to not to overseed the processor
-            Requests.lock.acquire()
-            if Requests.pool_len <= 0:
+            len = Requests.pool_len
+            if len <= 0:
                 break
 
 requests = Requests()

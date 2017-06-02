@@ -438,6 +438,8 @@ class App(EasyFrame):
                              default_config=default_config, yscroll=True)
         tree.grid(column=0, row = row, columnspan=4)
 
+        self.tabs["manuals"].pack()
+
     #Manual Review Related
     def load_review_manuals_tree(self):
         filter = dict()

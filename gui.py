@@ -719,6 +719,7 @@ class App(EasyFrame):
         self.payments_tree_frame.pack_forget()
         self.pending_payment_frame.pack_forget()
         self.payment_frame.pack_forget()
+        self.manual_review_frame.pack_forget()
 
     def go_to_manual_review(self, *args, **kwargs):
         self.hide_everything()

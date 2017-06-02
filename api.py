@@ -1,6 +1,7 @@
 import requests as reqs
 import pprint
 import time
+from collections import deque, OrderedDict
 from random import randint
 from zashel.utils import threadize
 
@@ -17,6 +18,7 @@ for x in range(5):
 from zashel.utils import daemonize
 from queue import Queue, Empty
 from functools import partial
+from threading import Lock
 from multiprocessing import Pipe
 
 import datetime
@@ -36,7 +38,16 @@ else:
 class Requests:
     pool = Queue()
     dir = dir(reqs)
-    thread = None
+    listen_thread = None
+    exec_thread = None
+    pool_dict = OrderedDict({"next": deque(),
+                             "put": deque(),
+                             "get": deque(),
+                             "post": deque(),
+                             "other": deque()
+                            })
+    pool_len = int()
+    lock = Lock()
 
     def __getattribute__(self, item):
         if item in Requests.dir:
@@ -47,20 +58,49 @@ class Requests:
     def put_queue(self, function, *args, **kwargs):
         pippin, pippout = Pipe(False)
         Requests.pool.put((pippout, function, args, kwargs))
-        if Requests.thread is None or Requests.thread.is_alive() is False: #This may end always
-            Requests.thread = Requests.run()
+        if Requests.listen_thread is None or Requests.listen_thread.is_alive() is False: #This may end always
+            Requests.listen_thread = Requests.listen_pool()
         return pippin.recv()
 
     @classmethod
     @threadize
-    def run(cls):
+    def listen_pool(cls):
         while True:
             try:
                 pippout, function, args, kwargs = Requests.pool.get_nowait()
-                pippout.send(function(*args, **kwargs))
+                action = function
+                if function == "request" and len(args) > 0:
+                    action = args[0]
+                if action not in Requests.pool_dict:
+                    action = "other"
+                Requests.pool_dict[action].append((pippout, function, args, kwargs))
+                if Requests.exec_thread is None or Requests.exec_thread.is_alive() is False:
+                    Requests.exec_thread = Requests.exec_pool()
+                Requests.lock.acquire()
+                Requests.pool_len += 1
+                Requests.lock.release()
             except Empty:
                 break
 
+    @classmethod
+    @threadize
+    def exec_pool(cls):
+        while True:
+            for item in Requests.pool_dict:
+                try:
+                    pippout, function, args, kwargs = Requests.pool_dict[item].popleft()
+                except IndexError:
+                    continue
+                else:
+                    pippout.send(function(*args, **kwargs))
+                    Requests.lock.acquire()
+                    Requests.pool_len -= 1
+                    Requests.lock.release()
+                    break #Let's begin again because it's a priority pool!
+            time.sleep(0.5) #A quick nap to not to overseed the processor
+            Requests.lock.acquire()
+            if Requests.pool_len <= 0:
+                break
 
 requests = Requests()
 

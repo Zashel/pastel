@@ -74,11 +74,11 @@ class Requests:
                 if action not in Requests.pool_dict:
                     action = "other"
                 Requests.pool_dict[action].append((pippout, function, args, kwargs))
-                if Requests.exec_thread is None or Requests.exec_thread.is_alive() is False:
-                    Requests.exec_thread = Requests.exec_pool()
                 Requests.lock.acquire()
                 Requests.pool_len += 1
                 Requests.lock.release()
+                if Requests.exec_thread is None or Requests.exec_thread.is_alive() is False:
+                    Requests.exec_thread = Requests.exec_pool()
             except Empty:
                 break
 

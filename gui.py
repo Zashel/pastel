@@ -393,7 +393,7 @@ class App(EasyFrame):
     def set_manual_review_frame(self):
         self.manual_review_frame = Frame(self)
         row = 0
-        Label(self.manual_review_frame, text="Estado: ").grid(column=0, row=row, sticky=E)
+        #Label(self.manual_review_frame, text="Estado: ").grid(column=0, row=row, sticky=E)
         #self.Combobox("manualsearch.state", admin_config.PAYMENTS_STATES, self.manual_review_frame).grid(column=1,
         #                                                                                                 row=row,
         #                                                                                                 sticky=W)

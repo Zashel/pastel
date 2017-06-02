@@ -40,12 +40,13 @@ class Requests:
     dir = dir(reqs)
     listen_thread = None
     exec_thread = None
-    pool_dict = OrderedDict({"next": deque(),
-                             "put": deque(),
-                             "get": deque(),
-                             "post": deque(),
-                             "other": deque()
-                            })
+    pool_dict_order = ["next", "put", "get", "post", "other"]
+    pool_dict = {"next": deque(),
+                 "put": deque(),
+                 "get": deque(),
+                 "post": deque(),
+                 "other": deque()
+                }
     pool_len = int()
     lock = Lock()
 
@@ -71,6 +72,7 @@ class Requests:
                 action = function
                 if function == "request" and len(args) > 0:
                     action = args[0].lower()
+                    print(args, action)
                 if action not in Requests.pool_dict:
                     action = "other"
                 Requests.pool_dict[action].append((pippout, function, args, kwargs))
@@ -86,7 +88,7 @@ class Requests:
     @threadize
     def exec_pool(cls):
         while True:
-            for item in Requests.pool_dict:
+            for item in Requests.pool_dict_order:
                 print("Item: ", item, " -> ", Requests.pool_dict[item])
                 try:
                     pippout, function, args, kwargs = Requests.pool_dict[item].popleft()

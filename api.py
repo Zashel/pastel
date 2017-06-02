@@ -49,6 +49,7 @@ class Requests:
                 }
     pool_len = int()
     lock = Lock()
+    working = False
 
     def __getattribute__(self, item):
         if item in Requests.dir:
@@ -95,7 +96,9 @@ class Requests:
                 except IndexError:
                     continue
                 else:
+                    Requests.working = True
                     pippout.send(function(*args, **kwargs))
+                    Requests.working = False
                     Requests.lock.acquire()
                     Requests.pool_len -= 1
                     Requests.lock.release()
@@ -140,6 +143,10 @@ class API:
     last_next = None
     next_thread = None
     next_flag = -1 # -1: Stoppend, 0: Trying, 1: Done!
+
+    @classmethod
+    def get_working(cls):
+        return requests.working
 
     @classmethod
     def get_pago(cls, _id):

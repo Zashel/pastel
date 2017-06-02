@@ -96,6 +96,7 @@ class API:
     next_kwargs = None
     last_next = None
     next_thread = None
+    next_flag = -1 # -1: Stoppend, 0: Trying, 1: Done!
 
     @classmethod
     def get_pago(cls, _id):
@@ -192,8 +193,10 @@ class API:
 
     @classmethod
     def next_pagos(cls, **kwargs):
+        print("Next flag: ", API.next_flag)
         @threadize
         def get_next(**kwargs):
+            API.next_flag = 0
             filter = list()
             for item in kwargs:
                 if item in PAYMENTS_INDEX+["_item"]:
@@ -215,11 +218,20 @@ class API:
                 data = None
             API.pagos["active"] = data
             API.next_pago = API.pagos["active"]
-        ffilter = dict(kwargs)
-        if "_item" in ffilter:
-            del(ffilter["_item"])
+            API.next_flag = 1
+        if API.next_flag == -1:
+            API.next_thread = get_next(**kwargs)
+            time.sleep(0.01)
+        if API.next_flag == 0:
+            API.next_thread.join()
+        if API.next_flag == 1:
+            pago = dict(API.next_pago)
+            kwargs["_item"] = API.last_next["_id"]
+            get_next(**kwargs)
+            return pago
+
+        """
         if API.next_pago is None or ffilter != API.next_kwargs:
-            print("This is shit!")
             API.next_kwargs = ffilter
             API.next_thread = get_next(**kwargs)
             API.next_thread.join()
@@ -237,6 +249,7 @@ class API:
         elif API.next_pago is None:
             return API.next_pagos(**kwargs)
         print("Nothing happens: ", API.next_pago)
+        """
 
     @classmethod
     def unblock_pago(cls, link):

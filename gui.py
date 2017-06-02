@@ -441,12 +441,13 @@ class App(EasyFrame):
     #Manual Review Related
     def load_review_manuals_tree(self):
         filter = dict()
+        self.set_var("manualsearch.state", "APLICADO")
         state = self.get_var("manualsearch.state").get()
         date = self.get_var("manualsearch.date").get()
         user = self.get_var("manualsearch.user").get()
         #reported = self.get_var("manualsearch.reported").get()
         if state != str():
-            filter["pagos_estado"] = "APLICADO"
+            filter["pagos_estado"] = state
         if date != str():
             filter["manual_fecha"] = date
         if user != str():

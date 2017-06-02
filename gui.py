@@ -399,9 +399,9 @@ class App(EasyFrame):
         self.manual_review_frame = Frame()
         row = 0
         Label(self.manual_review_frame, text="Estado: ").grid(column=0, row=row, sticky=E)
-        self.Combobox("manualsearch.state", admin_config.PAYMENTS_STATES, self.manual_review_frame).grid(column=1,
-                                                                                                         row=row,
-                                                                                                         sticky=W)
+        #self.Combobox("manualsearch.state", admin_config.PAYMENTS_STATES, self.manual_review_frame).grid(column=1,
+        #                                                                                                 row=row,
+        #                                                                                                 sticky=W)
         self.LabelEntry("manualsearch.date", "Fecha: ", self.manual_review_frame).grid(column=2,
                                                                                        row=row,
                                                                                        sticky=W,
@@ -445,7 +445,7 @@ class App(EasyFrame):
         user = self.get_var("manualsearch.user").get()
         #reported = self.get_var("manualsearch.reported").get()
         if state != str():
-            filter["pagos_estado"] = state
+            filter["pagos_estado"] = "APLICADO"
         if date != str():
             filter["manual_fecha"] = date
         if user != str():
@@ -719,7 +719,7 @@ class App(EasyFrame):
         self.payments_tree_frame.pack_forget()
         self.pending_payment_frame.pack_forget()
         self.payment_frame.pack_forget()
-        self.manual_review_frame.pack_forget()
+        self.manual_review_frame.pack_for2get()
 
     def go_to_manual_review(self, *args, **kwargs):
         self.hide_everything()

@@ -70,7 +70,7 @@ class Requests:
                 pippout, function, args, kwargs = Requests.pool.get_nowait()
                 action = function
                 if function == "request" and len(args) > 0:
-                    action = args[0]
+                    action = args[0].lower()
                 if action not in Requests.pool_dict:
                     action = "other"
                 Requests.pool_dict[action].append((pippout, function, args, kwargs))

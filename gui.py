@@ -38,7 +38,8 @@ class App(EasyFrame):
         self.payment_data_frame_text = dict()
         self.tabs = {"init": Frame(self),
                      "configuration": Frame(self),
-                     "payments": Frame(self)}
+                     "payments": Frame(self),
+                     "manuals": Frame(self)}
         self.set_payments_tree_frame()
         self.set_manual_review_frame()
         #TABS
@@ -396,7 +397,7 @@ class App(EasyFrame):
         self.tabs["payments"].pack()
 
     def set_manual_review_frame(self):
-        self.manual_review_frame = Frame()
+        self.manual_review_frame = Frame(self.tabs["manuals"])
         row = 0
         Label(self.manual_review_frame, text="Estado: ").grid(column=0, row=row, sticky=E)
         #self.Combobox("manualsearch.state", admin_config.PAYMENTS_STATES, self.manual_review_frame).grid(column=1,
@@ -719,7 +720,7 @@ class App(EasyFrame):
         self.payments_tree_frame.pack_forget()
         self.pending_payment_frame.pack_forget()
         self.payment_frame.pack_forget()
-        self.manual_review_frame.pack_for2get()
+        self.manual_review_frame.pack_forget()
 
     def go_to_manual_review(self, *args, **kwargs):
         self.hide_everything()

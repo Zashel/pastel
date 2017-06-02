@@ -226,7 +226,7 @@ class API:
             API.next_thread.join()
         if API.next_flag == 1:
             pago = dict(API.next_pago)
-            kwargs["_item"] = API.last_next["_id"]
+            kwargs["_item"] = pago["_id"]
             get_next(**kwargs)
             return pago
 

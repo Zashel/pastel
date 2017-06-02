@@ -227,7 +227,7 @@ class API:
         if API.next_flag == 1:
             pago = dict(API.next_pago)
             kwargs["_item"] = pago["_id"]
-            get_next(**kwargs)
+            API.next_thread = get_next(**kwargs)
             return pago
 
         """

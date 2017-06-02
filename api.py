@@ -268,6 +268,7 @@ class API:
             pago = dict(API.next_pago)
             kwargs["_item"] = pago["_id"]
             API.next_thread = get_next(**kwargs)
+            print("Got that pago: ", pago["_id"])
             return pago
 
         """

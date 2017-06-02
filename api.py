@@ -69,8 +69,8 @@ class Requests:
         while True:
             try:
                 pippout, function, args, kwargs = Requests.pool.get_nowait()
-                action = function
-                if function.__name__ == "request" and len(args) > 0:
+                action = function.__name__
+                if action == "request" and len(args) > 0:
                     action = args[0].lower()
                     print(args, action)
                 if action not in Requests.pool_dict:

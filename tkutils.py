@@ -6,7 +6,8 @@ from zashel.utils import copy, paste, log
 import gc
 
 __all__ = ["TkVars",
-           "EasyFrame"]
+           "EasyFrame",
+           "Frame"]
 
 class TupleVar(tuple):
     def get(self):
@@ -111,6 +112,36 @@ class TkVars:
     def get(self, name):
         return self.__getattr__(name)
 
+TKFrame = Frame
+
+class Frame(TKFrame):
+    def __getattr__(self, item):
+        try:
+            return self.children[item]
+        except KeyError:
+            raise AttributeError
+
+    def __getitem__(self, item):
+        try:
+            return TKFrame.__getitem__(self, item)
+        except (KeyError, TclError):
+            if "." not in item:
+                if item in self.children:
+                    return self.children[item]
+            else:
+                items = item.split(".")
+
+                def get_item(item, names):
+                    if len(names) > 0:
+                        name = names[0]
+                        try:
+                            return get_item(item.children[name], names[1:])
+                        except KeyError:
+                            raise TclError
+                    else:
+                        return item
+
+                return get_item(self, items)
 
 class EasyFrame(Frame):
     def __init__(self, *args, master=None, **kwargs):
@@ -161,6 +192,8 @@ class EasyFrame(Frame):
         gc.collect
 
     def LinkButton(self, parent=None, *args, font_size=9, **kwargs):
+        if "name" not in kwargs:
+            kwargs["name"] = route.lower().replace(".", "_")
         font = Font(family = nametofont("TkDefaultFont").cget("family"),
                     size = font_size,
                     underline=True)
@@ -175,6 +208,8 @@ class EasyFrame(Frame):
         return button
 
     def ImageButton(self, parent=None, image=None, *args, **kwargs):
+        if "name" not in kwargs:
+            kwargs["name"] = route.lower().replace(".", "_")
         style = Style()
         style.configure("Image.TLabel")
         config = {"style": "Image-{}.TLabel"}
@@ -200,6 +235,14 @@ class EasyFrame(Frame):
             entryargs = list()
         if entrykwargs is None:
             entrykwargs = dict()
+        if "name" not in kwargs:
+            kwargs["name"] = route.lower().replace(".", "_")
+        if "name" not in labelkwargs:
+            labelkwargs["name"] = kwargs["name"]+"_label"
+        if "name" not in entrykwargs:
+            labelkwargs["name"] = kwargs["name"]+"_entry"
+        if parent is None:
+            parent = self
         last_entry_validation = (self.register(self.entered_entry), "%P", route)
         frame = Frame(parent, *args, borderwidth=0, **kwargs)
         if not "anchor" in labelkwargs:
@@ -216,6 +259,8 @@ class EasyFrame(Frame):
             var = self.get_var(route)
         except KeyError:
             var = self.set_var(route)
+        if "name" not in kwargs:
+            kwargs["name"] = route.lower().replace(".", "_")
         last_entry_validation = partial(self.entered_entry, not var.get(), route)
         return Checkbutton(parent, *args, variable=var, command=last_entry_validation, **kwargs)
 
@@ -224,6 +269,8 @@ class EasyFrame(Frame):
             var = self.get_var(route)
         except KeyError:
             var = self.set_var(route)
+        if "name" not in kwargs:
+            kwargs["name"] = route.lower().replace(".", "_")
         last_entry_validation = partial(self.entered_entry, var.get(), route)
         cb = Combobox(parent, *args, textvariable=var, values=values, **kwargs)
         cb.bind("<<ComboboxSelected>>", last_entry_validation)
@@ -232,6 +279,8 @@ class EasyFrame(Frame):
 
     def TreeView(self, category, columns, parent=None, *args, default_config=None,
                  xscroll=False, yscroll=False, **kwargs):  # Columns -> dictionary
+        if "name" not in kwargs:
+            kwargs["name"] = category.lower().replace(".", "_")
         options = {"columns": tuple(columns)}
         options.update(kwargs)
         frame = Frame(parent)

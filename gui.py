@@ -26,6 +26,9 @@ class App(EasyFrame):
         self.usuario =  getpass.getuser()
         self.rol = "Operador"
         self.set_var("config.nombre_usuario", "")
+        self.permissions = {"Operador": []} #TODO do another stupid thing naming every widget
+        self.permissions["BO": self.permissions["Operador"]+[]]
+        self.permissions["Admin": self.permissions["BO"] + []]
         #Widgets
         self.images = Images()
         self.set_variables()
@@ -87,6 +90,7 @@ class App(EasyFrame):
         self.menu_open = Menu(self.menubar)
         self.menu_new = Menu(self.menubar)
         self.menu_load = Menu(self.menubar)
+        self.menu_export = Menu(self.menubar)
 
         self.menubar.add_cascade(menu=self.menu_file, label="Archivo")
         self.menubar.add_cascade(menu=self.menu_edit, label="Edición")
@@ -94,7 +98,7 @@ class App(EasyFrame):
         self.menu_file.add_cascade(menu=self.menu_new, label="Nuevo")
         self.menu_file.add_cascade(menu=self.menu_open, label="Abrir")
         self.menu_file.add_cascade(menu=self.menu_load, label="Cargar")
-        self.menu_file.add_command(label="Exportar...")
+        self.menu_file.add_cascade(menu=self.menu_export, label="Exportar")
         self.menu_file.add_separator()
         self.menu_file.add_command(label="Cambiar Usuario")
 
@@ -115,6 +119,8 @@ class App(EasyFrame):
         self.menu_load.add_command(label="Pagos ISM")
         self.menu_load.add_command(label="PARI...")
         self.menu_load.add_command(label="Último PARI")
+
+        self.menu_export.add_command(label="Manuales de hoy")
 
         self.menu_edit.add_command(label="Deshacer", command=self.undo)
         self.menu_edit.add_separator()
@@ -759,6 +765,20 @@ class App(EasyFrame):
     def clean_pagos_vars(self):
         for item in PAYMENTS_FIELDS:
             self.set_var(".".join(("pagos", "")))
+
+    def activate_all(self):
+        for item in self.children:
+            if item in self.permissions[self.rol]:
+                self.children[item]["state"] = "normal" #This is not easy to do
+
+    def disable_all(self):
+        for item in self.children:
+            self.children[item]["state"] = "disable"
+
+    def set_last_pari(self):
+        self.disable_all()
+        file = API.set_pari
+        self.activate_all()
 
     def set_list_codes(self):
         keys = list(admin_config.FACTURAS.keys())

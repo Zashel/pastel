@@ -143,6 +143,17 @@ class Frame(TKFrame):
 
                 return get_item(self, items)
 
+    def all_children(self):
+        _all = dict()
+        for item in self.children:
+            _all[item] = self.children[item]
+            if isinstance(self.children[item], Frame) is True:
+                infradata = self.children[item].all_children()
+                for key in infradata:
+                    _all["{}.{}".format(item, key)] = infradata[key] #Easier than I thought first. Thinking is the key.
+        return _all
+
+
 class EasyFrame(Frame):
     def __init__(self, *args, master=None, **kwargs):
         super().__init__(master, *args, **kwargs)
@@ -238,9 +249,9 @@ class EasyFrame(Frame):
         if "name" not in kwargs:
             kwargs["name"] = route.lower().replace(".", "_")
         if "name" not in labelkwargs:
-            labelkwargs["name"] = kwargs["name"]+"_label"
+            labelkwargs["name"] = "label"
         if "name" not in entrykwargs:
-            labelkwargs["name"] = kwargs["name"]+"_entry"
+            entrykwargs["name"] = "entry"
         if parent is None:
             parent = self
         last_entry_validation = (self.register(self.entered_entry), "%P", route)

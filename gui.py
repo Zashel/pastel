@@ -19,6 +19,19 @@ class Images:
         self.remove = PhotoImage(file=os.path.join("icons", "remove.gif"))
         self.check = PhotoImage(file=os.path.join("icons", "check.gif"))
 
+
+class StarredList(list):
+    def __contains__(self, item):
+        value = list.__contains__(self, item)
+        if value is False and isinstance(item, str) is True and item.endswith("*"):
+            key = item[:-1]
+            for l_item in self:
+                if isinstance(l_item, str) is True and l_item.startswith(key):
+                    value = True
+                    break
+        return value
+
+
 class App(EasyFrame):
     def __init__(self, master=None):
         super().__init__(master=master, padding=(3, 3, 3, 3))
@@ -26,9 +39,9 @@ class App(EasyFrame):
         self.usuario =  getpass.getuser()
         self.rol = "Operador"
         self.set_var("config.nombre_usuario", "")
-        self.permissions = {"Operador": []} #TODO do another stupid thing naming every widget
-        self.permissions["BO": self.permissions["Operador"]+[]]
-        self.permissions["Admin": self.permissions["BO"] + []]
+        self.permissions = {"Operador": StarredList()} #TODO do another stupid thing naming every widget
+        self.permissions["BO"] = self.permissions["Operador"] + StarredList()
+        self.permissions["Admin"] = self.permissions["BO"] + StarredList()
         #Widgets
         self.images = Images()
         self.set_variables()
@@ -767,7 +780,7 @@ class App(EasyFrame):
             self.set_var(".".join(("pagos", "")))
 
     def activate_all(self):
-        for item in self.children:
+        for item in self.all_children:
             if item in self.permissions[self.rol]:
                 self.children[item]["state"] = "normal" #This is not easy to do
 

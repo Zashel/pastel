@@ -37,7 +37,7 @@ class App(EasyFrame):
         super().__init__(master=master, padding=(3, 3, 3, 3), name="pastel")
         self.pack()
         self.usuario =  getpass.getuser()
-        self.rol = "Operador"
+        self.rol = "BO"
         self.set_var("config.nombre_usuario", "")
         self.permissions = {"Operador": StarredList(["pagos_busqueda.*",
                                                      "pagos.botones.cerrar",
@@ -589,7 +589,7 @@ class App(EasyFrame):
         link = data["_links"]["self"]["href"]
         self.set_var("pagos.link", link)
         self.set_var("pagos._id", data["_id"])
-        for parent in (self.payment_frame, self.pagos_pendientes):
+        for parent in (self.pagos, self.pagos_pendientes):
             text = self["{}.datos.observaciones".format(parent["name"])]
             text["state"] = "normal"
             text.delete("1.0", END)

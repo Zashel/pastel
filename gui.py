@@ -36,8 +36,6 @@ class App(EasyFrame):
     def __init__(self, master=None):
         super().__init__(master=master, padding=(3, 3, 3, 3), name="pastel")
         self.pack()
-        self.usuario =  getpass.getuser()
-        self.rol = "BO"
         self.set_var("config.nombre_usuario", "")
         self.permissions = {"Operador": StarredList(["pagos_busqueda.*",
                                                      "pagos.botones.cerrar",
@@ -171,7 +169,7 @@ class App(EasyFrame):
         Label(usuario, text="Login: ").grid(column=0, row=1, sticky=(N, W))
         Label(usuario, text=self.usuario).grid(column=1, row=1, sticky=(N, W))
         Label(usuario, text="Rol: ").grid(column=5, row=1, sticky=(N, E))
-        Label(usuario, text=self.rol).grid(column=6, row=1, sticky=(N, E,))
+        Label(usuario, textvariable=self.get_var("usuario.role")).grid(column=6, row=1, sticky=(N, E,))
         Label(usuario, text="Nombre: ").grid(column=0, row=2, sticky=(N, W))
         self.Entry("config.nombre_usuario",
                    usuario).grid(column=1, row=2, columnspan=5, sticky=(N, E))
@@ -798,7 +796,7 @@ class App(EasyFrame):
 
     def activate_all(self):
         for item in self.all_children:
-            if item in self.permissions[self.rol]:
+            if item in self.permissions[self.get_var("usuario.role").get()]:
                 self.children[item]["state"] = "normal" #This is not easy to do
 
     def disable_all(self):
@@ -807,6 +805,12 @@ class App(EasyFrame):
                 self.children[item]["state"] = "disable"
             except (KeyError, TclError):
                 pass #you fools!
+
+    def load_user(self, user=getpass.getuser()):
+        datos_usuario = API.get_usuario(user)
+        self.set_var("usuario.id", datos_usuario["id"])
+        self.set_var("usuario.role", datos_usuario["role"])
+        self.set_var("usuario.fullname", datos_usuario["fullname"])
 
     def set_last_pari(self):
         self.disable_all()

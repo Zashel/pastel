@@ -583,3 +583,39 @@ class API:
             ffact = ffact.replace(day=ffact.day + 1)
         return ffact
 
+
+    #Usuario
+    @classmethod
+    def get_usuario(cls, identifier):
+        request = requests.get("http://{}:{}{}/usuarios?id={}".format(local_config.HOST,
+                                                                      str(local_config.PORT),
+                                                                      BASE_URI[1:-1],
+                                                                      identifier
+                                                                      ))
+        if request.status_code == 200:
+            data = json.load(request.text)
+            return {"id": data["id"],
+                    "role": data["role"],
+                    "fullname": data["fullname"]}
+        else:
+            return {"id": identifier,
+                    "role": "BO",
+                    "fullname": identifier}
+
+    @classmethod
+    def set_usuario(cls, identifier, role, fullname):
+        request = requests.post("http://{}:{}{}/usuarios".format(local_config.HOST,
+                                                                 str(local_config.PORT),
+                                                                 BASE_URI[1:-1]
+                                                                 ),
+                                json={"id": identifier,
+                                      "role": role,
+                                      "fullname": fullname})
+
+    @classmethod
+    def del_usuario(cls, identifier):
+        request = requests.delete("http://{}:{}{}/usuarios?id={}".format(local_config.HOST,
+                                                                         str(local_config.PORT),
+                                                                         BASE_URI[1:-1],
+                                                                         identifier
+                                                                         ))

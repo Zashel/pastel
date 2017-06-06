@@ -63,7 +63,7 @@ class Requests:
         while True:
             if Requests.listen_thread is None or Requests.listen_thread.is_alive() is False: #This may end always
                 Requests.listen_thread = Requests.listen_pool()
-            time.sleeps(0.2)
+            time.sleep(0.2)
             if Requests.listen_thread.is_alive() is True:
                 break
         return pippin.recv()
@@ -87,7 +87,7 @@ class Requests:
                 while True:
                     if Requests.exec_thread is None or Requests.exec_thread.is_alive() is False:
                         Requests.exec_thread = Requests.exec_pool()
-                    time.sleeps(0.2)
+                    time.sleep(0.2)
                     if Requests.exec_thread.is_alive() is True:
                         break
             except Empty:

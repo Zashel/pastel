@@ -338,7 +338,7 @@ class App(EasyFrame):
                                        "tels": lambda x: x.split(", ")},
 
                           "bind": {}}
-        payments_tree_frame = Frame(self, "pagos_busqueda")
+        payments_tree_frame = Frame(self, name="pagos_busqueda")
         payments_tree_frame.pack()
         row = 0
         # Payment search

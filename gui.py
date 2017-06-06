@@ -420,7 +420,7 @@ class App(EasyFrame):
         Button(button_frame_payment_pending, text="Cerrar",
                command=self.show_payments_tree, name="cerrar").grid(column=1, row=0, sticky=E)
         Button(button_frame_payment_pending, text="Guardar",
-               command=self.save_pagos_pendiente, nmae="guardar").grid(column=2, row=0, sticky=E)
+               command=self.save_pagos_pendiente, name="guardar").grid(column=2, row=0, sticky=E)
         Button(button_frame_payment_pending, text="Siguiente",
                command=self.save_and_next_payment, name="siguiente").grid(column=3, row=0, sticky=E)
 

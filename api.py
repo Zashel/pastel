@@ -60,6 +60,7 @@ class Requests:
     def put_queue(self, function, *args, **kwargs):
         pippin, pippout = Pipe(False)
         Requests.pool.put((pippout, function, args, kwargs))
+        time.sleep(0.5)
         if Requests.listen_thread is None or Requests.listen_thread.is_alive() is False: #This may end always
             Requests.listen_thread = Requests.listen_pool()
         return pippin.recv()
@@ -80,6 +81,7 @@ class Requests:
                 Requests.lock.acquire()
                 Requests.pool_len += 1
                 Requests.lock.release()
+                time.sleep(0.5)
                 if Requests.exec_thread is None or Requests.exec_thread.is_alive() is False:
                     Requests.exec_thread = Requests.exec_pool()
             except Empty:

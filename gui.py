@@ -573,6 +573,7 @@ class App(EasyFrame):
         if importe != "":
             kwargs["importe"] = importe
         self._pagos_filter = kwargs
+        print(self._pagos_filter)
 
     def load_payment(self, data):
         for column in PAYMENTS_FIELDS:

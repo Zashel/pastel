@@ -342,7 +342,7 @@ class App(EasyFrame):
         payments_tree_frame.pack()
         row = 0
         # Payment search
-        Label(self.payments_tree_frame, text="Estado: ").grid(column=0, row=row, sticky="e")
+        Label(payments_tree_frame, text="Estado: ").grid(column=0, row=row, sticky="e")
         self.Combobox("paysearch.state", admin_config.PAYMENTS_STATES,
                       payments_tree_frame, name="estado").grid(column=1, row=row, sticky="w")
         self.LabelEntry("paysearch.customer_id", "DNI: ", payments_tree_frame, name="dni").grid(column=2,

@@ -732,7 +732,7 @@ class App(EasyFrame):
         order.sort()
         self.set_tree_data("pagos", pagos_dict, order=[str(key) for key in order])
         for link in ("first", "prev", "next", "last"):
-            self.pagos_busqueda.__getattribute__(link)["state"] = "enable"
+            self["pagos_busqueda."+link]["state"] = "enable"
         page = API.get_this_pagos_page()
         last = API.get_total_pagos_page()
         total = API.get_pagos_count(**filter)

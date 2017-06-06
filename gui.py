@@ -734,6 +734,7 @@ class App(EasyFrame):
         for link in ("first", "prev", "next", "last"):
             self["pagos_busqueda."+link]["state"] = "enable"
         page = API.get_this_pagos_page()
+        print("Page: ", str(page))
         last = API.get_total_pagos_page()
         total = API.get_pagos_count(**filter)
         if page == 1:

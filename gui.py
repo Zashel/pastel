@@ -347,7 +347,7 @@ class App(EasyFrame):
                       payments_tree_frame, name="estado").grid(column=1, row=row, sticky="w")
         self.LabelEntry("paysearch.customer_id", "DNI: ", payments_tree_frame, name="dni").grid(column=2,
                                                                                                 row=row) #TODO: Do a phone searching
-        Button(self.payments_tree_frame,
+        Button(payments_tree_frame,
                text="Buscar",
                command=self.search_payment,
                name="buscar"

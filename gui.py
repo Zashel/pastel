@@ -34,13 +34,19 @@ class StarredList(list):
 
 class App(EasyFrame):
     def __init__(self, master=None):
-        super().__init__(master=master, padding=(3, 3, 3, 3))
+        super().__init__(master=master, padding=(3, 3, 3, 3), name="pastel")
         self.pack()
         self.usuario =  getpass.getuser()
         self.rol = "Operador"
         self.set_var("config.nombre_usuario", "")
-        self.permissions = {"Operador": StarredList()} #TODO do another stupid thing naming every widget
-        self.permissions["BO"] = self.permissions["Operador"] + StarredList()
+        self.permissions = {"Operador": StarredList(["pagos_busqueda.*",
+                                                     "pagos.botones.cerrar",
+                                                     "pagos_pendientes.botones.cerrar"])}
+        self.permissions["BO"] = self.permissions["Operador"] + StarredList(["pagos.datos.estado",
+                                                                             "pagos_pendientes.datos.estado",
+                                                                             "pagos_pendientes.posibles.vista",
+                                                                             "pagos_pendientes.botones.guardar",
+                                                                             "pagos_pendientes.botones.siguiente"])
         self.permissions["Admin"] = self.permissions["BO"] + StarredList()
         #Widgets
         self.images = Images()
@@ -115,12 +121,10 @@ class App(EasyFrame):
         self.menu_file.add_separator()
         self.menu_file.add_command(label="Cambiar Usuario")
 
-        self.menu_new.add_command(label="Compromiso")
         self.menu_new.add_command(label="Localización")
         self.menu_new.add_command(label="Pago Pasarela")
         self.menu_new.add_command(label="Usuario")
 
-        self.menu_open.add_command(label="Compromisos")
         self.menu_open.add_command(label="Pagos", command=self.show_payments_tree)
         self.menu_open.add_command(label="Pagos Pendientes",
                                    command=partial(self.go_to_payment_by_state, "PENDIENTE"))
@@ -233,26 +237,26 @@ class App(EasyFrame):
     def payment_data_frame(self, parent):
         row = 0
         # Frame
-        frame = Frame(parent)
+        frame = Frame(parent, name="datos")
         #Objects:
         LabelEntry = partial(self.LabelEntry, entrykwargs={"state": "readonly"})
-        LabelEntry("pagos.fecha", "Fecha Pago: ", frame, ).grid(column=0, row=row)
-        LabelEntry("pagos.oficina", "Oficina: ", frame).grid(column=1, row=row)
-        LabelEntry("pagos.importe", "Importe: ", frame).grid(column=2, row=row)
+        LabelEntry("pagos.fecha", "Fecha Pago: ", frame, name="fecha").grid(column=0, row=row)
+        LabelEntry("pagos.oficina", "Oficina: ", frame, name="oficina").grid(column=1, row=row)
+        LabelEntry("pagos.importe", "Importe: ", frame, name="importe").grid(column=2, row=row)
         row += 1
-        LabelEntry("pagos.dni", "DNI: ", frame).grid(column=0, row=row)
-        LabelEntry("pagos.id_cliente", "Id_Cliente: ", frame).grid(column=1, row=row)
-        LabelEntry("pagos.tels", "Teléfonos", frame).grid(column=2, row=row)
+        LabelEntry("pagos.dni", "DNI: ", frame, name="dni").grid(column=0, row=row)
+        LabelEntry("pagos.id_cliente", "Id_Cliente: ", frame, name="id_cliente").grid(column=1, row=row)
+        LabelEntry("pagos.tels", "Teléfonos", frame, name="tels").grid(column=2, row=row)
         row += 1
-        self.payment_data_frame_text[parent] = Text(frame, width=80, height=5, state="disable")
-        self.payment_data_frame_text[parent].grid(column=0, row=row, columnspan=3)
+        Text(frame, width=80, height=5, state="disable", name="observaciones").grid(column=0, row=row, columnspan=3)
         row += 1
-        LabelEntry("pagos.importe_pendiente", "Importe Sin Asociar: ", frame).grid(column=1, row=row)
-        self.Combobox("pagos.estado", admin_config.PAYMENTS_STATES, frame).grid(column=2, row=row) #frame is the name of the bunny
+        LabelEntry("pagos.importe_pendiente", "Importe Sin Asociar: ",
+                   frame, name="importe_pendiente").grid(column=1, row=row)
+        self.Combobox("pagos.estado", admin_config.PAYMENTS_STATES, frame, name="estado").grid(column=2, row=row) #frame is the name of the bunny
         return frame
 
     def payment_posibles_frame(self, parent, name):
-        frame = Frame(parent)
+        frame = Frame(parent, name="posibles")
         row = 0
         columnspan = 4
         if "editable" in name:
@@ -285,7 +289,8 @@ class App(EasyFrame):
                           "editable": editable,
                           "comboboxes": comboboxes
                           }
-        tree = self.TreeView(name, self.posibles_columns, frame, default_config=default_config, yscroll=True)
+        tree = self.TreeView(name, self.posibles_columns, frame, default_config=default_config,
+                             yscroll=True, name="vista")
         if "editable" in name:
             self.set_tree_calculation(name, partial(self.calculate_pending, name))
         tree.grid(column=0, row=row, columnspan=columnspan)
@@ -333,19 +338,19 @@ class App(EasyFrame):
                                        "tels": lambda x: x.split(", ")},
 
                           "bind": {}}
-        self.payments_tree_frame = Frame(self)
-        self.payments_tree_frame.pack()
+        payments_tree_frame = Frame(self, "pagos_busqueda")
+        payments_tree_frame.pack()
         row = 0
         # Payment search
         Label(self.payments_tree_frame, text="Estado: ").grid(column=0, row=row, sticky="e")
-        self.Combobox("paysearch.state", admin_config.PAYMENTS_STATES, self.payments_tree_frame).grid(column=1,
-                                                                                                      row=row,
-                                                                                                      sticky="w")
-        self.LabelEntry("paysearch.customer_id", "DNI: ", self.payments_tree_frame).grid(column=2,
-                                                                                         row=row) #TODO: Do a phone searching
+        self.Combobox("paysearch.state", admin_config.PAYMENTS_STATES,
+                      payments_tree_frame, name="estado").grid(column=1, row=row, sticky="w")
+        self.LabelEntry("paysearch.customer_id", "DNI: ", payments_tree_frame, name="dni").grid(column=2,
+                                                                                                row=row) #TODO: Do a phone searching
         Button(self.payments_tree_frame,
                text="Buscar",
                command=self.search_payment,
+               name="buscar"
                ).grid(column=3, row=row)
         row += 1
         #Button(self.payments_tree_frame,
@@ -353,84 +358,94 @@ class App(EasyFrame):
         #       command=self.validate_dni,
         #       ).grid(column=4, row=row)
         row += 1
-        self.LabelEntry("paysearch.pay_date", "Fecha: ", self.payments_tree_frame).grid(column=0, row=row, columnspan=2)
-        self.LabelEntry("paysearch.office", "Oficina: ", self.payments_tree_frame).grid(column=2, row=row)
-        self.LabelEntry("paysearch.amount", "Importe: ", self.payments_tree_frame).grid(column=3, row=row)
+        self.LabelEntry("paysearch.pay_date", "Fecha: ",
+                        payments_tree_frame, name="fecha").grid(column=0, row=row, columnspan=2)
+        self.LabelEntry("paysearch.office", "Oficina: ",
+                        payments_tree_frame, name="oficina").grid(column=2, row=row)
+        self.LabelEntry("paysearch.amount", "Importe: ",
+                        payments_tree_frame, name="importe").grid(column=3, row=row)
         row += 1
-        self.payments_tree = self.TreeView("pagos",
-                                           columns,
-                                           self.payments_tree_frame,
-                                           default_config=default_config,
-                                           yscroll=True)
+        payments_tree = self.TreeView("pagos",
+                                      columns,
+                                      payments_tree_frame,
+                                      default_config=default_config,
+                                      yscroll=True,
+                                      name="vista")
         self.tree["pagos"]["tree"].bind("<Double-1>", self.open_payment_data_frame)
-        self.payments_tree.grid(column=0, row=row, columnspan=5)
-        self.payments_tree_first = self.LinkButton(self.payments_tree_frame,
-                                                   command=lambda: self.update_pagos_tree("first"),
-                                                   text="Primero",
-                                                   state="disable")
+        payments_tree.grid(column=0, row=row, columnspan=5)
+        payments_tree_first = self.LinkButton(payments_tree_frame,
+                                              command=lambda: self.update_pagos_tree("first"),
+                                              text="Primero",
+                                              state="disable",
+                                              name="first")
         row += 1
-        self.payments_tree_first.grid(column=0, row=row)
-        self.payments_tree_prev = self.LinkButton(self.payments_tree_frame,
-                                                  command=lambda: self.update_pagos_tree("prev"),
-                                                  text="Anterior",
-                                                  state="disable")
-        self.payments_tree_prev.grid(column=1, row=row)
-        self.payments_tree_label = Label(self.payments_tree_frame,
-                                         text="Página 1 de 1.\t0 Registros")
-        self.payments_tree_label.grid(column=2, row=row)
-        self.payments_tree_next = self.LinkButton(self.payments_tree_frame,
-                                                  command=lambda: self.update_pagos_tree("next"),
-                                                  text="Siguiente",
-                                                  state="disable")
-        self.payments_tree_next.grid(column=3, row=row)
-        self.payments_tree_last = self.LinkButton(self.payments_tree_frame,
-                                                  command=lambda: self.update_pagos_tree("last"),
-                                                  text="Último",
-                                                  state="disable")
-        self.payments_tree_last.grid(column=4, row=row)
+        payments_tree_first.grid(column=0, row=row)
+        payments_tree_prev = self.LinkButton(payments_tree_frame,
+                                             command=lambda: self.update_pagos_tree("prev"),
+                                             text="Anterior",
+                                             state="disable",
+                                             name="prev")
+        payments_tree_prev.grid(column=1, row=row)
+        Label(payments_tree_frame, text="Página 1 de 1.\t0 Registros", name="informacion").grid(column=2, row=row)
+        payments_tree_next = self.LinkButton(payments_tree_frame,
+                                             command=lambda: self.update_pagos_tree("next"),
+                                             text="Siguiente",
+                                             state="disable",
+                                             name="next")
+        payments_tree_next.grid(column=3, row=row)
+        payments_tree_last = self.LinkButton(payments_tree_frame,
+                                             command=lambda: self.update_pagos_tree("last"),
+                                             text="Último",
+                                             state="disable",
+                                             name="last")
+        payments_tree_last.grid(column=4, row=row)
         row += 1
 
         #Payment Frame
-        self.payment_frame = Frame(self)
-        self.payment_data_frame(self.payment_frame).pack()
-        self.payment_posibles_frame(self.payment_frame, "posibles").pack()
-        button_frame_payment = Frame(self.payment_frame)
+        payment_frame = Frame(self, name="pagos")
+        self.payment_data_frame(payment_frame).pack()
+        self.payment_posibles_frame(payment_frame, "posibles").pack()
+        button_frame_payment = Frame(payment_frame, name="botones")
         button_frame_payment.pack()
-        Button(button_frame_payment, text="Cerrar", command=self.show_payments_tree).pack()
+        Button(button_frame_payment, text="Cerrar", command=self.show_payments_tree, name="cerrar").pack()
 
         #Pending Payment Frame
-        self.pending_payment_frame = Frame(self)
-        self.payment_data_frame(self.pending_payment_frame).pack()
-        self.payment_posibles_frame(self.pending_payment_frame, "editable_posibles").pack()
-        button_frame_payment_pending = Frame(self.pending_payment_frame)
+        pending_payment_frame = Frame(self, name="pagos_pendientes")
+        self.payment_data_frame(pending_payment_frame).pack()
+        self.payment_posibles_frame(pending_payment_frame, "editable_posibles").pack()
+        button_frame_payment_pending = Frame(pending_payment_frame)
         button_frame_payment_pending.pack()
-        Label(button_frame_payment_pending, textvariable=self.set_var("gui.pagos_pendientes")).grid(column=0, row=0, sticky=W)
-        Button(button_frame_payment_pending, text="Cerrar", command=self.show_payments_tree).grid(column=1, row=0, sticky=E)
-        Button(button_frame_payment_pending, text="Guardar", command=self.save_pagos_pendiente).grid(column=2, row=0, sticky=E)
-        Button(button_frame_payment_pending, text="Siguiente", command=self.save_and_next_payment).grid(column=3, row=0, sticky=E)
+        Label(button_frame_payment_pending, textvariable=self.set_var("gui.pagos_pendientes"),
+              name="informacion").grid(column=0, row=0, sticky=W)
+        Button(button_frame_payment_pending, text="Cerrar",
+               command=self.show_payments_tree, name="cerrar").grid(column=1, row=0, sticky=E)
+        Button(button_frame_payment_pending, text="Guardar",
+               command=self.save_pagos_pendiente, nmae="guardar").grid(column=2, row=0, sticky=E)
+        Button(button_frame_payment_pending, text="Siguiente",
+               command=self.save_and_next_payment, name="siguiente").grid(column=3, row=0, sticky=E)
 
     def set_manual_review_frame(self):
-        self.manual_review_frame = Frame(self)
+        Frame(self, name="pagos_manuales")
         row = 0
-        #Label(self.manual_review_frame, text="Estado: ").grid(column=0, row=row, sticky=E)
-        #self.Combobox("manualsearch.state", admin_config.PAYMENTS_STATES, self.manual_review_frame).grid(column=1,
+        #Label(self.pagos_manuales, text="Estado: ").grid(column=0, row=row, sticky=E)
+        #self.Combobox("manualsearch.state", admin_config.PAYMENTS_STATES, self.pagos_manuales).grid(column=1,
         #                                                                                                 row=row,
         #                                                                                                 sticky=W)
-        self.LabelEntry("manualsearch.date", "Fecha: ", self.manual_review_frame).grid(column=2,
-                                                                                       row=row,
-                                                                                       sticky=W,
-                                                                                       columnspan=2)
+        self.LabelEntry("manualsearch.date", "Fecha: ", self.pagos_manuales).grid(column=2,
+                                                                                  row=row,
+                                                                                  sticky=W,
+                                                                                  columnspan=2)
         row+=1
-        self.LabelEntry("manualsearch.user", "Usuario: ", self.manual_review_frame).grid(column=0,
-                                                                                         row=row,
-                                                                                         #sticky=E,
-                                                                                         columnspan=2)
-        Button(self.manual_review_frame, text="Buscar", command=self.load_review_manuals_tree).grid(column=2,
-                                                                                                    row=row,
-                                                                                                    sticky=W,
-                                                                                                    columnspan=2)
+        self.LabelEntry("manualsearch.user", "Usuario: ", self.pagos_manuales).grid(column=0,
+                                                                                    row=row,
+                                                                                    #sticky=E,
+                                                                                    columnspan=2)
+        Button(self.pagos_manuales, text="Buscar", command=self.load_review_manuals_tree).grid(column=2,
+                                                                                               row=row,
+                                                                                               sticky=W,
+                                                                                               columnspan=2)
         #self.Checkbutton("manualsearch.reported",
-        #                 self.manual_review_frame,
+        #                 self.pagos_manuales,
         #                 text="Reportado: ").grid(column=2, row=row, sticky=W, columnspan=2)
         row += 1
         default_config = {"columns": {"width": 75},
@@ -447,9 +462,8 @@ class App(EasyFrame):
                                       "via": {"text": "Vía"},
                                       "usuario": {"text": "Usuario"}
                                       }}
-        tree = self.TreeView("manual_review", admin_config.PAYMENTS_UPLOADING_HEADERS+["usuario"], self.manual_review_frame,
-                             default_config=default_config, yscroll=True)
-        tree.grid(column=0, row = row, columnspan=4)
+        self.TreeView("manual_review", admin_config.PAYMENTS_UPLOADING_HEADERS+["usuario"], self.pagos_manuales,
+                      default_config=default_config, yscroll=True, name="vista").grid(column=0, row = row, columnspan=4)
 
     #Manual Review Related
     def load_review_manuals_tree(self):
@@ -575,11 +589,12 @@ class App(EasyFrame):
         link = data["_links"]["self"]["href"]
         self.set_var("pagos.link", link)
         self.set_var("pagos._id", data["_id"])
-        for parent in (self.payment_frame, self.pending_payment_frame):
-            self.payment_data_frame_text[parent]["state"] = "normal"
-            self.payment_data_frame_text[parent].delete("1.0", END)
-            self.payment_data_frame_text[parent].insert("1.0", self.get_var("pagos.observaciones").get())
-            self.payment_data_frame_text[parent]["state"] = "disable"
+        for parent in (self.payment_frame, self.pagos_pendientes):
+            text = self["{}.datos.observaciones".format(parent["name"])]
+            text["state"] = "normal"
+            text.delete("1.0", END)
+            text.insert("1.0", self.get_var("pagos.observaciones").get())
+            text["state"] = "disable"
         if self.search_payments_estado == "PENDIENTE":
             self.payment_posibles_load("editable_posibles")
         else:
@@ -632,7 +647,7 @@ class App(EasyFrame):
                     if header in self.tree[name]["validate"]:
                         val = self.tree[name]["validate"][header]
                     else:
-                        val = lambda x: x
+                        val = lambda x: x #TODO
                     final[str(index)][header] = posible[self.posibles_headers.index(header)]
         order.sort()
         self.set_tree_data(name, final, order=[str(key) for key in order])
@@ -722,23 +737,23 @@ class App(EasyFrame):
         last = API.get_total_pagos_page()
         total = API.get_pagos_count(**filter)
         if page == 1:
-            self.payments_tree_first["state"] = "disable"
-            self.payments_tree_prev["state"] = "disable"
+            self.pagos_busqueda.first["state"] = "disable"
+            self.pagos_busqueda.prev["state"] = "disable"
         if page == last:
-            self.payments_tree_next["state"] = "disable"
-            self.payments_tree_last["state"] = "disable"
-        self.payments_tree_label["text"] = "Página {} de {}.\t{} Registros".format(str(page), str(last), str(total))
+            self.pagos_busqueda.next["state"] = "disable"
+            self.pagos_busqueda.last["state"] = "disable"
+        self.pagos_busqueda.informacion["text"] = "Página {} de {}.\t{} Registros".format(str(page), str(last), str(total))
 
     #GUI
     def hide_everything(self, *args, **kwrags):
-        self.payments_tree_frame.pack_forget()
-        self.pending_payment_frame.pack_forget()
-        self.payment_frame.pack_forget()
-        self.manual_review_frame.pack_forget()
+        self.pagos_busqueda.pack_forget()
+        self.pagos_pendientes.pack_forget()
+        self.pagos.pack_forget()
+        self.pagos_manuales.pack_forget()
 
     def go_to_manual_review(self, *args, **kwargs):
         self.hide_everything()
-        self.manual_review_frame.pack()
+        self.pagos_manuales.pack()
 
     def go_to_payment_by_state(self, estado, *args, **kwargs):
         self.hide_everything()
@@ -757,13 +772,13 @@ class App(EasyFrame):
     def show_payment(self, *args, **kwargs):
         self.hide_everything()
         if self.search_payments_estado == "PENDIENTE":
-            self.pending_payment_frame.pack()
+            self.pagos_pendientes.pack()
         else:
-            self.payment_frame.pack()
+            self.pagos.pack()
 
     def show_payments_tree(self, *args, **kwargs):
         self.hide_everything()
-        self.payments_tree_frame.pack()
+        self.pagos_busqueda.pack()
         if self._pagos_filter != dict():
             self.update_pagos_tree(**self._pagos_filter)
 
@@ -786,7 +801,10 @@ class App(EasyFrame):
 
     def disable_all(self):
         for item in self.children:
-            self.children[item]["state"] = "disable"
+            try:
+                self.children[item]["state"] = "disable"
+            except (KeyError, TclError):
+                pass #you fools!
 
     def set_last_pari(self):
         self.disable_all()

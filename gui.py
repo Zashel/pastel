@@ -573,6 +573,7 @@ class App(EasyFrame):
         if importe != "":
             kwargs["importe"] = importe
         self._pagos_filter = kwargs
+        return kwargs
 
     def load_payment(self, data):
         for column in PAYMENTS_FIELDS:
@@ -714,9 +715,8 @@ class App(EasyFrame):
         save(link, self.get_var("pagos.estado").get(), posibles)
 
     def search_payment(self, *args, **kwargs):
-        print(kwargs)
-        self.filter_payment()
-        self.update_pagos_tree(**kwargs)
+        #self.filter_payment()
+        self.update_pagos_tree(**self.filter_payment())
 
     def update_pagos_tree(self, link=None, **filter):
         if link is None:

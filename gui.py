@@ -590,7 +590,7 @@ class App(EasyFrame):
         self.set_var("pagos.link", link)
         self.set_var("pagos._id", data["_id"])
         for parent in (self.pagos, self.pagos_pendientes):
-            text = self["{}.datos.observaciones".format(parent["name"])]
+            text = self["{}.datos.observaciones".format(parent._name)]
             text["state"] = "normal"
             text.delete("1.0", END)
             text.insert("1.0", self.get_var("pagos.observaciones").get())

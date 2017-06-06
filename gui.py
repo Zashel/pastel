@@ -44,7 +44,7 @@ class App(EasyFrame):
                                                      "pagos_pendientes.botones.cerrar"])}
         self.permissions["BO"] = self.permissions["Operador"] + StarredList(["pagos.datos.estado",
                                                                              "pagos_pendientes.datos.estado",
-                                                                             "pagos_pendientes.posibles.vista",
+                                                                             "pagos_pendientes.posibles.*",
                                                                              "pagos_pendientes.botones.guardar",
                                                                              "pagos_pendientes.botones.siguiente"])
         self.permissions["Admin"] = self.permissions["BO"] + StarredList()
@@ -296,13 +296,13 @@ class App(EasyFrame):
         tree.grid(column=0, row=row, columnspan=columnspan)
         if "editable" in name:
             row += 1
-            button_frame = Frame(frame)
+            button_frame = Frame(frame, name="botones")
             button_frame.grid(column=3, row=row, sticky=E)
-            self.ImageButton(button_frame, self.images.remove,
+            self.ImageButton(button_frame, self.images.remove, name="remove",
                              command=self.del_selected_item_in_posibles).grid(column=0, row=0, sticky=E)
-            self.ImageButton(button_frame, self.images.check,
+            self.ImageButton(button_frame, self.images.check, name="check",
                              command=self.add_pending_to_selected).grid(column=1, row=0, sticky=E)
-            self.ImageButton(button_frame, self.images.add,
+            self.ImageButton(button_frame, self.images.add, name="add",
                              command=self.add_new_row_to_posibles).grid(column=2, row=0, sticky=E)
         return frame
 

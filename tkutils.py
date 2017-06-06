@@ -203,8 +203,6 @@ class EasyFrame(Frame):
         gc.collect
 
     def LinkButton(self, parent=None, *args, font_size=9, **kwargs):
-        if "name" not in kwargs:
-            kwargs["name"] = route.lower().replace(".", "_")
         font = Font(family = nametofont("TkDefaultFont").cget("family"),
                     size = font_size,
                     underline=True)
@@ -219,8 +217,6 @@ class EasyFrame(Frame):
         return button
 
     def ImageButton(self, parent=None, image=None, *args, **kwargs):
-        if "name" not in kwargs:
-            kwargs["name"] = route.lower().replace(".", "_")
         style = Style()
         style.configure("Image.TLabel")
         config = {"style": "Image-{}.TLabel"}

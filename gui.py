@@ -487,7 +487,7 @@ class App(EasyFrame):
                       default_config=default_config, yscroll=True, name="vista").pack()
         Frame(frame, name="navigator").pack()
         def append_new(self, *args, **kwargs):
-            self.append_to_tree_data("usuarios", str(len(self.usuarios.usuarios.vista.get_children())+1))
+            self.append_to_tree_data("usuarios", str(len(self.tree["usuarios"]["tree"].get_children())+1))
         self.ImageButton(self.usuarios.navigator, self.images.remove, name="remove",
                          command=self.del_selected_item_in_posibles).grid(column=0, row=0, sticky=E)
         self.ImageButton(self.usuarios.navigator, self.images.add, name="add",

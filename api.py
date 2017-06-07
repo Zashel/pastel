@@ -78,6 +78,7 @@ class Requests:
                     print(args, action)
                 if action not in Requests.pool_dict:
                     action = "other"
+                print(function)
                 Requests.pool_dict[action].append((pippout, function, args, kwargs))
                 Requests.lock.acquire()
                 Requests.pool_len += 1

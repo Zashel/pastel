@@ -809,6 +809,7 @@ class App(EasyFrame):
                 pass #you fools!
 
     def load_user(self, user=getpass.getuser()):
+        print(user)
         datos_usuario = API.get_usuario(user)
         self.set_var("usuario.id", datos_usuario["id"])
         self.set_var("usuario.role", datos_usuario["role"])

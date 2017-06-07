@@ -478,7 +478,8 @@ class App(EasyFrame):
                           "heading": {"id": {"text": "ID"},
                                       "role": {"text": "Rol"},
                                       "nombre": {"text": "Nombre"}},
-                          "column": {"#0":{"width": 20}},
+                          "column": {"#0":{"width": 20},
+                                     "nombre": {"width": 250}},
                           "editable": ["id", "role", "nombre"],
                           "comboboxes": {"role": ["BO", "Admin"]}
                           }
@@ -486,11 +487,11 @@ class App(EasyFrame):
                       default_config=default_config, yscroll=True, name="vista").pack()
         Frame(frame, name="navigator").pack()
         def append_new(self, *args, **kwargs):
-            self.append_to_tree_data("usuarios", str(len(self.usuarios.vista.get_children)+1))
+            self.append_to_tree_data("usuarios", str(len(self.usuarios.vista.get_children())+1))
         self.ImageButton(self.usuarios.navigator, self.images.remove, name="remove",
-                         command=partial(append_new, self)).grid(column=0, row=0, sticky=E)
+                         command=self.del_selected_item_in_posibles).grid(column=0, row=0, sticky=E)
         self.ImageButton(self.usuarios.navigator, self.images.add, name="add",
-                         command=partial(self.append_to_tree_data, "usuarios", "")).grid(column=2, row=0, sticky=E)
+                         command=partial(append_new, self)).grid(column=2, row=0, sticky=E)
         Frame(frame, name="botones").pack()
         Button(self.usuarios.botones, text="Actualizar", name="actualizar").grid(column=0, row=0)
         Button(self.usuarios.botones, text="Guardar", name="guardar").grid(column=1, row=0)

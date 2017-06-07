@@ -293,7 +293,6 @@ class EasyFrame(Frame):
         frame = Frame(parent)
         tree = Treeview(frame, *args, **options)
         tree.grid(row=0, column=0)
-        tree["show"] = "headings"
         if xscroll is True:
             xTreeScroll = Scrollbar(frame,
                                     orient=HORIZONTAL,

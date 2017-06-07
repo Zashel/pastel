@@ -466,6 +466,22 @@ class App(EasyFrame):
         self.TreeView("manual_review", admin_config.PAYMENTS_UPLOADING_HEADERS+["usuario"], self.pagos_manuales,
                       default_config=default_config, yscroll=True, name="vista").grid(column=0, row = row, columnspan=4)
 
+    def set_usuarios_frame(self):
+        frame = Frame(self, name="usuarios")
+        default_config = {"columns": {"width": 100},
+                          "headings": {"#0": "ID",
+                                       "role": "Rol",
+                                       "nombre": "Nombre"},
+                          "editable": ["role", "nombre"],
+                          "comboboxes": {"role": ["BO", "Admin"]}
+                          }
+        self.TreeView("usuarios", ["role", "nombre"], frame, default_config=default_config, yscroll=True).pack()
+        Frame(frame, nombre="navigator").pack()
+        Frame(frame, nombre="botones").pack()
+        Button(self.usuarios.botones, text="Actualizar", name="actualizar").grid(column=0, row=0)
+        Button(self.usuarios.botones, text="Guardar", name="guardar").grid(column=0, row=0)
+        Button(self.usuarios.botones, text="Salir", name="salir").grid(column=0, row=0)
+
     #Manual Review Related
     def load_review_manuals_tree(self):
         filter = dict()

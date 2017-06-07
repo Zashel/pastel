@@ -60,11 +60,10 @@ class Requests:
     def put_queue(self, function, *args, **kwargs):
         pippin, pippout = Pipe(False)
         Requests.pool.put((pippout, function, args, kwargs))
-        while True:
-            if Requests.listen_thread is None or Requests.listen_thread.is_alive() is False: #This may end always
-                Requests.listen_thread = Requests.listen_pool()
-            if Requests.listen_thread.is_alive() is True:
-                break
+        if (Requests.listen_thread is None or
+                    Requests.listen_thread.is_alive() is False or
+                    Requests.pool.empty() is False): #This may end always
+            Requests.listen_thread = Requests.listen_pool()
         return pippin.recv()
 
     @classmethod
@@ -86,8 +85,7 @@ class Requests:
                 while True:
                     if Requests.exec_thread is None or Requests.exec_thread.is_alive() is False:
                         Requests.exec_thread = Requests.exec_pool()
-                    if Requests.exec_thread.is_alive() is True:
-                        break
+                    break
             except Empty:
                 break
 

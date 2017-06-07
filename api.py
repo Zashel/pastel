@@ -600,6 +600,8 @@ class API:
                                                                       BASE_URI[1:-1],
                                                                       identifier
                                                                       ))
+        print(request.status_code)
+        print(request.text)
         if request.status_code == 200:
             data = json.load(request.text)
             return {"id": data["id"],

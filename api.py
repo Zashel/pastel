@@ -82,10 +82,8 @@ class Requests:
                 Requests.lock.acquire()
                 Requests.pool_len += 1
                 Requests.lock.release()
-                while True:
-                    if Requests.exec_thread is None or Requests.exec_thread.is_alive() is False:
-                        Requests.exec_thread = Requests.exec_pool()
-                    break
+                if Requests.pool_len > 0:
+                    Requests.exec_thread = Requests.exec_pool()
             except Empty:
                 break
 

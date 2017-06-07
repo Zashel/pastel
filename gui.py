@@ -60,6 +60,7 @@ class App(EasyFrame):
         self.payment_data_frame_text = dict()
         self.set_payments_tree_frame()
         self.set_manual_review_frame()
+        self.set_usuarios_frame()
         #TABS
 
     def set_variables(self):

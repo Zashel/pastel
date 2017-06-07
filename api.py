@@ -106,10 +106,10 @@ class Requests:
                     Requests.pool_len -= 1
                     Requests.lock.release()
                     break #Let's begin again because it's a priority pool!
-            time.sleep(0.5) #A quick nap to not to overseed the processor
             len = Requests.pool_len
             if len <= 0:
                 break
+            time.sleep(0.5)
 
 requests = Requests()
 

@@ -130,14 +130,14 @@ class App(EasyFrame):
                                    command=partial(self.go_to_payment_by_state, "PENDIENTE"))
         self.menu_open.add_command(label="Pagos Ilocalizables",
                                    command=partial(self.go_to_payment_by_state, "ILOCALIZABLE"))
-        self.menu_open.add_command(label="Revisión Pagos Manuales", command=self.go_to_manual_review)
+        self.menu_open.add_command(label="Revisión Pagos", command=self.go_to_manual_review)
         self.menu_open.add_command(label="Usuarios")
 
         self.menu_load.add_command(label="Pagos ISM")
         self.menu_load.add_command(label="PARI...")
         self.menu_load.add_command(label="Último PARI")
 
-        self.menu_export.add_command(label="Manuales de hoy")
+        self.menu_export.add_command(label="Segunda Carga Automática de hoy")
 
         self.menu_edit.add_command(label="Deshacer", command=self.undo)
         self.menu_edit.add_separator()

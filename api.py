@@ -319,7 +319,7 @@ class API:
             return API.get_pagos_list()
 
     @classmethod
-    def review_manuals(cls, **filter):
+    def review_second_automatic(cls, **filter):
         if filter != dict():
             request = requests.get("http://{}:{}{}/pagos//manual?{}".format(local_config.HOST,
                                                                           str(local_config.PORT),
@@ -341,7 +341,10 @@ class API:
                 return final
 
     @classmethod
-    def to_export_manuals(cls, **filter):
+    def to_export_second_automatic(cls, **filter):
+        if filter == dict():
+            filter["pagos_estado"] = "APLICADO"
+            filter["manual_fecha"] = datetime.datetime.today().strftime("%d/%m/%Y")
         if filter != dict():
             request = requests.get("http://{}:{}{}/pagos//manual?{}".format(local_config.HOST,
                                                                           str(local_config.PORT),

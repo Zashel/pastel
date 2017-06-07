@@ -166,6 +166,11 @@ class App(EasyFrame):
         rutas = Frame(notebook)
         datos = Frame(notebook)
 
+        if self.get_var("usuario.role").get() == "Admin":
+            state = "normal"
+        else:
+            state = "disable"
+
         # Usuario
         usuario.grid(sticky=(N, S, E, W))
         Label(usuario, text="Login: ").grid(column=0, row=1, sticky=(N, W))
@@ -204,13 +209,13 @@ class App(EasyFrame):
                    rutas).grid(column=1, row=2, sticky=(N, E))
         Label(rutas, text="Exportaciones diarias: ").grid(column=0, row=3, sticky=(N, W))
         self.Entry("config.DAILY_EXPORT_PATH",
-                   rutas).grid(column=1, row=3, sticky=(N, E))
+                   rutas, state=state).grid(column=1, row=3, sticky=(N, E))
         Label(rutas, text="Reportes: ").grid(column=0, row=4, sticky=(N, W))
         self.Entry("config.REPORT_PATH",
-                   rutas).grid(column=1, row=4, sticky=(N, E))
+                   rutas, state=state).grid(column=1, row=4, sticky=(N, E))
         Label(rutas, text="Base de Datos: ").grid(column=0, row=5, sticky=(N, W))
         self.Entry("config.DATABASE_PATH",
-                   rutas).grid(column=1, row=5, sticky=(N, E))
+                   rutas, state=state).grid(column=1, row=5, sticky=(N, E))
         # Datos
 
         notebook.add(usuario, text="Usuario")

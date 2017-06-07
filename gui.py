@@ -131,7 +131,7 @@ class App(EasyFrame):
         self.menu_open.add_command(label="Pagos Ilocalizables",
                                    command=partial(self.go_to_payment_by_state, "ILOCALIZABLE"))
         self.menu_open.add_command(label="Revisión Pagos", command=self.go_to_manual_review)
-        self.menu_open.add_command(label="Usuarios")
+        self.menu_open.add_command(label="Usuarios", command=self.go_to_usuarios)
 
         self.menu_load.add_command(label="Pagos ISM")
         self.menu_load.add_command(label="PARI...")
@@ -477,11 +477,15 @@ class App(EasyFrame):
                           "headings": {"#0": "ID",
                                        "role": "Rol",
                                        "nombre": "Nombre"},
-                          "editable": ["role", "nombre"],
+                          "editable": ["#0", "role", "nombre"],
                           "comboboxes": {"role": ["BO", "Admin"]}
                           }
         self.TreeView("usuarios", ["role", "nombre"], frame, default_config=default_config, yscroll=True).pack()
         Frame(frame, nombre="navigator").pack()
+        self.ImageButton(self.usuarios.navigator, self.images.remove, name="remove",
+                         command=self.del_selected_item_in_tree_data).grid(column=0, row=0, sticky=E)
+        self.ImageButton(self.usuarios.navigator, self.images.add, name="add",
+                         command=partial(self.append_to_tree_data("usuarios", ""))).grid(column=2, row=0, sticky=E)
         Frame(frame, nombre="botones").pack()
         Button(self.usuarios.botones, text="Actualizar", name="actualizar").grid(column=0, row=0)
         Button(self.usuarios.botones, text="Guardar", name="guardar").grid(column=0, row=0)
@@ -774,6 +778,11 @@ class App(EasyFrame):
         self.pagos_pendientes.pack_forget()
         self.pagos.pack_forget()
         self.pagos_manuales.pack_forget()
+        self.usuarios.pack_forget()
+
+    def go_to_usuarios(self, *args, **kwargs):
+        self.hide_everything()
+        self.usuarios.pack()
 
     def go_to_manual_review(self, *args, **kwargs):
         self.hide_everything()

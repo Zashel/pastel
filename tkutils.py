@@ -469,7 +469,7 @@ class EasyFrame(Frame):
             self._tree_calculations[category] = list()
         self._tree_calculations[category].append(function)
 
-    def append_to_tree_data(self, category, name, data):  # _details in data creates a shitty subitem
+    def append_to_tree_data(self, category, name, data={}, *args, **kwargs):  # _details in data creates a shitty subitem
         values = list()
         self.tree[category]["data"][name] = dict()
         for field in self.tree[category]["template"]:

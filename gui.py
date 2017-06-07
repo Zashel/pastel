@@ -475,7 +475,7 @@ class App(EasyFrame):
     def set_usuarios_frame(self):
         frame = Frame(self, name="usuarios")
         default_config = {"columns": {"width": 100},
-                          "headings": {"#0": {"text": "ID"},
+                          "heading": {"#0": {"text": "ID"},
                                        "role": {"text": "Rol"},
                                        "nombre": {"text": "Nombre"}},
                           "editable": ["#0", "role", "nombre"],

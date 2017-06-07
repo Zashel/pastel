@@ -54,7 +54,7 @@ class App(EasyFrame):
         #Show Home
         self.show_home()
         #Login
-        #self.load_user()
+        self.load_user()
 
     def set_widgets(self):
         self.payment_data_frame_text = dict()

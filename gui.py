@@ -475,16 +475,19 @@ class App(EasyFrame):
     def set_usuarios_frame(self):
         frame = Frame(self, name="usuarios")
         default_config = {"columns": {"width": 100},
-                          "heading": {"#0": {"text": "ID"},
-                                       "role": {"text": "Rol"},
-                                       "nombre": {"text": "Nombre"}},
-                          "editable": ["#0", "role", "nombre"],
+                          "heading": {"id": {"text": "ID"},
+                                      "role": {"text": "Rol"},
+                                      "nombre": {"text": "Nombre"}},
+                          "editable": ["id", "role", "nombre"],
                           "comboboxes": {"role": ["BO", "Admin"]}
                           }
-        self.TreeView("usuarios", ["role", "nombre"], frame, default_config=default_config, yscroll=True).pack()
+        self.TreeView("usuarios", ["id", "role", "nombre"], frame,
+                      default_config=default_config, yscroll=True, name="vista").pack()
         Frame(frame, name="navigator").pack()
+        def append_new(self, *args, **kwargs):
+            self.append_to_tree_data("usuarios", str(len(self.usuarios.vista.get_children)+1))
         self.ImageButton(self.usuarios.navigator, self.images.remove, name="remove",
-                         command=self.del_selected_item_in_tree_data).grid(column=0, row=0, sticky=E)
+                         command=partial(append_new, self)).grid(column=0, row=0, sticky=E)
         self.ImageButton(self.usuarios.navigator, self.images.add, name="add",
                          command=partial(self.append_to_tree_data, "usuarios", "")).grid(column=2, row=0, sticky=E)
         Frame(frame, name="botones").pack()

@@ -47,6 +47,7 @@ class Requests:
                  "post": deque(),
                  "other": deque()
                 }
+    load_pari = None
     pool_len = int()
     lock = Lock()
     working = False
@@ -74,17 +75,23 @@ class Requests:
                 pippout, function, args, kwargs = Requests.pool.get_nowait()
                 action = function.__name__
                 if action == "request" and len(args) > 0:
-                    action = args[0].lower()
-                    print(args, action)
+                    if args[0] == "LOAD" and "/facturas" in args[1]:
+                        @threadize
+                        def load_pari(pippout, function, args, kwargs):
+                            pippout.send(function(*args, **kwargs))
+                        load_pari()
+                        action = None
+                    else:
+                        action = args[0].lower()
                 if action not in Requests.pool_dict:
                     action = "other"
-                print(function)
-                Requests.pool_dict[action].append((pippout, function, args, kwargs))
-                Requests.lock.acquire()
-                Requests.pool_len += 1
-                Requests.lock.release()
-                if Requests.pool_len > 0 and (Requests.exec_thread is None or Requests.exec_thread.is_alive() is False):
-                    Requests.exec_thread = Requests.exec_pool()
+                if action is not None:
+                    Requests.pool_dict[action].append((pippout, function, args, kwargs))
+                    Requests.lock.acquire()
+                    Requests.pool_len += 1
+                    Requests.lock.release()
+                    if Requests.pool_len > 0 and (Requests.exec_thread is None or Requests.exec_thread.is_alive() is False):
+                        Requests.exec_thread = Requests.exec_pool()
             except Empty:
                 break
 

@@ -79,9 +79,3 @@ if __name__ == "__main__":
                                 items_per_page=local_config.ITEMS_PER_PAGE),
                   "pagos/manual",
                   "^/pagos/<pagos__id>/manual<manual__id>$")
-    app.set_model(ShelveModel(os.path.join(admin_config.DATABASE_PATH, "compromisos"),
-                              index_fields=COMMITMENTS_FIELDS,
-                              headers=COMMITMENTS_FIELDS),
-                  "compromisos",
-                  "^/compromisos/<_id>$")
-    app.run(local_config.HOST, local_config.PORT)

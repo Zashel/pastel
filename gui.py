@@ -482,12 +482,12 @@ class App(EasyFrame):
                           "comboboxes": {"role": ["BO", "Admin"]}
                           }
         self.TreeView("usuarios", ["role", "nombre"], frame, default_config=default_config, yscroll=True).pack()
-        Frame(frame, nombre="navigator").pack()
+        Frame(frame, name="navigator").pack()
         self.ImageButton(self.usuarios.navigator, self.images.remove, name="remove",
                          command=self.del_selected_item_in_tree_data).grid(column=0, row=0, sticky=E)
         self.ImageButton(self.usuarios.navigator, self.images.add, name="add",
                          command=partial(self.append_to_tree_data("usuarios", ""))).grid(column=2, row=0, sticky=E)
-        Frame(frame, nombre="botones").pack()
+        Frame(frame, name="botones").pack()
         Button(self.usuarios.botones, text="Actualizar", name="actualizar").grid(column=0, row=0)
         Button(self.usuarios.botones, text="Guardar", name="guardar").grid(column=0, row=0)
         Button(self.usuarios.botones, text="Salir", name="salir").grid(column=0, row=0)

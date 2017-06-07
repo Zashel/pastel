@@ -486,7 +486,7 @@ class App(EasyFrame):
         self.ImageButton(self.usuarios.navigator, self.images.remove, name="remove",
                          command=self.del_selected_item_in_tree_data).grid(column=0, row=0, sticky=E)
         self.ImageButton(self.usuarios.navigator, self.images.add, name="add",
-                         command=partial(self.append_to_tree_data("usuarios", ""))).grid(column=2, row=0, sticky=E)
+                         command=partial(self.append_to_tree_data, "usuarios", "")).grid(column=2, row=0, sticky=E)
         Frame(frame, name="botones").pack()
         Button(self.usuarios.botones, text="Actualizar", name="actualizar").grid(column=0, row=0)
         Button(self.usuarios.botones, text="Guardar", name="guardar").grid(column=0, row=0)

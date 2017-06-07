@@ -169,11 +169,11 @@ class App(EasyFrame):
         # Usuario
         usuario.grid(sticky=(N, S, E, W))
         Label(usuario, text="Login: ").grid(column=0, row=1, sticky=(N, W))
-        Label(usuario, text=self.usuario).grid(column=1, row=1, sticky=(N, W))
+        Label(usuario, textvariable=self.get_var("usuario.id")).grid(column=1, row=1, sticky=(N, W))
         Label(usuario, text="Rol: ").grid(column=5, row=1, sticky=(N, E))
         Label(usuario, textvariable=self.get_var("usuario.role")).grid(column=6, row=1, sticky=(N, E,))
         Label(usuario, text="Nombre: ").grid(column=0, row=2, sticky=(N, W))
-        self.Entry("config.nombre_usuario",
+        self.Entry("usuario.fullname",
                    usuario).grid(column=1, row=2, columnspan=5, sticky=(N, E))
 
         # Servidor
@@ -232,6 +232,7 @@ class App(EasyFrame):
                 local_config.set(item, get_var(item).get())
             elif item in SHARED:
                 admin_config.set(item, get_var(item).get())
+        #TODO: Grabar nombre usuario
 
     #Frames
     def payment_data_frame(self, parent):

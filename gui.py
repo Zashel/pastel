@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 from tkinter.ttk import *
 from api import API
 from functools import partial
@@ -136,7 +137,7 @@ class App(EasyFrame):
 
         self.menu_load.add_command(label="Pagos ISM")
         self.menu_load.add_command(label="PARI...")
-        self.menu_load.add_command(label="Último PARI")
+        self.menu_load.add_command(label="Último PARI", command=self.set_last_pari)
 
         self.menu_export.add_command(label="Segunda Carga Automática de hoy")
 
@@ -852,10 +853,13 @@ class App(EasyFrame):
         self.set_var("usuario.role", datos_usuario["role"])
         self.set_var("usuario.fullname", datos_usuario["fullname"])
 
+    @daemonize
     def set_last_pari(self):
-        self.disable_all()
-        file = API.set_pari
-        self.activate_all()
+        messagebox.showinfo(title="Alerta",
+                            message="Procedemos a cargar el pari. Es un proceso lento, por favor, ten paciencia.")
+        file = API.set_pari()
+        messagebox.showinfo(title="Terminado",
+                            message="Pari Cargado en ruta. Resúmen en ruta {}".format(file))
 
     def set_list_codes(self):
         keys = list(admin_config.FACTURAS.keys())

@@ -536,7 +536,7 @@ class Pari(RestfulBaseInterface):
             os.makedirs(os.path.join(admin_config.REPORT_PATH, "ISM"), exist_ok=True)
             final_informe = "estado;operaciones;importe"
             final_informe += "\n".join([";".join((estado, informe[estado]["operaciones"], informe[estado]["importe"]))
-                                        for estado in final])
+                                        for estado in informe])
             with open(os.path.join(admin_config.REPORT_PATH, "ISM",
                                    "informe_ism_{}.csv".format(apply_date.replace("/", "-"))),
                       "w") as f:

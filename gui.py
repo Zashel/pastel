@@ -880,6 +880,16 @@ class App(EasyFrame):
         file.close()
         self.activate_all()
 
+    def resumen_gestiones_dia(self, *args, **kwargs):
+        self.disable_all()
+        data = API.resumen_gestiones_dia()
+        file = filedialog.asksaveasfile(filetypes=(("CSV", "*.csv"),),
+                                        defaultextension=".csv",
+                                        mode="w")
+        file.write(data)
+        file.close()
+        self.activate_all()
+
     def set_list_codes(self):
         keys = list(admin_config.FACTURAS.keys())
         keys.sort()

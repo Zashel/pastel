@@ -395,6 +395,7 @@ class Pari(RestfulBaseInterface):
             final = list()
             manuals = list()
             anulaciones = dict()
+            informe = dict()
             for row in self.read_n43(filepath):
                 data = row["data"]
                 if data["cuenta"] in account_number and data["observaciones"].startswith("ANULACIONES"):

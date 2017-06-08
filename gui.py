@@ -863,7 +863,7 @@ class App(EasyFrame):
 
     def set_ism(self, *args, **kwargs):
         self.disable_all()
-        filename = filedialog.askopenfilename(filetypes=(("CSV", "*.csv"), ))
+        filename = filedialog.askopenfilename(filetypes=(("Modelo 43 del BBVA", "*.ism"), ))
         if filename != str():
             datos = API.set_n43(filename)
             messagebox.showinfo(title="Terminado",

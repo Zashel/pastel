@@ -854,7 +854,6 @@ class App(EasyFrame):
         self.set_var("usuario.role", datos_usuario["role"])
         self.set_var("usuario.fullname", datos_usuario["fullname"])
 
-    @daemonize
     def set_last_pari(self, *args, **kwargs):
         messagebox.showinfo(title="Alerta",
                             message="Procedemos a cargar el pari. Es un proceso lento, por favor, ten paciencia.")

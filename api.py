@@ -353,6 +353,7 @@ class API:
         if filter == dict():
             filter["pagos_estado"] = "APLICADO"
             filter["manual_fecha"] = datetime.datetime.today().strftime("%d/%m/%Y")
+            filter["items_per_page"] = 1000
         if filter != dict():
             request = requests.get("http://{}:{}{}/pagos//manual?{}".format(local_config.HOST,
                                                                           str(local_config.PORT),

@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
 from tkinter.ttk import *
 from api import API
 from functools import partial
@@ -135,11 +135,11 @@ class App(EasyFrame):
         self.menu_open.add_command(label="Revisión Pagos", command=self.go_to_manual_review)
         self.menu_open.add_command(label="Usuarios", command=self.go_to_usuarios)
 
-        self.menu_load.add_command(label="Pagos ISM")
-        self.menu_load.add_command(label="PARI...")
+        self.menu_load.add_command(label="Pagos ISM", command=self.set_ism)
+        #self.menu_load.add_command(label="PARI...")
         self.menu_load.add_command(label="Último PARI", command=self.set_last_pari)
 
-        self.menu_export.add_command(label="Segunda Carga Automática de hoy")
+        self.menu_export.add_command(label="Segunda Carga Automática de hoy", command=self.export_segundo_automatico)
 
         self.menu_edit.add_command(label="Deshacer", command=self.undo)
         self.menu_edit.add_separator()
@@ -854,12 +854,31 @@ class App(EasyFrame):
         self.set_var("usuario.fullname", datos_usuario["fullname"])
 
     @daemonize
-    def set_last_pari(self):
+    def set_last_pari(self, *args, **kwargs):
         messagebox.showinfo(title="Alerta",
                             message="Procedemos a cargar el pari. Es un proceso lento, por favor, ten paciencia.")
         file = API.set_pari()
         messagebox.showinfo(title="Terminado",
                             message="Pari Cargado en ruta. Resúmen en ruta {}".format(file))
+
+    def set_ism(self, *args, **kwargs):
+        self.disable_all()
+        filename = filedialog.askopenfilename(filetypes=(("CSV", "*.csv"), ))
+        if filename != str():
+            datos = API.set_n43(filename)
+            messagebox.showinfo(title="Terminado",
+                                message="Pagos cargados con éxito. Archivo automático cargado en ruta {}".local_config.EXPORT_PATH)
+        self.activate_all()
+
+    def export_segundo_automatico(self, *args, **kwargs):
+        self.disable_all()
+        data = API.to_export_second_automatic()
+        file = filedialog.asksaveasfile(filetypes=(("CSV", "*.csv"), ),
+                                        defaultextension = ".csv",
+                                        mode="w")
+        file.write(data)
+        file.close()
+        self.activate_all()
 
     def set_list_codes(self):
         keys = list(admin_config.FACTURAS.keys())

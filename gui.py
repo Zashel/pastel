@@ -140,6 +140,7 @@ class App(EasyFrame):
         self.menu_load.add_command(label="Último PARI", command=self.set_last_pari)
 
         self.menu_export.add_command(label="Segunda Carga Automática de hoy", command=self.export_segundo_automatico)
+        self.menu_export.add_command(label="Resumen pagos del día", command=self.resumen_gestiones_dia)
 
         self.menu_edit.add_command(label="Deshacer", command=self.undo)
         self.menu_edit.add_separator()

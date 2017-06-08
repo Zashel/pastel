@@ -386,6 +386,7 @@ class Pari(RestfulBaseInterface):
             print("Cleaning")
             gc.collect()
             account_number = ["018239990014690035"] #TODO: set in shitty config
+            account_ventanillas = ["01823999340202055004"]
             if not "aplicados" in self.shelf:
                 self.shelf["aplicados"] = dict()
             applied = dict(self.shelf["aplicados"])
@@ -395,13 +396,31 @@ class Pari(RestfulBaseInterface):
             final = list()
             manuals = list()
             anulaciones = dict()
-            informe = dict()
+            informe = {"total": {"operaciones": int(),
+                                 "importe": int()},
+                       "aplicado": {"operaciones": int(),
+                                    "importe": int()},
+                       "pendiente": {"operaciones": int(),
+                                     "importe": int()},
+                       "anulaciones": {"operaciones": int(),
+                                       "importe": int()},
+                       "ventanillas": {"operaciones": int(),
+                                       "importe": int()}
+                       }
             for row in self.read_n43(filepath):
                 data = row["data"]
-                if data["cuenta"] in account_number and data["observaciones"].startswith("ANULACIONES"):
-                    if data["cuenta"] not in anulaciones:
-                        anulaciones[data["cuenta"]] = dict()
-                    anulaciones[data["cuenta"]][data["importe"]] = data["oficina_origen"]
+                if data["cuenta"] in account_number:
+                    if data["observaciones"].startswith("ANULACIONES"):
+                        if data["cuenta"] not in anulaciones:
+                            anulaciones[data["cuenta"]] = dict()
+                        anulaciones[data["cuenta"]][data["importe"]] = data["oficina_origen"]
+                        informe["anulaciones"]["operaciones"] += 1
+                        informe["anulaciones"]["importe"] += data["importe"]
+                    informe["total"]["operaciones"] += 1
+                    informe["total"]["importe"] += data["importe"]
+                elif data["cuenta"] in account_ventanillas:
+                    informe["ventanillas"]["operaciones"] += 1
+                    informe["ventanillas"]["importe"] += data["importe"]
             for row in self.read_n43(filepath):
                 data = row["data"]
                 total = int()
@@ -483,6 +502,8 @@ class Pari(RestfulBaseInterface):
                                         applied[id_factura]["importe_aplicado"] += to_apply
                                         applied_flag = True
                                 if pdte == 0:
+                                    informe["aplicado"]["operaciones"] += 1
+                                    informe["aplicado"]["importe"] += data["importe"]
                                     final.extend(payments_list)
                                     go_on = False
                                     break
@@ -512,6 +533,14 @@ class Pari(RestfulBaseInterface):
                                    "localizacion_automatica_{}.csv".format(apply_date.replace("/", "-"))),
                       "w") as f:
                 f.write("\n".join(final))
+            os.makedirs(os.path.join(admin_config.REPORT_PATH, "ISM"), exist_ok=True)
+            final_informe = "estado;operaciones;importe"
+            final_informe += "\n".join([";".join((estado, informe[estado]["operaciones"], informe[estado]["importe"]))
+                                        for estado in final])
+            with open(os.path.join(admin_config.REPORT_PATH, "ISM",
+                                   "informe_ism_{}.csv".format(apply_date.replace("/", "-"))),
+                      "w") as f:
+                f.write(final_informe)
             yield {"manuals": manuals, "anulaciones": anulaciones}
 
     def replace(self, filter, data, **kwargs):

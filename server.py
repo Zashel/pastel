@@ -22,7 +22,7 @@ import os
 ALL_NEXT = list(ALL)
 ALL_NEXT.append(NEXT)
 
-class PASTELBlocking(ShelveBlocking):
+class PASTELBlocking(ShelveBlocking): #DEPRECATED!!!!
     def __init__(self, *args, **kwargs):
         args = list(args)
         if len(args)==1:
@@ -57,7 +57,7 @@ if __name__ == "__main__":
                   "facturas",
                   "^/facturas/<id_factura>$")
     app.set_method("facturas", "^/n43$", LOAD, "load_n43")
-    pagos = PASTELBlocking(os.path.join(admin_config.DATABASE_PATH, "pagos"),
+    pagos = ShelveBlocking(os.path.join(admin_config.DATABASE_PATH, "pagos"),
                            index_fields=PAYMENTS_INDEX,
                            headers=PAYMENTS_FIELDS,
                            items_per_page=local_config.ITEMS_PER_PAGE)

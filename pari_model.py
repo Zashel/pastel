@@ -494,6 +494,7 @@ class Pari(RestfulBaseInterface):
                                                    str(id_factura),
                                                    str(data["fecha_operacion"].strftime("%d/%m/%y")),
                                                    str(round(to_apply/100, 2)).replace(".", ","),
+                                                   str(id_cuenta),
                                                    str(get_billing_period(possibles[id_factura]["fecha_factura"])),
                                                    str(admin_config.PM_PAYMENT_METHOD),
                                                    str(admin_config.PM_PAYMENT_WAY)

@@ -256,11 +256,16 @@ class API:
         print("Next flag: ", API.next_flag)
         @threadize
         def get_next(**kwargs):
+            if "_blocker" in kwargs:
+                blocker = kwargs["_blocker"]
+            else:
+                blocker = local_config.UUID
             API.next_flag = 0
             filter = list()
             for item in kwargs:
                 if item in PAYMENTS_INDEX+["_item"]:
                     filter.append("=".join((item, str(kwargs[item]))))
+            filter.append("_blocker={}".format(blocker))
             filter = "&".join(filter)
             print("http://{}:{}{}/pagos?{}".format(local_config.HOST,
                                                    str(local_config.PORT),
@@ -313,10 +318,15 @@ class API:
         """
 
     @classmethod
-    def unblock_pago(cls, link):
-        request = requests.get("http://{}:{}{}?unblock=True".format(local_config.HOST,
-                                                                             str(local_config.PORT),
-                                                                             link.split("?")[0]))
+    def unblock_pago(cls, link, **kwargs):
+        if "_blocker" in kwargs:
+            blocker = kwargs["_blocker"]
+        else:
+            blocker = local_config.UUID
+        request = requests.get("http://{}:{}{}?unblock=True&_blocker={}".format(local_config.HOST,
+                                                                                str(local_config.PORT),
+                                                                                link.split("?")[0],
+                                                                                blocker))
 
     @classmethod
     def get_pagos_list(cls, link=None):

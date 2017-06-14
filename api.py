@@ -294,6 +294,8 @@ class API:
             API.next_thread.join()
         if API.next_flag == 1:
             pago = dict(API.next_pago)
+            if "Error" in pago:
+                return pago
             kwargs["_item"] = pago["_id"]
             API.next_thread = get_next(**kwargs)
             print("Got that pago: ", pago["_id"])

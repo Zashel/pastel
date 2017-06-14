@@ -37,7 +37,9 @@ else:
 
 class Requests:
     pool = Queue()
-    dir = dir(reqs)
+    session = reqs.session()
+    session.trust_env = False
+    dir = dir(session)
     listen_thread = None
     exec_thread = None
     pool_dict_order = ["next", "put", "get", "post", "other"]
@@ -52,9 +54,10 @@ class Requests:
     lock = Lock()
     working = False
 
+
     def __getattribute__(self, item):
         if item in Requests.dir:
-            return partial(self.put_queue, reqs.__getattribute__(item))
+            return partial(self.put_queue, Requests.session.__getattribute__(item))
         else:
             return object.__getattribute__(self, item)
 

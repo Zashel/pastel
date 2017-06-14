@@ -79,4 +79,4 @@ if __name__ == "__main__":
                                 items_per_page=local_config.ITEMS_PER_PAGE),
                   "pagos/manual",
                   "^/pagos/<pagos__id>/manual<manual__id>$")
-    app.run(local_config.HOST, local_config.PORT)
+    app.run("", local_config.PORT)

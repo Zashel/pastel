@@ -586,6 +586,8 @@ class Pari(RestfulBaseInterface):
                 print()
                 return json.dumps({"data": final,
                                    "headers": {"Content-Type": "text/csv"}})
+            else:
+                print(data)
         except:
             print("Final: {}".format(final))
             raise

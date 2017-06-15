@@ -648,6 +648,7 @@ class App(EasyFrame):
     def next_payment(self):
         kwargs = dict(self._pagos_filter)
         kwargs.update({"_item": self.get_var("pagos._id").get()})
+        "Asking for new pago"
         self.load_payment(API.next_pagos(**kwargs))
         @daemonize
         def update():
@@ -655,7 +656,8 @@ class App(EasyFrame):
                 self.set_var("gui.pagos_pendientes", "Quedan {} pagos.".format(API.get_pagos_count(**self._pagos_filter)))
             except (SystemExit, KeyboardInterrupt):
                 raise
-            except:
+            except Exception as e:
+                print(e)
                 pass
         update()
 

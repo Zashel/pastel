@@ -178,10 +178,20 @@ class API:
         return API.pagos["active"]
 
     @classmethod
-    def get_link(self, link, *, var=None): #Possible bug in next, prev and simmilar in payments
-        request = requests.get("http://{}:{}{}".format(local_config.HOST,
-                                                       str(local_config.PORT),
-                                                       link))
+    def get_link(self, link, *, var=None):
+        if "/pagos" not in link:
+            request = requests.get("http://{}:{}{}".format(local_config.HOST,
+                                                           str(local_config.PORT),
+                                                           link))
+        else:
+            filter = str()
+            if "?" not in link:
+                filter = "?"
+            filter += "_blocker" + local_config.UUID
+            request = requests.get("http://{}:{}{}{}".format(local_config.HOST,
+                                                             str(local_config.PORT),
+                                                             link,
+                                                             filter))
         if request.status_code == 200:
             data = json.loads(request.text)
             if var is not None:
@@ -206,7 +216,7 @@ class API:
                                                                                  filter != list() and "&" or str(),
                                                                                  filter
                                                                                  ))
-        else: #Possible Bunny
+        else:
             request = requests.get("http://{}:{}{}".format(local_config.HOST,
                                                            str(local_config.PORT),
                                                            link

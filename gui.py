@@ -648,7 +648,7 @@ class App(EasyFrame):
     def next_payment(self):
         kwargs = dict(self._pagos_filter)
         kwargs.update({"_item": self.get_var("pagos._id").get()})
-        "Asking for new pago"
+        print("Asking for new pago")
         self.load_payment(API.next_pagos(**kwargs))
         @daemonize
         def update():

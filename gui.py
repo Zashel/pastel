@@ -867,7 +867,8 @@ class App(EasyFrame):
         if filename != str():
             datos = API.set_n43(filename)
             messagebox.showinfo(title="Terminado",
-                                message="Pagos cargados con éxito. Archivo automático cargado en ruta {}".local_config.EXPORT_PATH)
+                                message="Pagos cargados con éxito. Archivo automático cargado en ruta {}".format(
+                                    local_config.EXPORT_PATH))
         self.activate_all()
 
     def export_segundo_automatico(self, *args, **kwargs):

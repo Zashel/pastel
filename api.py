@@ -164,10 +164,11 @@ class API:
     @classmethod
     def get_pago(cls, _id):
         if API.pagos["active"]["_id"] != _id:
-            request = requests.get("http://{}:{}{}/pagos?_id={}".format(local_config.HOST,
-                                                                        str(local_config.PORT),
-                                                                        BASE_URI[1:-1],
-                                                                        str(_id)))
+            request = requests.get("http://{}:{}{}/pagos?_id={}&_blocker={}".format(local_config.HOST,
+                                                                                    str(local_config.PORT),
+                                                                                    BASE_URI[1:-1],
+                                                                                    str(_id),
+                                                                                    local_config.UUID))
             if request.status_code == 200:
                 data = json.loads(request.text)
                 if data["total"] == 1:
@@ -177,7 +178,7 @@ class API:
         return API.pagos["active"]
 
     @classmethod
-    def get_link(self, link, *, var=None):
+    def get_link(self, link, *, var=None): #Possible bug in next, prev and simmilar in payments
         request = requests.get("http://{}:{}{}".format(local_config.HOST,
                                                        str(local_config.PORT),
                                                        link))
@@ -198,17 +199,18 @@ class API:
                 filter.append("=".join((item, str(kwargs[item]))))
         filter = "&".join(filter)
         if link is None:
-            request = requests.get("http://{}:{}{}/pagos{}{}".format(local_config.HOST,
-                                                                     str(local_config.PORT),
-                                                                     BASE_URI[1:-1],
-                                                                     filter != list() and "?" or str(),
-                                                                     filter
-                                                                     ))
-        else:
+            request = requests.get("http://{}:{}{}/pagos?_blocker={}{}{}".format(local_config.HOST,
+                                                                                 str(local_config.PORT),
+                                                                                 BASE_URI[1:-1],
+                                                                                 local_config.UUID,
+                                                                                 filter != list() and "&" or str(),
+                                                                                 filter
+                                                                                 ))
+        else: #Possible Bunny
             request = requests.get("http://{}:{}{}".format(local_config.HOST,
-                                                              str(local_config.PORT),
-                                                              link
-                                                              ))
+                                                           str(local_config.PORT),
+                                                           link
+                                                           ))
         if request.status_code == 200:
             data = json.loads(request.text)
             if "_embedded" in data:
@@ -270,10 +272,6 @@ class API:
                     filter.append("=".join((item, str(kwargs[item]))))
             filter.append("_blocker={}".format(blocker))
             filter = "&".join(filter)
-            print("http://{}:{}{}/pagos?{}".format(local_config.HOST,
-                                                   str(local_config.PORT),
-                                                   BASE_URI[1:-1],
-                                                   filter))
             data = {}
             request = requests.request("NEXT",
                                        "http://{}:{}{}/pagos?{}".format(local_config.HOST,

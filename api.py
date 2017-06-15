@@ -187,7 +187,7 @@ class API:
             filter = str()
             if "?" not in link:
                 filter = "?"
-            filter += "_blocker" + str(local_config.UUID)
+            filter += "_blocker=" + str(local_config.UUID)
             request = requests.get("http://{}:{}{}{}".format(local_config.HOST,
                                                              str(local_config.PORT),
                                                              link,

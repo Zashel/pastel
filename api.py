@@ -187,6 +187,8 @@ class API:
             filter = str()
             if "?" not in link:
                 filter = "?"
+            else:
+                filter = "&"
             filter += "_blocker=" + str(local_config.UUID)
             request = requests.get("http://{}:{}{}{}".format(local_config.HOST,
                                                              str(local_config.PORT),
@@ -424,6 +426,12 @@ class API:
 
     @classmethod
     def modify_pago(cls, data):
+        if not "_blocker=" in data["link"]:
+            if "?" not in data["link"]:
+                data["link"] += "?"
+            else:
+                data["link"] += "&"
+                data["link"] += local_config.UUID
         if "link" in data:
             post_data = data.copy()
             del(post_data["link"])

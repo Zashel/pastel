@@ -93,7 +93,7 @@ if __name__ == "__main__":
                                 "pagos_id",
                                 items_per_page=local_config.ITEMS_PER_PAGE),
                   "pagos/manual",
-                  "^/pagos/<pagos__id>/manual<manual__id>$")
-    app.set_method("admin", "^/admin/<field>", GET, get_admin_config)
-    app.set_method("admin", "^/admin/<field>", PUT, set_admin_config)
+                  "^/pagos/<pagos__id>/manual/<manual__id>$")
+    app.set_method("admin", "^/admin/<field>$", GET, get_admin_config)
+    app.set_method("admin", "^/admin/<field>$", PUT, set_admin_config)
     app.run("", local_config.PORT)

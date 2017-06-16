@@ -35,7 +35,7 @@ def get_admin_config(*, filter, **kwargs):
         if field == "FACTURAS":
             dates = list()
             for date in list(final[field].keys()):
-                last_date = date.strftime("%d/%m/%Y")
+                last_date = date.strftime("%d/%m/%y")
                 final[field][last_date] = final[field][date]
                 dates.append(date)
                 del(final[field][date])
@@ -48,7 +48,7 @@ def set_admin_config(*, filter, data, **kwargs):
             if item == "FACTURAS":
                 dates = list()
                 for date in data[item]:
-                    last_date = datetime.datetime.strptime(date, "%d/%m/%Y")
+                    last_date = datetime.datetime.strptime(date, "%d/%m/%y")
                     data[item][last_date] = data[item][date]
                     dates.append(date)
                 for date in dates:

@@ -29,7 +29,7 @@ def get_admin_config(*, filter, **kwargs):
     print("ADMIN FILTER: ", filter)
     final = dict()
     for item in SHARED:
-        if item in filter:
+        if item in filter["field"]:
             print(item)
             final[item] = admin_config.get(item)
     return json.dumps(final)

@@ -84,6 +84,7 @@ class App(EasyFrame):
                                  "nombre",
                                  "id_factura",
                                  "importe",
+                                 "id_cuenta",
                                  "periodo_facturado"]
         for item in PAYMENTS_FIELDS:
             self.set_var(".".join(("pagos", item)))
@@ -270,7 +271,7 @@ class App(EasyFrame):
         row = 0
         columnspan = 4
         if "editable" in name:
-            editable = ["dni", "nombre", "id_factura", "importe", "periodo_facturado"]
+            editable = ["dni", "nombre", "id_factura", "importe", "id_cuenta", "periodo_facturado"]
             comboboxes = {"periodo_facturado": self.set_list_codes()}
         else:
             editable = list()
@@ -284,6 +285,7 @@ class App(EasyFrame):
                                       "nombre": {"text": "Nombre"},
                                       "id_factura": {"text": "ID Factura"},
                                       "importe": {"text": "Importe"},
+                                      "id_cuenta": {"text": "ID Cuenta"},
                                       "periodo_facturado": {"text": "Periodo Facturado"}},
                           #"show": {"importe": lambda x: str(x)[:-2] + "," + str(x)[-2:] + " \u20ac",
                           #         },

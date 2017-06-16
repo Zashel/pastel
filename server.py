@@ -28,10 +28,8 @@ ALL_NEXT.append(NEXT)
 def get_admin_config(*, filter, **kwargs):
     filter = json.loads(filter)
     final = dict()
-    for item in SHARED:
-        if item in filter["field"]:
-            print(item)
-            final[item] = admin_config.get(item)
+    if filter["field"] in SHARED:
+        final[filter["field"]] = admin_config.get(filter["field"])
     return json.dumps(final)
 
 def set_admin_config(*, filter, data, **kwargs):

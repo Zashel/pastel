@@ -1,3 +1,10 @@
+import builtins
+if hasattr(builtins, "server"):
+    SERVER = builtins.server
+else:
+    SERVER = False
+    import requests
+    import json
 import os
 import uuid
 import shelve
@@ -248,27 +255,48 @@ SHARED = ["PM_CUSTOMER",
 class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated myself!
     cache = dict()
     def __setattr__(self, attr, value):
-        shelf = shelve.open(os.path.join(local_config.ADMIN_DB, "config"))
         if attr in SHARED:
-            AdminConfig.cache[attr] = value
-            shelf[attr] = value
-        shelf.close()
+            if SERVER is True:
+                shelf = shelve.open(os.path.join(local_config.ADMIN_DB, "config"))
+                AdminConfig.cache[attr] = value
+                shelf[attr] = value
+                shelf.close()
+            else:
+                requests.put("http://{}:{}{}/pagos?{}".format(local_config.HOST,
+                                                              str(local_config.PORT),
+                                                              BASE_URI[1:-1],
+                                                              str(attr)),
+                             json={attr: value})
 
     def __getattr__(self, attr):
-        shelf = shelve.open(os.path.join(local_config.ADMIN_DB, "config"))
         if attr in SHARED:
-            try:
-                data = shelf[attr]
-            except KeyError:
-                if attr in AdminConfig.cache:
-                    data = AdminConfig.cache[attr]
+            if SERVER is True:
+                shelf = shelve.open(os.path.join(local_config.ADMIN_DB, "config"))
+                try:
+                    data = shelf[attr]
+                except KeyError:
+                    if attr in AdminConfig.cache:
+                        data = AdminConfig.cache[attr]
+                    else:
+                        raise
+                shelf.close()
+            else:
+                data = requests.get("http://{}:{}{}/pagos?{}".format(local_config.HOST,
+                                                                     str(local_config.PORT),
+                                                                     BASE_URI[1:-1],
+                                                                     str(attr)))
+                data = json.loads(data.text)
+                if attr in data:
+                    data = data[attr]
                 else:
-                    raise
+                    data = None
             if attr in REMOTE_PATHS:
                 return Path(data).path
             else:
                 return data
-        shelf.close()
+
+    def get(self, attr):
+        return self.__getattr__(attr)
 
     def set(self, attr, value):
         self.__setattr__(attr, value)

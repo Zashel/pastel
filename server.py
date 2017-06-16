@@ -1,11 +1,13 @@
 #! Python/pastel.exe
+import builtins
+builtins.server = True
 
 import time
 from random import randint
 
 from zrest.server import App, GET, PUT, LOAD, NEXT, ALL
 from zrest.datamodels.shelvemodels import ShelveModel, ShelveRelational, ShelveBlocking, ShelveForeign
-from definitions import local_config
+from definitions import local_config, admin_config, SHARED
 for x in range(5):
     try:
         from definitions import *
@@ -21,6 +23,19 @@ import os
 
 ALL_NEXT = list(ALL)
 ALL_NEXT.append(NEXT)
+
+def get_admin_config(*, filter, **kwargs):
+    final = dict()
+    for item in SHARED:
+        if item in filter:
+            final[item] = admin_config.get(item)
+    return final
+
+def set_admin_config(*, filter, data, **kwargs):
+    for item in data:
+        if item in SHARED:
+            admin_config.set(item, data[item])
+    return get_admin_config(filter=filter)
 
 class PASTELBlocking(ShelveBlocking): #DEPRECATED!!!!
     def __init__(self, *args, **kwargs):
@@ -79,4 +94,6 @@ if __name__ == "__main__":
                                 items_per_page=local_config.ITEMS_PER_PAGE),
                   "pagos/manual",
                   "^/pagos/<pagos__id>/manual<manual__id>$")
+    app.set_method("admin", "^/admin/<field>", GET, get_admin_config)
+    app.set_method("admin", "^/admin/<field>", PUT, set_admin_config)
     app.run("", local_config.PORT)

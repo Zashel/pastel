@@ -47,6 +47,7 @@ class App(EasyFrame):
                                                                              "pagos_pendientes.botones.guardar",
                                                                              "pagos_pendientes.botones.siguiente"])
         self.permissions["Admin"] = self.permissions["BO"] + StarredList()
+        self.permissions["Server"] = self.permissions["Admin"]
         #Widgets
         self.images = Images()
         self.set_variables()

@@ -4,6 +4,7 @@ builtins.server = True
 
 import time
 from random import randint
+import json
 
 from zrest.server import App, GET, PUT, LOAD, NEXT, ALL
 from zrest.datamodels.shelvemodels import ShelveModel, ShelveRelational, ShelveBlocking, ShelveForeign

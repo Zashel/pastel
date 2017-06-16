@@ -3,8 +3,10 @@ if hasattr(builtins, "server"):
     SERVER = builtins.server
 else:
     SERVER = False
-    import requests
+    import requests as reqs
     import json
+    requests = reqs.session()
+    requests.trust_env = False
 import os
 import uuid
 import shelve

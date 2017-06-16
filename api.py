@@ -233,6 +233,7 @@ class API:
                 for link in ("self", "next", "prev", "first", "last"):
                     if link in data["_links"]:
                         API.pagos[link] = data["_links"][link]["href"]
+                        print(data["_links"][link]["href"])
                         page = re.findall(r"(?<!_)page=([0-9]{1,20})", data["_links"][link]["href"]) #TODO: Review this!
                         print("PAGE ", page)
                         if len(page) > 0:

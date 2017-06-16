@@ -165,7 +165,6 @@ class LocalConfig: #To a dynamic access -> change API
         if attr in LOCAL:
             LocalConfig.cache[attr] = value
             if attr == "UUID":
-                UUID = value
                 shelf["UUID-timeout"] = datetime.datetime.now() + datetime.timedelta(hours=8)
             else:
                 shelf[attr] = value
@@ -174,6 +173,8 @@ class LocalConfig: #To a dynamic access -> change API
     def __getattr__(self, attr):
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         if attr in LOCAL:
+            if attr == "UUID":
+                return UUID
             try:
                 data = shelf[attr]
             except KeyError:
@@ -195,7 +196,6 @@ class LocalConfig: #To a dynamic access -> change API
                 if attr == "UUID":
                     try:
                         timeout = shelf["UUID-timeout"]
-                        return UUID
                     except KeyError:
                         if "UUID-timeout" in LocalConfig.cache:
                             timeout = LocalConfig.cache["UUID-timeout"]

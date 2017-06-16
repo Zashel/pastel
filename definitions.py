@@ -286,6 +286,7 @@ class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated mys
                                                                      BASE_URI[1:-1],
                                                                      str(attr)))
                 data = json.loads(data.text)
+                print(data)
                 if attr in data:
                     data = data[attr]
                 else:

@@ -26,7 +26,7 @@ ALL_NEXT = list(ALL)
 ALL_NEXT.append(NEXT)
 
 def get_admin_config(*, filter, **kwargs):
-    print("ADMIN FILTER: ", filter)
+    filter = json.loads(filter)
     final = dict()
     for item in SHARED:
         if item in filter["field"]:
@@ -35,6 +35,7 @@ def get_admin_config(*, filter, **kwargs):
     return json.dumps(final)
 
 def set_admin_config(*, filter, data, **kwargs):
+    data = data.loads(data)
     for item in data:
         if item in SHARED:
             admin_config.set(item, data[item])

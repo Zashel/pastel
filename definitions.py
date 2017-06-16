@@ -220,7 +220,7 @@ class LocalConfig: #To a dynamic access -> change API
 
 local_config = LocalConfig()
 
-local_config.set_default("HOST", "localhost")
+local_config.set_default("HOST", "172.16.138.70")
 local_config.set_default("PORT", 44752)
 local_config.set_default("INIT_SERVER_STARTUP", True)
 local_config.set_default("PATH", PATH)
@@ -270,6 +270,7 @@ class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated mys
 
     def __getattr__(self, attr):
         if attr in SHARED:
+            data = {}
             if SERVER is True:
                 shelf = shelve.open(os.path.join(local_config.ADMIN_DB, "config"))
                 try:
@@ -299,6 +300,8 @@ class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated mys
                 return Path(data).path
             else:
                 return data
+        else:
+            return {}
 
     def get(self, attr):
         return self.__getattr__(attr)

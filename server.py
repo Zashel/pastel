@@ -29,7 +29,10 @@ def get_admin_config(*, filter, **kwargs):
     filter = json.loads(filter)
     print("Admin: ", filter)
     final = dict()
-    if filter["field"] in SHARED:
+    if ("field" in filter and filter["field"] == "") or "field" not in filter:
+        for field in SHARED:
+            final[field] = admin_config.get(field)
+    elif filter["field"] in SHARED:
         final[filter["field"]] = admin_config.get(filter["field"])
     for field in final:
         if field == "FACTURAS":

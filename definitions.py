@@ -256,6 +256,12 @@ SHARED = ["PM_CUSTOMER",
 
 class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated myself!
     cache = dict()
+    def __init__(self):
+        if SERVER is False:
+            AdminConfig.cache.update(json.loads("http://{}:{}{}/admin".format(local_config.HOST,
+                                                                         str(local_config.PORT),
+                                                                         BASE_URI[1:-1]).text))
+
     def __setattr__(self, attr, value):
         if attr in SHARED:
             if SERVER is True:
@@ -284,18 +290,13 @@ class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated mys
                         raise
                 shelf.close()
             else:
-                print("http://{}:{}{}/admin/{}".format(local_config.HOST,
-                                                                     str(local_config.PORT),
-                                                                     BASE_URI[1:-1],
-                                                                     str(attr)))
-                data = requests.get("http://{}:{}{}/admin/{}".format(local_config.HOST,
-                                                                     str(local_config.PORT),
-                                                                     BASE_URI[1:-1],
-                                                                     str(attr)))
-                data = json.loads(data.text)
-                print(data)
-                if attr in data:
-                    data = data[attr]
+                #data = requests.get("http://{}:{}{}/admin/{}".format(local_config.HOST,
+                #                                                     str(local_config.PORT),
+                #                                                     BASE_URI[1:-1],
+                #                                                     str(attr)))
+                #data = json.loads(data.text)
+                if attr in AdminConfig.cache:
+                    data = AdminConfig.cache[attr]
                 else:
                     data = None
             if attr in REMOTE_PATHS:

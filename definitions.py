@@ -258,9 +258,9 @@ class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated mys
     cache = dict()
     def __init__(self):
         if SERVER is False:
-            AdminConfig.cache.update(json.loads("http://{}:{}{}/admin".format(local_config.HOST,
-                                                                         str(local_config.PORT),
-                                                                         BASE_URI[1:-1]).text))
+            AdminConfig.cache.update(json.loads(requests.get("http://{}:{}{}/admin".format(local_config.HOST,
+                                                                                           str(local_config.PORT),
+                                                                                           BASE_URI[1:-1]).text)))
 
     def __setattr__(self, attr, value):
         if attr in SHARED:

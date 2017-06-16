@@ -6,6 +6,7 @@ import getpass
 from zashel.utils import search_win_drive
 
 UUID = uuid.uuid4()
+print(UUID)
 
 #STATIC Variables, not configurable
 

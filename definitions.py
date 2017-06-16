@@ -5,6 +5,7 @@ import datetime
 import getpass
 from zashel.utils import search_win_drive
 
+UUID = uuid.uuid4()
 
 #STATIC Variables, not configurable
 
@@ -158,10 +159,12 @@ REMOTE_PATHS = ["PATH",
 class LocalConfig: #To a dynamic access -> change API
     cache = dict()
     def __setattr__(self, attr, value):
+        global UUID
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         if attr in LOCAL:
             LocalConfig.cache[attr] = value
             if attr == "UUID":
+                UUID = value
                 shelf["UUID-timeout"] = datetime.datetime.now() + datetime.timedelta(hours=8)
             else:
                 shelf[attr] = value
@@ -191,6 +194,7 @@ class LocalConfig: #To a dynamic access -> change API
                 if attr == "UUID":
                     try:
                         timeout = shelf["UUID-timeout"]
+                        return UUID
                     except KeyError:
                         if "UUID-timeout" in LocalConfig.cache:
                             timeout = LocalConfig.cache["UUID-timeout"]

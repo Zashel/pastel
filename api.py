@@ -13,7 +13,7 @@ for x in range(5):
     except (KeyboardInterrupt, SystemExit):
         raise
     except:
-        continue
+        raise
 
 from zashel.utils import daemonize
 from queue import Queue, Empty

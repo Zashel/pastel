@@ -25,6 +25,7 @@ ALL_NEXT = list(ALL)
 ALL_NEXT.append(NEXT)
 
 def get_admin_config(*, filter, **kwargs):
+    print("ADMIN FILTER: ", filter)
     final = dict()
     for item in SHARED:
         if item in filter:

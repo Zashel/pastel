@@ -302,10 +302,11 @@ class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated mys
         self.__setattr__(attr, value)
 
     def set_default(self, attr, default):
-        shelf = shelve.open(os.path.join(local_config.ADMIN_DB, "config"))
-        if attr in SHARED and attr not in shelf:
-            self.set(attr, default)
-        shelf.close()
+        if SERVER is True:
+            shelf = shelve.open(os.path.join(local_config.ADMIN_DB, "config"))
+            if attr in SHARED and attr not in shelf:
+                self.set(attr, default)
+            shelf.close()
         return self.__getattr__(attr.lower())
 
 admin_config = AdminConfig()

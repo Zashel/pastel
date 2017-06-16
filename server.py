@@ -31,12 +31,29 @@ def get_admin_config(*, filter, **kwargs):
     final = dict()
     if filter["field"] in SHARED:
         final[filter["field"]] = admin_config.get(filter["field"])
+    for field in final:
+        if field == "FACTURAS":
+            dates = list()
+            for date in final[field]:
+                last_date = date.strftime("%d/%m/%Y")
+                final[field][last_date] = final[field][date]
+                dates.append(date)
+            for date in dates:
+                del(final[field][date])
     return json.dumps(final)
 
 def set_admin_config(*, filter, data, **kwargs):
     data = data.loads(data)
     for item in data:
         if item in SHARED:
+            if item == "FACTURAS":
+                dates = list()
+                for date in data[item]:
+                    last_date = datetime.datetime.strptime(date, "%d/%m/%Y")
+                    data[item][last_date] = data[item][date]
+                    dates.append(date)
+                for date in dates:
+                    del (data[item][date])
             admin_config.set(item, data[item])
     return get_admin_config(filter=filter)
 

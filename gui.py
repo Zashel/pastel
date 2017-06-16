@@ -77,6 +77,7 @@ class App(EasyFrame):
                                  "id_factura",
                                  "fecha_operacion",
                                  "importe",
+                                 "id_cuenta",
                                  "periodo_facturado",
                                  "metodo",
                                  "via"]

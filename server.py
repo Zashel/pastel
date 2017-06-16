@@ -34,11 +34,10 @@ def get_admin_config(*, filter, **kwargs):
     for field in final:
         if field == "FACTURAS":
             dates = list()
-            for date in final[field]:
+            for date in list(final[field].keys()):
                 last_date = date.strftime("%d/%m/%Y")
                 final[field][last_date] = final[field][date]
                 dates.append(date)
-            for date in dates:
                 del(final[field][date])
     return json.dumps(final)
 

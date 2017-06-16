@@ -27,6 +27,7 @@ ALL_NEXT.append(NEXT)
 
 def get_admin_config(*, filter, **kwargs):
     filter = json.loads(filter)
+    print("Admin: ", filter)
     final = dict()
     if filter["field"] in SHARED:
         final[filter["field"]] = admin_config.get(filter["field"])

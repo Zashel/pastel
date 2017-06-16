@@ -281,7 +281,7 @@ class AdminConfig: #To a dynamic access -> change API -> Shit, I've repeated mys
                         raise
                 shelf.close()
             else:
-                data = requests.get("http://{}:{}{}/pagos?{}".format(local_config.HOST,
+                data = requests.get("http://{}:{}{}/admin?{}".format(local_config.HOST,
                                                                      str(local_config.PORT),
                                                                      BASE_URI[1:-1],
                                                                      str(attr)))

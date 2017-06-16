@@ -5,9 +5,6 @@ import datetime
 import getpass
 from zashel.utils import search_win_drive
 
-UUID = uuid.uuid4()
-print(UUID)
-
 #STATIC Variables, not configurable
 
 STATIC = ["USERS_FIELDS",
@@ -160,7 +157,6 @@ REMOTE_PATHS = ["PATH",
 class LocalConfig: #To a dynamic access -> change API
     cache = dict()
     def __setattr__(self, attr, value):
-        global UUID
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         if attr in LOCAL:
             LocalConfig.cache[attr] = value
@@ -173,8 +169,6 @@ class LocalConfig: #To a dynamic access -> change API
     def __getattr__(self, attr):
         shelf = shelve.open(os.path.join(LOCAL_CONFIG, "config"))
         if attr in LOCAL:
-            if attr == "UUID":
-                return UUID
             try:
                 data = shelf[attr]
             except KeyError:

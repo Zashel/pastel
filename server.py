@@ -30,8 +30,8 @@ def get_admin_config(*, filter, **kwargs):
     final = dict()
     for item in SHARED:
         if item in filter:
+            print(item)
             final[item] = admin_config.get(item)
-    print(final)
     return json.dumps(final)
 
 def set_admin_config(*, filter, data, **kwargs):

@@ -409,8 +409,8 @@ class EasyFrame(Frame):
     def activate_tree_item(self, category, event):
         tree = self.tree[category]["tree"]
         item = tree.selection()[0]
-        template = self.tree[category]["template"]
-        for field in template:
+        #template = self.tree[category]["template"]
+        for field in self.tree[category]["data"][item]:
             self.set_var(".".join((category, str(field))), self.tree[category]["data"][item][field])
 
     def changed_active_tree_item(self, variable, void, method, *, var_name):

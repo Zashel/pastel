@@ -45,7 +45,7 @@ def get_admin_config(*, filter, **kwargs):
     return json.dumps(final)
 
 def set_admin_config(*, filter, data, **kwargs):
-    data = data.loads(data)
+    data = json.loads(data)
     for item in data:
         if item in SHARED:
             if item == "FACTURAS":

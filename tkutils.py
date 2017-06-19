@@ -459,12 +459,13 @@ class EasyFrame(Frame):
         assert category in self.tree
         self.del_tree_data(category)
         if type(data) in (list, tuple):
-            final = OrderedDict()
+            final = dict()
             for index, item in enumerate(data):
                 final[index] = item
             data = final
         if order is None:
             order = data.keys()
+            order.sort()
         else:
             assert all([item in data for item in order])
         print("Order: ", order)

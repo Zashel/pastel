@@ -865,7 +865,7 @@ class App(EasyFrame):
                             message="Procedemos a cargar el pari. Es un proceso lento, por favor, ten paciencia.")
         file = API.set_pari()
         messagebox.showinfo(title="Terminado",
-                            message="Pari Cargado en ruta. Resúmen en ruta {}".format(file))
+                            message="Pari Cargado. Resumen en ruta".format(file))
 
     def set_ism(self, *args, **kwargs):
         self.disable_all()

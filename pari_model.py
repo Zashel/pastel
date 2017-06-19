@@ -89,11 +89,13 @@ class Pari(RestfulBaseInterface):
                     yield {"data": final}
 
     def set_pari(self, pari_file, *, do_export=True, do_report=True):
+        print("Setting PARI")
         if pari_file == "":
             files =  glob.glob("{}*.csv".format(os.path.join(admin_config.N43_PATH_INCOMING, "BI_131_FICHERO_PARI_DIARIO")))
             files.sort()
             files.reverse()
             pari_file = files[0]
+        print("PARI_FILE ", pari_file)
         API_id_factura = {"_heads": ["fecha_factura",
                                      "importe_adeudado",
                                      "estado_recibo",

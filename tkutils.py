@@ -418,6 +418,7 @@ class EasyFrame(Frame):
         tree = self.tree[category]["tree"]
         try:
             item = tree.selection()[0]
+            print(tree.selection())
             data = self.get_var(var_name).get()
             if item not in self.tree[category]["data"]:
                 self.tree[category]["data"][item] = dict()

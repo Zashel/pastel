@@ -461,7 +461,7 @@ class EasyFrame(Frame):
         if type(data) in (list, tuple):
             final = OrderedDict()
             for index, item in enumerate(data):
-                final[str(index)] = item
+                final[str(index+1)] = item
             data = final
         if order is None:
             order = list(data.keys())

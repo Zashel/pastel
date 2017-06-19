@@ -506,7 +506,8 @@ class App(EasyFrame):
                command=self.load_users_tree).grid(column=0, row=0)
         Button(self.usuarios.botones, text="Guardar", name="guardar",
                command=self.save_users_tree).grid(column=1, row=0)
-        Button(self.usuarios.botones, text="Salir", name="salir").grid(column=2, row=0)
+        Button(self.usuarios.botones, text="Salir", name="salir",
+               command=self.show_home).grid(column=2, row=0)
 
     #Users Configuration Related
     def load_users_tree(self):

@@ -459,7 +459,7 @@ class EasyFrame(Frame):
         self.del_tree_data(category)
         if type(data) in (list, tuple):
             final = OrderedDict()
-            for index, item in data:
+            for index, item in enumerate(data):
                 final[index] = item
             data = final
         if order is None:

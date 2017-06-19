@@ -89,6 +89,11 @@ class Pari(RestfulBaseInterface):
                     yield {"data": final}
 
     def set_pari(self, pari_file, *, do_export=True, do_report=True):
+        if pari_file == "":
+            files =  glob.glob("{}*.csv".format(os.path.join(admin_config.N43_PATH_INCOMING, "BI_131_FICHERO_PARI_DIARIO")))
+            files.sort()
+            files.reverse()
+            pari_file = files[0]
         API_id_factura = {"_heads": ["fecha_factura",
                                      "importe_adeudado",
                                      "estado_recibo",
@@ -252,6 +257,40 @@ class Pari(RestfulBaseInterface):
                                        "jazztel_ciclo_" + str_fecha_factura.strftime("%Y-%m-%d") + ".csv"),
                           "w") as f:
                     f.write("\n".join(diario[fecha_factura]))
+        ife = data["importes por fechas y estados"]
+        ffe = data["facturas por fechas y estados"]
+        dfe = data["devoluciones por fechas y estados"]
+        segmentos = list(ife.keys())
+        segmentos.sort()
+        assert len(segmentos) > 0
+        fechas = list(ife[segmentos[0]].keys())
+        fechas.sort()
+        assert len(fechas) > 0
+        estados = list(ife[segmentos[0]][fechas[0]].keys())
+        estados.sort()
+        assert len(estados) > 0
+        heads = "segmento;fecha_factura;estado;facturas;importe_devuelto;importe_impagado\n"
+        name = os.path.split(pari_file)[1].strip("BI_131_FICHERO_PARI_DIARIO")
+        name = "report_pari_{}".format(name)
+        if do_report is True:  # Set in server
+            with open(os.path.join(admin_config.REPORT_PATH, "Pari", name), "w") as f:
+                f.write(heads)
+                for segmento in segmentos:
+                    for fecha in fechas:
+                        for estado in estados:
+                            fecha_str = datetime.datetime.strptime(fecha, "%d/%m/%y").strftime("%d/%m/%Y")
+                            facturas = str(ffe[segmento][fecha][estado])
+                            importe_devuelto = str(dfe[segmento][fecha][estado])
+                            importe_devuelto = "{},{}".format(importe_devuelto[:-2], importe_devuelto[-2:])
+                            importe_impagado = str(ife[segmento][fecha][estado])
+                            importe_impagado = "{},{}".format(importe_impagado[:-2], importe_impagado[-2:])
+                            f.write(";".join((segmento,
+                                              fecha_str,
+                                              estado,
+                                              facturas,
+                                              importe_devuelto,
+                                              importe_impagado
+                                              )) + "\n")
 
     def read_n43(self, filepath):
         if os.path.exists(filepath):
@@ -605,7 +644,7 @@ class Pari(RestfulBaseInterface):
                 do_export = filter["do_export"] == "1"
             if "do_report" in kwargs["filter"]:
                 do_report = filter["do_report"] == "1"
-        if self.loaded_file is None and "file" in data and os.path.exists(data["file"]):
+        if self.loaded_file is None and "file" in data:
             for item in self.set_pari(data["file"], do_export=do_export, do_report=do_report):
                 print("\r{0:{w}}".format(str(item["eta"]), w=79, fill=" "), end="")
             print()

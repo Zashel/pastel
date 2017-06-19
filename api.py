@@ -546,54 +546,15 @@ class API:
     @classmethod
     def set_pari(cls, filename=None, *, do_report=True, do_export=True):
         if filename is None:
-            files =  glob.glob("{}*.csv".format(os.path.join(admin_config.N43_PATH_INCOMING, "BI_131_FICHERO_PARI_DIARIO")))
-            files.sort()
-            files.reverse()
-        else:
-            files = [filename]
-        if len(files) > 0:
-            data = requests.put("http://{}:{}{}/facturas?do_report={}&do_export={}".format(local_config.HOST,
-                                                                                           str(local_config.PORT),
-                                                                                           BASE_URI[1:-1],
-                                                                                           do_report and 1 or 0,
-                                                                                           do_export and 1 or 0),
-                                json = {"file": files[0]})
-            data = json.loads(data.text)["data"]
-            ife = data["importes por fechas y estados"]
-            ffe = data["facturas por fechas y estados"]
-            dfe = data["devoluciones por fechas y estados"]
-            segmentos = list(ife.keys())
-            segmentos.sort()
-            assert len(segmentos) > 0
-            fechas = list(ife[segmentos[0]].keys())
-            fechas.sort()
-            assert len(fechas) > 0
-            estados = list(ife[segmentos[0]][fechas[0]].keys())
-            estados.sort()
-            assert len(estados) > 0
-            heads = "segmento;fecha_factura;estado;facturas;importe_devuelto;importe_impagado\n"
-            name = os.path.split(files[0])[1].strip("BI_131_FICHERO_PARI_DIARIO")
-            name = "report_pari_{}".format(name)
-            if do_report is True:
-                with open(os.path.join(admin_config.REPORT_PATH, "Pari", name), "w") as f:
-                    f.write(heads)
-                    for segmento in segmentos:
-                        for fecha in fechas:
-                            for estado in estados:
-                                fecha_str = datetime.datetime.strptime(fecha, "%d/%m/%y").strftime("%d/%m/%Y")
-                                facturas = str(ffe[segmento][fecha][estado])
-                                importe_devuelto = str(dfe[segmento][fecha][estado])
-                                importe_devuelto = "{},{}".format(importe_devuelto[:-2], importe_devuelto[-2:])
-                                importe_impagado = str(ife[segmento][fecha][estado])
-                                importe_impagado = "{},{}".format(importe_impagado[:-2], importe_impagado[-2:])
-                                f.write(";".join((segmento,
-                                                  fecha_str,
-                                                  estado,
-                                                  facturas,
-                                                  importe_devuelto,
-                                                  importe_impagado
-                                                  ))+"\n")
-            return os.path.join(admin_config.REPORT_PATH, "Pari", name)
+            filename = ""
+        data = requests.put("http://{}:{}{}/facturas?do_report={}&do_export={}".format(local_config.HOST,
+                                                                                       str(local_config.PORT),
+                                                                                       BASE_URI[1:-1],
+                                                                                       do_report and 1 or 0,
+                                                                                       do_export and 1 or 0),
+                            json = {"file": filename})
+        data = json.loads(data.text)["data"]
+        return data
 
     @classmethod
     def export_unpaid_by_invoice_date(cls, dates):

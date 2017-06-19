@@ -486,13 +486,13 @@ class App(EasyFrame):
         default_config = {"columns": {"width": 100},
                           "heading": {"id": {"text": "ID"},
                                       "role": {"text": "Rol"},
-                                      "nombre": {"text": "Nombre"}},
+                                      "fullname": {"text": "Nombre"}},
                           "column": {"#0":{"width": 20},
-                                     "nombre": {"width": 250}},
-                          "editable": ["id", "role", "nombre"],
+                                     "fullname": {"width": 250}},
+                          "editable": ["id", "role", "fullname"],
                           "comboboxes": {"role": ["BO", "Admin"]}
                           }
-        self.TreeView("usuarios", ["id", "role", "nombre"], frame,
+        self.TreeView("usuarios", ["id", "role", "fullname"], frame,
                       default_config=default_config, yscroll=True, name="vista").pack()
         Frame(frame, name="navigator").pack()
         def append_new(self, *args, **kwargs):

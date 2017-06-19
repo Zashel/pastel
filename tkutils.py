@@ -467,6 +467,7 @@ class EasyFrame(Frame):
             order = data.keys()
         else:
             assert all([item in data for item in order])
+        print("Order: ", order)
         for item in order:
             if item in data:
                 self.append_to_tree_data(category, item, data[item])

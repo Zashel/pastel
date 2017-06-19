@@ -337,7 +337,8 @@ class EasyFrame(Frame):
                                "data": dict(),
                                "tree": tree,
                                "show": show,
-                               "validate": validate}
+                               "validate": validate,
+                               "changed": list()}
         for column in columns+["#0"]:
             if column != "#0":
                 self.set_var(".".join((category, str(column))), None, w=self.changed_active_tree_item)
@@ -424,6 +425,16 @@ class EasyFrame(Frame):
                 self.tree[category]["data"][item] = dict()
             self.tree[category]["data"][item][name] = self.tree[category]["validate"][name](data)
             tree.set(item, name, self.tree[category]["show"][name](data))
+            self.tree[category]["changed"].append(item)
+        except IndexError:
+            pass
+
+    def get_changed_tree_data(self, category):
+        return [self.tree[category]["data"][item] for item in self.tree[category]["changed"]]
+
+    def del_changed_tree_data(self, category):
+        try:
+            self.tree[category]["changed"] = list()
         except IndexError:
             pass
 

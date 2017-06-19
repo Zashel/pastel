@@ -487,7 +487,7 @@ class App(EasyFrame):
                           "heading": {"id": {"text": "ID"},
                                       "role": {"text": "Rol"},
                                       "fullname": {"text": "Nombre"}},
-                          "column": {"#0":{"width": 20},
+                          "column": {"#0":{"width": 30},
                                      "fullname": {"width": 250}},
                           "editable": ["id", "role", "fullname"],
                           "comboboxes": {"role": ["BO", "Admin"]}

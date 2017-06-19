@@ -428,10 +428,13 @@ class App(EasyFrame):
         self.payment_posibles_frame(pending_payment_frame, "editable_posibles").pack()
         button_frame_payment_pending = Frame(pending_payment_frame)
         button_frame_payment_pending.pack()
+        def unlock_and_close(self):
+            API.unblock_all_pagos()
+            self.show_payments_tree
         Label(button_frame_payment_pending, textvariable=self.set_var("gui.pagos_pendientes"),
               name="informacion").grid(column=0, row=0, sticky=W)
         Button(button_frame_payment_pending, text="Cerrar",
-               command=self.show_payments_tree, name="cerrar").grid(column=1, row=0, sticky=E)
+               command=partial(unlock_and_close, self), name="cerrar").grid(column=1, row=0, sticky=E)
         Button(button_frame_payment_pending, text="Guardar",
                command=self.save_pagos_pendiente, name="guardar").grid(column=2, row=0, sticky=E)
         Button(button_frame_payment_pending, text="Siguiente",

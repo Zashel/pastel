@@ -345,6 +345,13 @@ class API:
                                                                                 blocker))
 
     @classmethod
+    def unblock_all_pagos(cls, **kwargs):
+        blocker = local_config.UUID
+        request = requests.get("http://{}:{}/pagos?unblock=True&_blocker={}".format(local_config.HOST,
+                                                                                str(local_config.PORT),
+                                                                                blocker))
+
+    @classmethod
     def get_pagos_list(cls, link=None):
         if link not in API.pagos:
             return API.pagos["cache"]

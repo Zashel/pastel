@@ -637,7 +637,8 @@ class Pari(RestfulBaseInterface):
             print("Final: {}".format(final))
             raise
 
-    def insert(self, data, **kwargs): #TODO: Move to Server
+    def insert(self, data, **kwargs):
+        print(data)
         do_export = False
         do_report = False
         if "filter" in kwargs:

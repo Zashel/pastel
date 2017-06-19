@@ -537,7 +537,7 @@ class Pari(RestfulBaseInterface):
             os.makedirs(os.path.join(admin_config.REPORT_PATH, "ISM"), exist_ok=True)
             informe["pendiente"]["operaciones"] = informe["total"]["operaciones"] - informe["aplicado"]["operaciones"]
             informe["pendiente"]["importe"] = informe["total"]["importe"] - informe["aplicado"]["importe"]
-            final_informe = "estado;operaciones;importe"
+            final_informe = "estado;operaciones;importe\n"
             final_informe += "\n".join([";".join((estado,
                                                   str(informe[estado]["operaciones"]),
                                                   str(informe[estado]["importe"]/100).replace(".", ",")))

@@ -409,6 +409,7 @@ class EasyFrame(Frame):
     def activate_tree_item(self, category, event):
         tree = self.tree[category]["tree"]
         item = tree.selection()[0]
+        print(tree.selection())
         #template = self.tree[category]["template"]
         for field in self.tree[category]["data"][item]:
             self.set_var(".".join((category, str(field))), self.tree[category]["data"][item][field])
@@ -418,7 +419,6 @@ class EasyFrame(Frame):
         tree = self.tree[category]["tree"]
         try:
             item = tree.selection()[0]
-            print(tree.selection())
             data = self.get_var(var_name).get()
             if item not in self.tree[category]["data"]:
                 self.tree[category]["data"][item] = dict()

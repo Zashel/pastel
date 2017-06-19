@@ -89,13 +89,6 @@ class Pari(RestfulBaseInterface):
                     yield {"data": final}
 
     def set_pari(self, pari_file, *, do_export=True, do_report=True):
-        print("Setting PARI")
-        if pari_file == "":
-            files =  glob.glob("{}*.csv".format(os.path.join(admin_config.N43_PATH_INCOMING, "BI_131_FICHERO_PARI_DIARIO")))
-            files.sort()
-            files.reverse()
-            pari_file = files[0]
-        print("PARI_FILE ", pari_file)
         API_id_factura = {"_heads": ["fecha_factura",
                                      "importe_adeudado",
                                      "estado_recibo",
@@ -590,7 +583,13 @@ class Pari(RestfulBaseInterface):
             yield {"manuals": manuals, "anulaciones": anulaciones}
 
     def replace(self, filter, data, **kwargs):
-        if "file" in data and os.path.exists(data["file"]):
+        if "file" in data:
+            if data["file"] == str():
+                files = glob.glob(
+                    "{}*.csv".format(os.path.join(admin_config.N43_PATH_INCOMING, "BI_131_FICHERO_PARI_DIARIO")))
+                files.sort()
+                files.reverse()
+                data["file"] = files[0]
             path, name = os.path.split(data["file"])
             if ("file" in self.shelf and name > self.shelf["file"]) or "file" not in self.shelf:
                 self.drop(filter, **kwargs)
@@ -638,7 +637,6 @@ class Pari(RestfulBaseInterface):
             raise
 
     def insert(self, data, **kwargs):
-        print(data)
         do_export = False
         do_report = False
         if "filter" in kwargs:

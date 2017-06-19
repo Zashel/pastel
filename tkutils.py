@@ -425,7 +425,8 @@ class EasyFrame(Frame):
                 self.tree[category]["data"][item] = dict()
             self.tree[category]["data"][item][name] = self.tree[category]["validate"][name](data)
             tree.set(item, name, self.tree[category]["show"][name](data))
-            self.tree[category]["changed"].append(item)
+            if item not in self.tree[category]["changed"]:
+                self.tree[category]["changed"].append(item)
         except IndexError:
             pass
 

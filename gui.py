@@ -506,6 +506,11 @@ class App(EasyFrame):
         Button(self.usuarios.botones, text="Guardar", name="guardar").grid(column=1, row=0)
         Button(self.usuarios.botones, text="Salir", name="salir").grid(column=2, row=0)
 
+    #Users Configuration Related
+    def load_users_tree(self):
+        data = API.get_all_usuarios()
+        self.set_tree_data("usuarios", data)
+
     #Manual Review Related
     def load_review_manuals_tree(self):
         filter = dict()

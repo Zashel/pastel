@@ -628,14 +628,25 @@ class API:
 
     #Usuario
     @classmethod
+    def get_all_usuarios(cls):
+        request = requests.get("http://{}:{}{}/usuarios?items_per_page=1000".format(local_config.HOST,
+                                                                                    str(local_config.PORT),
+                                                                                    BASE_URI[1:-1]))
+        if request.status_code == 200:
+            data = json.loads(requests.text)
+            if "_embedded" in data:
+                data = data["_embedded"]["usuarios"]
+            else:
+                data = [data]
+            return data
+
+    @classmethod
     def get_usuario(cls, identifier):
         request = requests.get("http://{}:{}{}/usuarios?id={}".format(local_config.HOST,
                                                                       str(local_config.PORT),
                                                                       BASE_URI[1:-1],
                                                                       identifier
                                                                       ))
-        print(request.status_code)
-        print(request.text)
         if request.status_code == 200:
             data = json.loads(request.text)
             return {"id": data["id"],

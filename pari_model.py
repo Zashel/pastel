@@ -386,7 +386,7 @@ class Pari(RestfulBaseInterface):
             print("Cleaning")
             gc.collect()
             account_number = ["018239990014690035"] #TODO: set in shitty config
-            account_ventanillas = ["01823999340202055004"]
+            account_ventanillas = ["018239990202055004"]
             if not "aplicados" in self.shelf:
                 self.shelf["aplicados"] = dict()
             applied = dict(self.shelf["aplicados"])
@@ -535,8 +535,12 @@ class Pari(RestfulBaseInterface):
                       "w") as f:
                 f.write("\n".join(final))
             os.makedirs(os.path.join(admin_config.REPORT_PATH, "ISM"), exist_ok=True)
+            informe["pendiente"]["operaciones"] = informe["total"]["operaciones"] - informe["aplicado"]["operaciones"]
+            informe["pendiente"]["importe"] = informe["total"]["importe"] - informe["aplicado"]["importe"]
             final_informe = "estado;operaciones;importe"
-            final_informe += "\n".join([";".join((estado, str(informe[estado]["operaciones"]), str(informe[estado]["importe"])))
+            final_informe += "\n".join([";".join((estado,
+                                                  str(informe[estado]["operaciones"]),
+                                                  str(informe[estado]["importe"]/100).replace(".", ",")))
                                         for estado in informe])
             with open(os.path.join(admin_config.REPORT_PATH, "ISM",
                                    "informe_ism_{}.csv".format(apply_date.replace("/", "-"))),

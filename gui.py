@@ -502,7 +502,8 @@ class App(EasyFrame):
         self.ImageButton(self.usuarios.navigator, self.images.add, name="add",
                          command=partial(append_new, self)).grid(column=2, row=0, sticky=E)
         Frame(frame, name="botones").pack()
-        Button(self.usuarios.botones, text="Actualizar", name="actualizar").grid(column=0, row=0)
+        Button(self.usuarios.botones, text="Actualizar", name="actualizar",
+               command=self.load_users_tree).grid(column=0, row=0)
         Button(self.usuarios.botones, text="Guardar", name="guardar").grid(column=1, row=0)
         Button(self.usuarios.botones, text="Salir", name="salir").grid(column=2, row=0)
 

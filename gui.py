@@ -504,13 +504,19 @@ class App(EasyFrame):
         Frame(frame, name="botones").pack()
         Button(self.usuarios.botones, text="Actualizar", name="actualizar",
                command=self.load_users_tree).grid(column=0, row=0)
-        Button(self.usuarios.botones, text="Guardar", name="guardar").grid(column=1, row=0)
+        Button(self.usuarios.botones, text="Guardar", name="guardar",
+               command=self.save_users_tree).grid(column=1, row=0)
         Button(self.usuarios.botones, text="Salir", name="salir").grid(column=2, row=0)
 
     #Users Configuration Related
     def load_users_tree(self):
         data = API.get_all_usuarios()
         self.set_tree_data("usuarios", data)
+
+    def save_users_tree(self):
+        for item in self.get_changed_tree_data("usuarios"):
+            API.set_usuario(item["id"], item["role"], item["fullname"])
+        self.del_changed_tree_data("usuarios")
 
     #Manual Review Related
     def load_review_manuals_tree(self):

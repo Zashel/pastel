@@ -3,6 +3,7 @@ from tkinter.ttk import *
 from tkinter.font import Font, nametofont
 from functools import partial
 from zashel.utils import copy, paste, log
+from collections import OrderedDict
 import gc
 
 __all__ = ["TkVars",
@@ -456,6 +457,11 @@ class EasyFrame(Frame):
     def set_tree_data(self, category, data, order=None):
         assert category in self.tree
         self.del_tree_data(category)
+        if type(data) in (list, tuple):
+            final = OrderedDict()
+            for index, item in data:
+                final[index] = item
+            data = final
         if order is None:
             order = data.keys()
         else:

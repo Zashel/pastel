@@ -633,7 +633,7 @@ class API:
                                                                                     str(local_config.PORT),
                                                                                     BASE_URI[1:-1]))
         if request.status_code == 200:
-            data = json.loads(requests.text)
+            data = json.loads(request.text)
             if "_embedded" in data:
                 data = data["_embedded"]["usuarios"]
             else:

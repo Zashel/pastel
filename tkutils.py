@@ -464,7 +464,7 @@ class EasyFrame(Frame):
                 final[index] = item
             data = final
         if order is None:
-            order = data.keys()
+            order = list(data.keys())
             order.sort()
         else:
             assert all([item in data for item in order])

@@ -248,10 +248,21 @@ class Pari(RestfulBaseInterface):
         if do_export is True:
             for fecha_factura in diario:
                 str_fecha_factura = datetime.datetime.strptime(fecha_factura, "%d/%m/%y")
-                with open(os.path.join(admin_config.DAILY_EXPORT_PATH,
-                                       "jazztel_ciclo_" + str_fecha_factura.strftime("%Y-%m-%d") + ".csv"),
-                          "w") as f:
-                    f.write("\n".join(diario[fecha_factura]))
+                trying = 0
+                while True:
+                    if trying > 0:
+                        ache = " ({})".format(str(trying))
+                    else:
+                        ache = ""
+                    try:
+                        with open(os.path.join(admin_config.DAILY_EXPORT_PATH,
+                                               "jazztel_ciclo_"+str_fecha_factura.strftime("%Y-%m-%d")+ache+".csv"),
+                                  "w") as f:
+                            f.write("\n".join(diario[fecha_factura]))
+                    except PermissionError:
+                        trying += 1
+                    else:
+                        break
         #ife = data["importes por fechas y estados"]
         #ffe = data["facturas por fechas y estados"]
         #dfe = data["devoluciones por fechas y estados"]

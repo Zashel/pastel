@@ -146,7 +146,7 @@ class Pari(RestfulBaseInterface):
                                                                                                           minute=0,
                                                                                                           second=0,
                                                                                                           microsecond=0) and
-                        data["primera_factura"] == "1"):
+                        data["primera_factura"] == "1" or data["primera_factura"] != "1"):
                     str_fecha_factura = datetime.datetime.strptime(data["fecha_factura"], "%d/%m/%y")
                     if data["fecha_factura"] not in diario:
                         diario[data["fecha_factura"]] = list()
@@ -252,9 +252,9 @@ class Pari(RestfulBaseInterface):
                                        "jazztel_ciclo_" + str_fecha_factura.strftime("%Y-%m-%d") + ".csv"),
                           "w") as f:
                     f.write("\n".join(diario[fecha_factura]))
-        ife = data["importes por fechas y estados"]
-        ffe = data["facturas por fechas y estados"]
-        dfe = data["devoluciones por fechas y estados"]
+        #ife = data["importes por fechas y estados"]
+        #ffe = data["facturas por fechas y estados"]
+        #dfe = data["devoluciones por fechas y estados"]
         segmentos = list(ife.keys())
         segmentos.sort()
         assert len(segmentos) > 0

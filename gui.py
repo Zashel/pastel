@@ -430,7 +430,7 @@ class App(EasyFrame):
         button_frame_payment_pending.pack()
         def unlock_and_close(self):
             API.unblock_all_pagos()
-            self.show_payments_tree
+            self.show_payments_tree()
         Label(button_frame_payment_pending, textvariable=self.set_var("gui.pagos_pendientes"),
               name="informacion").grid(column=0, row=0, sticky=W)
         Button(button_frame_payment_pending, text="Cerrar",

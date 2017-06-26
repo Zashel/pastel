@@ -167,12 +167,12 @@ class Pari(RestfulBaseInterface):
                                                                                                           second=0,
                                                                                                           microsecond=0) and
                         data["estado_recibo"] == "IMPAGADO"):
-                    if data["numdoc"] not in ctes_pendientes:
-                        ctes_pendientes[data["numdoc"]] = list()
-                    ctes_pendientes[data["numdoc"]].append(data)
-                    dni_en_gestion.add(data["numdoc"])
+                    if data["id_cuenta"] not in ctes_pendientes:
+                        ctes_pendientes[data["id_cuenta"]] = list()
+                    ctes_pendientes[data["id_cuenta"]].append(data)
+                    dni_en_gestion.add(data["id_cuenta"])
                 elif data["estado_recibo"] == "IMPAGADO":
-                    dni_no_en_gestion.add(data["numdoc"])
+                    dni_no_en_gestion.add(data["id_cuenta"])
             for report in (ife, ffe, dfe):
                 if data["segmento"] not in report:
                     report[data["segmento"]] = dict()

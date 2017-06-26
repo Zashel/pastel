@@ -122,6 +122,9 @@ class Pari(RestfulBaseInterface):
         ffe = reports["facturas por fechas y estados"]
         dfe = reports["devoluciones por fechas y estados"]
         diario = dict()
+        dni_en_gestion = set()
+        dni_no_en_gestion = set()
+        ctes_pendientes = dict()
         for row in self.read_pari(pari_file):
             id_factura = int(row["data"]["id_factura"])
             id_cuenta = int(row["data"]["id_cuenta"])
@@ -146,7 +149,7 @@ class Pari(RestfulBaseInterface):
                                                                                                           minute=0,
                                                                                                           second=0,
                                                                                                           microsecond=0) and
-                        data["primera_factura"] == "1" or data["primera_factura"] != "1"):
+                        (data["primera_factura"] == "1" or data["primera_factura"] != "1")):
                     str_fecha_factura = datetime.datetime.strptime(data["fecha_factura"], "%d/%m/%y")
                     if data["fecha_factura"] not in diario:
                         diario[data["fecha_factura"]] = list()
@@ -159,6 +162,17 @@ class Pari(RestfulBaseInterface):
                             item = data[head]
                         final_list.append(item)
                     diario[data["fecha_factura"]].append(";".join(final_list))
+                if (fecha_puesta_cobro + datetime.timedelta(days=60) >= datetime.datetime.today().replace(hour=0,
+                                                                                                          minute=0,
+                                                                                                          second=0,
+                                                                                                          microsecond=0) and
+                        data["estado_recibo"] == "IMPAGADO"):
+                    if data["numdoc"] not in ctes_pendientes:
+                        ctes_pendientes[data["numdoc"]] = list()
+                    ctes_pendientes[data["numdoc"]].append(data)
+                    dni_en_gestion.add(data["numdoc"])
+                elif data["estado_recibo"] == "IMPAGADO":
+                    dni_no_en_gestion.add(data["numdoc"])
             for report in (ife, ffe, dfe):
                 if data["segmento"] not in report:
                     report[data["segmento"]] = dict()
@@ -263,6 +277,15 @@ class Pari(RestfulBaseInterface):
                         trying += 1
                     else:
                         break
+            final_list = [";".join(PARI_FIELDS)]
+            final_dni = dni_en_gestion - dni_no_en_gestion
+            for dni in final_dni:
+                if dni in ctes_pendientes:
+                    final_list.extend(ctes_pendientes[dni])
+                with open(os.path.join(admin_config.DAILY_EXPORT_PATH,
+                                       "en_gestion.csv"),
+                          "w") as f:
+                    f.write("\n".join(final_list))
         #ife = data["importes por fechas y estados"]
         #ffe = data["facturas por fechas y estados"]
         #dfe = data["devoluciones por fechas y estados"]

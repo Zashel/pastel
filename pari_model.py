@@ -281,7 +281,8 @@ class Pari(RestfulBaseInterface):
             final_dni = dni_en_gestion - dni_no_en_gestion
             for dni in final_dni:
                 if dni in ctes_pendientes:
-                    final_list.extend(ctes_pendientes[dni])
+                    for item in ctes_pendientes[dni]:
+                        final_list.append(";".join([item[key] for key in PARI_FIELDS]))
                 with open(os.path.join(admin_config.DAILY_EXPORT_PATH,
                                        "en_gestion.csv"),
                           "w") as f:

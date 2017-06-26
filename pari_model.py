@@ -283,10 +283,10 @@ class Pari(RestfulBaseInterface):
                 if dni in ctes_pendientes:
                     for item in ctes_pendientes[dni]:
                         final_list.append(";".join([item[key] for key in PARI_FIELDS]))
-                with open(os.path.join(admin_config.DAILY_EXPORT_PATH,
-                                       "en_gestion.csv"),
-                          "w") as f:
-                    f.write("\n".join(final_list))
+            with open(os.path.join(admin_config.DAILY_EXPORT_PATH,
+                                   "en_gestion.csv"),
+                      "w") as f:
+                f.write("\n".join(final_list))
         #ife = data["importes por fechas y estados"]
         #ffe = data["facturas por fechas y estados"]
         #dfe = data["devoluciones por fechas y estados"]

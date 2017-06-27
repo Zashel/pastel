@@ -51,7 +51,7 @@ class Requests:
                 }
     load_pari = None
     pool_len = int()
-    lock = Lock()
+    len_lock = Lock()
     working = False
 
 
@@ -90,9 +90,8 @@ class Requests:
                     action = "other"
                 if action is not None:
                     Requests.pool_dict[action].append((pippout, function, args, kwargs))
-                    Requests.lock.acquire()
-                    Requests.pool_len += 1
-                    Requests.lock.release()
+                    with Requests.len_lock:
+                        Requests.pool_len += 1
                     if Requests.pool_len > 0 and (Requests.exec_thread is None or Requests.exec_thread.is_alive() is False):
                         Requests.exec_thread = Requests.exec_pool()
             except Empty:
@@ -112,9 +111,8 @@ class Requests:
                     Requests.working = True
                     pippout.send(function(*args, **kwargs))
                     Requests.working = False
-                    Requests.lock.acquire()
-                    Requests.pool_len -= 1
-                    Requests.lock.release()
+                    with Requests.len_lock:
+                        Requests.pool_len -= 1
                     break #Let's begin again because it's a priority pool!
             len = Requests.pool_len
             if len <= 0:
